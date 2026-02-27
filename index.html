@@ -1,240 +1,745 @@
 <!DOCTYPE html>
 <html lang="id">
-<link rel="stylesheet" href="style.css">
+<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>OXYX MARKET - ROBLOX BABFT</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <!-- PURPLE PARTICLE BACKGROUND -->
-    <div class="purple-bg"></div>
-    <div class="particle-network"></div>
-    
-    <div class="container">
-        <!-- HEADER -->
-        <div class="header">
-            <div class="ox-logo">
-                <span class="purple-glow">⬤</span>
-                <h1 class="glitch" data-text="OXYX MARKET">OXYX MARKET</h1>
-                <span class="purple-glow">⬤</span>
-            </div>
-            <div class="subtitle">Build A Boat For Treasure • Premium Marketplace</div>
+    <style>
+        /* ============================================
+           OXYX MARKET - CHAIN + PURPLE PARTICLE THEME
+           ============================================ */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', monospace;
+        }
+
+        body {
+            background: #030303;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            color: #e0e0ff;
+        }
+
+        /* CHAIN BACKGROUND ANIMATION */
+        .chain-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #050505;
+            z-index: -3;
+        }
+
+        /* RANTAI BERGERAK VERTIKAL */
+        .chain-vertical {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 40px,
+                    rgba(100, 0, 255, 0.08) 40px,
+                    rgba(100, 0, 255, 0.08) 42px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 40px,
+                    rgba(120, 0, 255, 0.08) 40px,
+                    rgba(120, 0, 255, 0.08) 42px
+                );
+            animation: chainMove 20s linear infinite;
+            z-index: -2;
+            opacity: 0.7;
+        }
+
+        /* RANTAI BERGERAK DIAGONAL */
+        .chain-diagonal {
+            position: fixed;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background-image: 
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 50px,
+                    rgba(140, 0, 255, 0.1) 50px,
+                    rgba(140, 0, 255, 0.1) 52px
+                ),
+                repeating-linear-gradient(
+                    -45deg,
+                    transparent,
+                    transparent 50px,
+                    rgba(160, 0, 255, 0.1) 50px,
+                    rgba(160, 0, 255, 0.1) 52px
+                );
+            animation: chainDiagonal 30s linear infinite;
+            z-index: -2;
+            opacity: 0.5;
+        }
+
+        /* LINK CHAIN (BULATAN RANTAI) */
+        .chain-links {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 30% 40%, rgba(180, 0, 255, 0.15) 2px, transparent 2px),
+                radial-gradient(circle at 70% 60%, rgba(200, 0, 255, 0.15) 2px, transparent 2px),
+                radial-gradient(circle at 85% 20%, rgba(150, 0, 255, 0.15) 2px, transparent 2px),
+                radial-gradient(circle at 15% 80%, rgba(170, 0, 255, 0.15) 2px, transparent 2px);
+            background-size: 100px 100px;
+            animation: linkFloat 15s ease-in-out infinite;
+            z-index: -2;
+        }
+
+        /* PARTIKEL UNGU DI POJOK LAYAR */
+        .purple-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle-corner-tl {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle at 0% 0%, rgba(200, 0, 255, 0.3), transparent 70%);
+            filter: blur(40px);
+            animation: cornerPulse 8s ease-in-out infinite;
+        }
+
+        .particle-corner-tr {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle at 100% 0%, rgba(170, 0, 255, 0.3), transparent 70%);
+            filter: blur(50px);
+            animation: cornerPulse 10s ease-in-out infinite reverse;
+        }
+
+        .particle-corner-bl {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle at 0% 100%, rgba(150, 0, 255, 0.3), transparent 70%);
+            filter: blur(60px);
+            animation: cornerPulse 12s ease-in-out infinite;
+        }
+
+        .particle-corner-br {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle at 100% 100%, rgba(190, 0, 255, 0.3), transparent 70%);
+            filter: blur(55px);
+            animation: cornerPulse 9s ease-in-out infinite reverse;
+        }
+
+        .star-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, #b300ff 1px, transparent 1px),
+                radial-gradient(circle at 30% 70%, #c000ff 1px, transparent 1px),
+                radial-gradient(circle at 50% 30%, #a500ff 1px, transparent 1px),
+                radial-gradient(circle at 70% 80%, #d400ff 1px, transparent 1px),
+                radial-gradient(circle at 90% 40%, #bf00ff 1px, transparent 1px);
+            background-size: 200px 200px;
+            animation: starTwinkle 5s ease-in-out infinite;
+            opacity: 0.5;
+        }
+
+        /* MAIN CONTAINER */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 15px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* HEADER */
+        .header {
+            text-align: center;
+            padding: 35px 20px;
+            background: rgba(5, 0, 10, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid #9f4dff;
+            border-radius: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 0 40px rgba(150, 0, 255, 0.3);
+        }
+
+        .ox-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .purple-glow {
+            font-size: 2.2em;
+            color: #b300ff;
+            text-shadow: 0 0 25px #b300ff;
+            animation: pulse 2s infinite;
+        }
+
+        .glitch {
+            font-size: 2.8em;
+            color: #c800ff;
+            text-shadow: 
+                2px 2px 0 #ff00aa,
+                -2px -2px 0 #00aaff;
+            animation: glitch 2s infinite;
+        }
+
+        .subtitle {
+            color: #b07cff;
+            font-size: 1em;
+            letter-spacing: 2px;
+        }
+
+        /* DISCORD CONTAINER */
+        .discord-container {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .discord-btn {
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: 0.3s;
+            border: 2px solid;
+            font-size: 0.9em;
+        }
+
+        .discord-btn.primary {
+            background: #5865F2;
+            color: white;
+            border-color: #a07cff;
+            box-shadow: 0 0 25px #5865F2;
+        }
+
+        .discord-btn.secondary {
+            background: transparent;
+            color: #b07cff;
+            border-color: #b07cff;
+        }
+
+        .discord-btn:hover {
+            transform: scale(1.03);
+            filter: brightness(1.2);
+        }
+
+        /* SECTION TITLES */
+        .section-title {
+            color: #c800ff;
+            font-size: 1.6em;
+            text-align: center;
+            margin: 25px 0 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .purple-neon {
+            color: #b300ff;
+            text-shadow: 0 0 12px #b300ff;
+            font-size: 1.1em;
+        }
+
+        /* KEY ACCESS */
+        .key-access {
+            display: flex;
+            gap: 8px;
+            max-width: 450px;
+            margin: 15px auto;
+            background: rgba(20, 5, 30, 0.8);
+            padding: 6px;
+            border-radius: 50px;
+            border: 2px solid #9f4dff;
+        }
+
+        .key-access input {
+            flex: 1;
+            padding: 10px 18px;
+            background: #0a0510;
+            border: none;
+            color: #c800ff;
+            border-radius: 50px;
+            font-size: 0.95em;
+        }
+
+        .key-access input:focus {
+            outline: 2px solid #b300ff;
+        }
+
+        .key-btn {
+            padding: 10px 22px;
+            background: linear-gradient(45deg, #b300ff, #5a0d9a);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.9em;
+        }
+
+        .key-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 30px #b300ff;
+        }
+
+        /* MODERATOR GRID */
+        .mod-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .mod-card {
+            background: rgba(15, 5, 25, 0.9);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 2px solid #9f4dff;
+            border-radius: 20px;
+            padding: 18px;
+            text-align: center;
+            transition: 0.3s;
+            box-shadow: 0 0 20px rgba(150, 0, 255, 0.2);
+        }
+
+        .mod-card.owner {
+            border-color: #ffaa00;
+            box-shadow: 0 0 35px #ffaa00;
+        }
+
+        .mod-avatar {
+            font-size: 3em;
+            margin-bottom: 8px;
+        }
+
+        .mod-name {
+            color: #c800ff;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .mod-role {
+            color: #b07cff;
+            margin: 6px 0;
+            font-size: 0.9em;
+        }
+
+        .mod-perms {
+            color: #666;
+            font-size: 0.8em;
+        }
+
+        /* MOD EDIT PANEL */
+        .mod-edit-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            background: rgba(30, 10, 40, 0.9);
+            padding: 20px;
+            border-radius: 20px;
+            border: 2px solid #b300ff;
+            margin: 20px 0;
+        }
+
+        .mod-edit-item label {
+            display: block;
+            color: #c800ff;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .mod-edit-item input {
+            width: 100%;
+            padding: 10px;
+            background: #1a0a2a;
+            border: 2px solid #9f4dff;
+            color: #b07cff;
+            border-radius: 8px;
+        }
+
+        .save-mod-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #b300ff, #5a0d9a);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* UPLOAD SECTION */
+        .upload-section {
+            background: rgba(10, 3, 18, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid #9f4dff;
+            border-radius: 25px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .upload-field.full {
+            grid-column: span 2;
+        }
+
+        .upload-field label {
+            display: block;
+            color: #c800ff;
+            margin-bottom: 4px;
+            font-size: 0.9em;
+        }
+
+        .upload-field input,
+        .upload-field select,
+        .upload-field textarea {
+            width: 100%;
+            padding: 9px;
+            background: #0a0512;
+            border: 2px solid #9f4dff;
+            color: #b07cff;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+
+        .premium-check {
+            display: block;
+            margin: 15px 0;
+            color: #ffaa00;
+            font-size: 1em;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #b300ff, #5a0d9a);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.1em;
+        }
+
+        /* BUILD GRID */
+        .build-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .build-card {
+            background: rgba(15, 5, 25, 0.9);
+            border: 2px solid #9f4dff;
+            border-radius: 18px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .build-card.premium {
+            border-color: #ffaa00;
+            box-shadow: 0 0 25px #ffaa00;
+        }
+
+        .build-media {
+            height: 140px;
+            background: #0a0515;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2em;
+        }
+
+        .build-info {
+            padding: 12px;
+        }
+
+        .build-name {
+            color: #c800ff;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .build-type {
+            color: #b07cff;
+            margin: 5px 0;
+            font-size: 0.85em;
+        }
+
+        .build-desc {
+            color: #aaa;
+            font-size: 0.85em;
+            margin: 5px 0;
+        }
+
+        .build-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .build-actions button {
+            flex: 1;
+            padding: 7px;
+            background: transparent;
+            border: 2px solid #9f4dff;
+            color: #b07cff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85em;
+        }
+
+        .build-actions button:hover {
+            background: #b300ff;
+            color: black;
+        }
+
+        /* PREMIUM SECTION */
+        .premium-section {
+            background: rgba(30, 5, 40, 0.9);
+            border: 2px solid #ffaa00;
+            border-radius: 30px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .premium-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 15px;
+        }
+
+        .premium-card {
+            background: #1a0a2a;
+            border: 2px solid #ffaa00;
+            border-radius: 15px;
+            padding: 15px;
+        }
+
+        .premium-card button {
+            margin: 5px;
+            padding: 5px 10px;
+            background: #ffaa00;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+        }
+
+        .modal-content {
+            width: 90%;
+            max-width: 450px;
+            margin: 50px auto;
+            background: #1a0a2a;
+            border: 2px solid #b300ff;
+            border-radius: 30px;
+            padding: 25px;
+        }
+
+        .chat-box {
+            height: 250px;
+            overflow-y: auto;
+            background: #0a0a1a;
+            border-radius: 15px;
+            padding: 12px;
+            margin: 15px 0;
+            color: #b07cff;
+        }
+
+        .send-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #b300ff, #5a0d9a);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .close {
+            float: right;
+            font-size: 28px;
+            cursor: pointer;
+            color: #b07cff;
+        }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            padding: 18px;
+            margin-top: 25px;
+            border-top: 2px solid #9f4dff;
+        }
+
+        .ox-footer {
+            color: #c800ff;
+            font-size: 1em;
+            animation: pulse 2s infinite;
+        }
+
+        .credits {
+            color: #555;
+            font-size: 0.8em;
+        }
+
+        /* ANIMATIONS */
+        @keyframes chainMove {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(20px) translateY(20px); }
+        }
+
+        @keyframes chainDiagonal {
+            0% { transform: rotate(0deg) translateX(0) translateY(0); }
+            100% { transform: rotate(5deg) translateX(-50px) translateY(-50px); }
+        }
+
+        @keyframes linkFloat {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        @keyframes cornerPulse {
+            0%, 100% { opacity: 0.3; filter: blur(40px); }
+            50% { opacity: 0.6; filter: blur(60px); }
+        }
+
+        @keyframes starTwinkle {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; text-shadow: 0 0 15px #b300ff; }
+            50% { opacity: 0.7; text-shadow: 0 0 30px #ff00ff; }
+        }
+
+        @keyframes glitch {
+            0%, 100% { transform: skew(0deg); }
+            20% { transform: skew(3deg); }
+            40% { transform: skew(-3deg); }
+            60% { transform: skew(2deg); }
+            80% { transform: skew(-2deg); }
+        }
+
+        /* RESPONSIVE UNTUK HP */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
             
-            <!-- DISCORD LINKS (3 SERVER) -->
-            <div class="discord-container">
-                <a href="https://discord.gg/7UrpTa4Ke" class="discord-btn primary">🔮 MAIN SERVER</a>
-                <a href="https://discord.gg/autobuild" target="_blank" class="discord-btn secondary">⚡ SUPPORT</a>
-                <a href="https://discord.gg/boatbuilderhub" target="_blank" class="discord-btn secondary">🎮  SUPPORT</a>
-            </div>
-        </div>
-        
-        <!-- MODERATOR SECTION (PROTECTED) -->
-        <div class="mod-section">
-            <h2 class="section-title">
-                <span class="purple-neon">⛊</span> 
-                MARKET MODERATOR 
-                <span class="purple-neon">⛊</span>
-            </h2>
+            .header {
+                padding: 25px 15px;
+            }
             
-            <!-- KEY ACCESS FOR MOD EDIT -->
-            <div class="key-access">
-                <input type="password" id="modKey" placeholder="Enter master key">
-                <button onclick="unlockModEdit()" class="key-btn">UNLOCK EDIT</button>
-            </div>
+            .glitch {
+                font-size: 2em;
+            }
             
-            <div class="mod-grid" id="modGrid">
-                <!-- MOD 1 - OWNER (HANYA TUANKU) -->
-                <div class="mod-card owner" id="mod1">
-                    <div class="mod-avatar">👑</div>
-                    <div class="mod-name">TUANKU</div>
-                    <div class="mod-role">OWNER/CREATOR</div>
-                    <div class="mod-perms">🔒 LOCKED</div>
-                </div>
-                
-                <!-- MOD 2 - MODERATOR 1 -->
-                <div class="mod-card" id="mod2">
-                    <div class="mod-avatar">🛡️</div>
-                    <div class="mod-name" id="modName2">MODERATOR 1</div>
-                    <div class="mod-role" id="modRole2">MODERATOR</div>
-                    <div class="mod-perms" id="modPerms2">🔒 LOCKED</div>
-                </div>
-                
-                <!-- MOD 3 - MODERATOR 2 -->
-                <div class="mod-card" id="mod3">
-                    <div class="mod-avatar">⚔️</div>
-                    <div class="mod-name" id="modName3">MODERATOR 2</div>
-                    <div class="mod-role" id="modRole3">MODERATOR</div>
-                    <div class="mod-perms" id="modPerms3">🔒 LOCKED</div>
-                </div>
-            </div>
+            .mod-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
             
-            <!-- MOD EDIT PANEL (HIDDEN UNTIL KEY) -->
-            <div id="modEditPanel" style="display: none;">
-                <h3 class="panel-title">⚙️ MODERATOR CONTROL PANEL</h3>
-                <div class="mod-edit-grid">
-                    <div class="mod-edit-item">
-                        <label>Mod 2 Name:</label>
-                        <input type="text" id="editName2" value="MODERATOR 1">
-                    </div>
-                    <div class="mod-edit-item">
-                        <label>Mod 2 Role:</label>
-                        <input type="text" id="editRole2" value="MODERATOR">
-                    </div>
-                    <div class="mod-edit-item">
-                        <label>Mod 2 Avatar:</label>
-                        <input type="text" id="editAvatar2" value="🛡️">
-                    </div>
-                    
-                    <div class="mod-edit-item">
-                        <label>Mod 3 Name:</label>
-                        <input type="text" id="editName3" value="MODERATOR 2">
-                    </div>
-                    <div class="mod-edit-item">
-                        <label>Mod 3 Role:</label>
-                        <input type="text" id="editRole3" value="MODERATOR">
-                    </div>
-                    <div class="mod-edit-item">
-                        <label>Mod 3 Avatar:</label>
-                        <input type="text" id="editAvatar3" value="⚔️">
-                    </div>
-                </div>
-                <button onclick="saveModChanges()" class="save-mod-btn">💾 SAVE MOD CHANGES</button>
-            </div>
-        </div>
-        
-        <!-- UPLOAD SECTION -->
-        <div class="upload-section">
-            <h2 class="section-title">
-                <span class="purple-neon">📤</span> 
-                UPLOAD BUILD 
-                <span class="purple-neon">📤</span>
-            </h2>
+            .upload-grid {
+                grid-template-columns: 1fr;
+            }
             
-            <!-- ACCESS KEY FOR UPLOAD -->
-            <div class="key-access">
-                <input type="password" id="uploadKey" placeholder="Enter upload key">
-                <button onclick="unlockUpload()" class="key-btn">UNLOCK UPLOAD</button>
-            </div>
+            .upload-field.full {
+                grid-column: span 1;
+            }
             
-            <!-- UPLOAD FORM -->
-            <div id="uploadForm" style="display: none;">
-                <div class="upload-grid">
-                    <div class="upload-field">
-                        <label>Build Name</label>
-                        <input type="text" id="buildName" placeholder="e.g., Flying Dragon">
-                    </div>
-                    <div class="upload-field">
-                        <label>Build Type</label>
-                        <select id="buildType">
-                            <option value="ship">🚢 Ship</option>
-                            <option value="plane">✈️ Plane</option>
-                            <option value="mech">🤖 Mech</option>
-                            <option value="vehicle">🚗 Vehicle</option>
-                            <option value="premium">💎 PREMIUM (need review)</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="upload-field full">
-                    <label>Description</label>
-                    <textarea id="buildDesc" rows="3" placeholder="Describe your build..."></textarea>
-                </div>
-                
-                <div class="upload-field full">
-                    <label>Build Photo/Image (required)</label>
-                    <input type="file" id="buildImage" accept="image/*" required>
-                </div>
-                
-                <div class="upload-field full">
-                    <label>Build Video (optional)</label>
-                    <input type="file" id="buildVideo" accept="video/*">
-                </div>
-                
-                <div class="upload-field full">
-                    <label>Download Link (Google Drive / Mediafire)</label>
-                    <input type="url" id="downloadLink" placeholder="https://drive.google.com/...">
-                </div>
-                
-                <div class="upload-field full">
-                    <label>YouTube Showcase (optional)</label>
-                    <input type="url" id="youtubeLink" placeholder="https://youtube.com/watch?v=...">
-                </div>
-                
-                <label class="premium-check">
-                    <input type="checkbox" id="isPremium"> 💎 Mark as PREMIUM (requires owner approval)
-                </label>
-                
-                <button onclick="submitBuild()" class="submit-btn">
-                    <span>🚀 PUBLISH BUILD</span>
-                </button>
-            </div>
-        </div>
-        
-        <!-- BUILDS GRID -->
-        <div class="marketplace">
-            <h2 class="section-title">
-                <span class="purple-neon">🏪</span> 
-                MARKETPLACE 
-                <span class="purple-neon">🏪</span>
-            </h2>
+            .discord-container {
+                flex-direction: column;
+                gap: 8px;
+            }
             
-            <div class="build-grid" id="buildGrid"></div>
-        </div>
-        
-        <!-- PREMIUM PENDING SECTION (OWNER ONLY) -->
-        <div id="premiumPanel" style="display: none;" class="premium-section">
-            <h2 class="section-title">
-                <span class="purple-neon">💎</span> 
-                PREMIUM PENDING REVIEW 
-                <span class="purple-neon">💎</span>
-            </h2>
-            <div id="premiumGrid" class="premium-grid"></div>
-        </div>
-        
-        <!-- FOOTER -->
-        <div class="footer">
-            <div class="ox-footer">
-                <span>⬤ OXYX MARKET v2.0 ⬤</span>
-            </div>
-            <div class="credits">
-                Powered by GitHub • For ROBLOX BABFT
-            </div>
-        </div>
-    </div>
-    
-    <!-- CHAT MODAL -->
-    <div id="chatModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeChat()">&times;</span>
-            <h3 id="chatTitle">💬 Contact Seller</h3>
-            <div id="chatMessages" class="chat-box"></div>
-            <textarea id="chatInput" placeholder="Type your message..." rows="3"></textarea>
-            <button onclick="sendMessage()" class="send-btn">SEND MESSAGE</button>
-        </div>
-    </div>
-    
-    <script src="ox-market.js"></script>
-</body>
-     <body>
-    <!-- CHAIN BACKGROUND -->
-    <div class="chain-bg"></div>
-    <div class="chain-vertical"></div>
-    <div class="chain-diagonal"></div>
-    <div class="chain-links"></div>
-    
-    <!-- PURPLE PARTICLES DI POJOK -->
-    <div class="purple-particles">
-        <div class="particle-corner-tl"></div>
-        <div class="particle-corner-tr"></div>
-        <div class="particle-corner-bl"></div>
-        <div class="particle-corner-br"></div>
-        <div class="star-particles"></div>
-    </div>
-    
-    <!-- REST OF YOUR CONTENT -->
-    <div class="container">
-        <!-- ... sisanya tetap sama ... -->
-    </div>
-</body>
-</html>
+            .discord-btn {
+                width: 100%;
+                text-align: center;
+                padding: 12px;
+            }
+            
+            .key-access {
+                flex-direction: column;
+                border-radius: 25px;
+                padding: 12px;
+            }
+            
+            .key-access input,
+            .key-btn {
+                width: 100%;
+            }
+            
+            .build-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .particle-corner-
