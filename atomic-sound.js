@@ -1,149 +1,158 @@
 // ============================================
-// OXYX MARKET - ATOMIC SOUND AUTO PLAY
-// LANGSUNG BUNYI TANPA DIPENCET!
+// ATOMIC SOUND - AUTO PLAY TANPA DIPENCET
+// LANGSUNG BUNYI PAS WEB KE BUKA
 // ============================================
 
 (function() {
     // Buat audio element
     const atomicSound = new Audio();
     
-    // SUMBER SUARA ATOMIC (pake link langsung)
+    // Gunakan sumber suara yang paling stabil
     atomicSound.src = 'https://www.myinstants.com/media/sounds/i-am-atomic.mp3';
-    atomicSound.volume = 0.6;
+    atomicSound.volume = 0.5; // Volume 50%
     atomicSound.loop = false;
     atomicSound.preload = 'auto';
     
-    // FUNGSI MAIN SOUND
+    // Fungsi untuk play sound
     function playAtomic() {
         atomicSound.play()
             .then(() => {
-                console.log('⚛️ OXYX ATOMIC! Bunyi otomatis');
+                console.log('⚛️ ATOMIC! Bunyi otomatis');
                 showAtomicToast();
             })
             .catch(error => {
-                console.log('Autoplay dicegah browser, tapi kita paksa!');
-                // Browser biasanya blokir autoplay, tapi kita kasih cara kedua
-                forcePlayOnInteraction();
+                console.log('Autoplay dicegah browser, coba cara lain...');
+                // Coba play dengan cara berbeda
+                tryPlayAlternative();
             });
     }
     
-    // TAMPILIN TOAST ATOMIC
+    // Cara alternatif 1: pake AudioContext
+    function tryPlayAlternative() {
+        try {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            const audioCtx = new AudioContext();
+            
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume().then(() => {
+                    const audio = new Audio('https://www.myinstants.com/media/sounds/i-am-atomic.mp3');
+                    audio.volume = 0.5;
+                    audio.play()
+                        .then(() => {
+                            showAtomicToast();
+                            console.log('⚛️ Berhasil pake AudioContext');
+                        })
+                        .catch(() => {
+                            // Kalau masih gagal, kasih tombol kecil
+                            showAtomicButton();
+                        });
+                });
+            }
+        } catch (e) {
+            showAtomicButton();
+        }
+    }
+    
+    // Cara alternatif 2: pake iframe (ekstrim)
+    function tryIframeMethod() {
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = 'https://www.myinstans.com/sound.html';
+        document.body.appendChild(iframe);
+        
+        setTimeout(() => {
+            const audio = new Audio('https://www.myinstants.com/media/sounds/i-am-atomic.mp3');
+            audio.volume = 0.5;
+            audio.play().catch(() => showAtomicButton());
+        }, 1000);
+    }
+    
+    // Tampilkan toast notifikasi atomic
     function showAtomicToast() {
         const toast = document.createElement('div');
-        toast.innerHTML = '⚡ OXYX ATOMIC ⚡';
+        toast.innerHTML = '⚛️ OXYX ATOMIC ⚛️';
         toast.style.cssText = `
             position: fixed;
             top: 30px;
             left: 50%;
             transform: translateX(-50%);
-            background: linear-gradient(45deg, #ff00ff, #00ffff);
-            color: black;
+            background: linear-gradient(45deg, #b300ff, #6a0dad);
+            color: white;
             padding: 15px 40px;
             border-radius: 50px;
             font-size: 24px;
             font-weight: bold;
             z-index: 10000;
-            box-shadow: 0 0 50px #ff00ff;
+            box-shadow: 0 0 50px #b300ff;
             border: 2px solid white;
-            animation: oxyxPop 0.5s, oxyxFade 0.5s 2.5s forwards;
-            text-shadow: 0 0 10px white;
+            animation: popIn 0.5s, fadeOut 0.5s 2.5s forwards;
+            letter-spacing: 2px;
         `;
         document.body.appendChild(toast);
         
         setTimeout(() => toast.remove(), 3000);
     }
     
-    // CARA KEDUA: play saat user interaksi pertama
-    function forcePlayOnInteraction() {
-        // Buat element audio cadangan
-        const backupSound = new Audio('https://www.myinstants.com/media/sounds/i-am-atomic.mp3');
-        backupSound.volume = 0.6;
-        
-        // Fungsi untuk play saat interaksi
-        function playOnFirstTouch() {
-            backupSound.play()
-                .then(() => {
-                    showAtomicToast();
-                    // Hapus semua listener setelah berhasil
-                    document.removeEventListener('click', playOnFirstTouch);
-                    document.removeEventListener('touchstart', playOnFirstTouch);
-                    document.removeEventListener('keydown', playOnFirstTouch);
-                })
-                .catch(e => console.log('Masih gagal, coba lain kali'));
-        }
-        
-        // Pasang listener ke berbagai event interaksi user
-        document.addEventListener('click', playOnFirstTouch, { once: true });
-        document.addEventListener('touchstart', playOnFirstTouch, { once: true });
-        document.addEventListener('keydown', playOnFirstTouch, { once: true });
-        
-        // Tampilin notif kecil
-        const hint = document.createElement('div');
-        hint.innerHTML = '⚡ Klik di mana aja buat suara OXYX ATOMIC ⚡';
-        hint.style.cssText = `
+    // Tombol cadangan (tapi kecil dan gak ganggu)
+    function showAtomicButton() {
+        const btn = document.createElement('button');
+        btn.innerHTML = '⚛️';
+        btn.style.cssText = `
             position: fixed;
             bottom: 20px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            color: #00ffff;
-            font-size: 14px;
-            padding: 10px;
-            background: rgba(0,0,0,0.7);
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: #b300ff;
+            color: white;
+            border: 2px solid white;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 0 30px #b300ff;
             z-index: 9999;
-            animation: fadePulse 2s infinite;
+            opacity: 0.7;
+            transition: 0.3s;
         `;
-        document.body.appendChild(hint);
+        btn.onclick = function() {
+            const audio = new Audio('https://www.myinstants.com/media/sounds/i-am-atomic.mp3');
+            audio.volume = 0.5;
+            audio.play();
+            showAtomicToast();
+            this.remove();
+        };
+        document.body.appendChild(btn);
         
-        setTimeout(() => hint.remove(), 5000);
+        // Hilangin tombol setelah 30 detik
+        setTimeout(() => {
+            if (btn.parentNode) btn.remove();
+        }, 30000);
     }
     
-    // CARA PALING KERAS: pake Web Audio API
-    function superForcePlay() {
-        // Buat audio context
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContext) return;
-        
-        const audioCtx = new AudioContext();
-        
-        // Resume audio context (bisa bypass autoplay policy di beberapa browser)
-        if (audioCtx.state === 'suspended') {
-            audioCtx.resume().then(() => {
-                // Coba play lagi
-                const audio = new Audio('https://www.myinstants.com/media/sounds/i-am-atomic.mp3');
-                audio.volume = 0.6;
-                audio.play()
-                    .then(() => {
-                        showAtomicToast();
-                        console.log('⚛️ Berhasil pake Web Audio API');
-                    })
-                    .catch(e => console.log('Tetep gagal'));
-            });
-        }
-    }
-    
-    // TAMBAH CSS ANIMASI
+    // Tambah CSS animations
     const style = document.createElement('style');
     style.textContent = `
-        @keyframes oxyxPop {
+        @keyframes popIn {
             0% { transform: translateX(-50%) scale(0); opacity: 0; }
             70% { transform: translateX(-50%) scale(1.1); }
             100% { transform: translateX(-50%) scale(1); opacity: 1; }
         }
-        @keyframes oxyxFade {
-            to { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-        }
-        @keyframes fadePulse {
-            0%, 100% { opacity: 0.7; }
-            50% { opacity: 1; }
+        @keyframes fadeOut {
+            to { opacity: 0; transform: translateX(-50%) translateY(-30px); }
         }
     `;
     document.head.appendChild(style);
     
-    // EKSEKUSI: Coba play langsung
-    setTimeout(() => {
-        playAtomic();
-        // Backup pake super force
-        setTimeout(superForcePlay, 1000);
-    }, 800);
+    // COBA PLAY SAAT HALAMAN SIAP
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            // Delay 1 detik biar gak kaget
+            setTimeout(playAtomic, 1000);
+        });
+    } else {
+        setTimeout(playAtomic, 1000);
+    }
+    
+    // Backup: coba lagi setelah 3 detik kalau gagal
+    setTimeout(tryPlayAlternative, 3000);
 })();
