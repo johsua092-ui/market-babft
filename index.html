@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OXYX MARKET</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>OXYX MARKET - PUBLIC</title>
     <style>
         /* SIMPLE BLACK & PURPLE */
         * {
@@ -16,7 +16,7 @@
         body {
             background: #0a0a0a;
             color: white;
-            padding: 20px;
+            padding: 15px;
             min-height: 100vh;
         }
         
@@ -30,40 +30,42 @@
             background: #1a0a2a;
             border: 2px solid #9f4dff;
             border-radius: 20px;
-            padding: 30px;
+            padding: 25px 15px;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             box-shadow: 0 0 30px #9f4dff;
         }
         
         h1 {
             color: #c800ff;
-            font-size: 3em;
-            margin-bottom: 10px;
+            font-size: 2.5em;
+            margin-bottom: 8px;
             text-shadow: 0 0 20px #b300ff;
         }
         
         .subtitle {
             color: #b07cff;
-            font-size: 1.2em;
+            font-size: 1em;
+            margin-bottom: 15px;
         }
         
         /* DISCORD */
         .discord-container {
             display: flex;
-            gap: 15px;
+            gap: 10px;
             justify-content: center;
-            margin: 30px 0;
+            margin: 15px 0;
             flex-wrap: wrap;
         }
         
         .discord-btn {
-            padding: 15px 30px;
+            padding: 10px 20px;
             background: #5865F2;
             color: white;
             text-decoration: none;
-            border-radius: 50px;
+            border-radius: 40px;
             font-weight: bold;
+            font-size: 0.9em;
             border: 2px solid white;
         }
         
@@ -71,116 +73,366 @@
         .mod-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin: 30px 0;
+            gap: 12px;
+            margin: 20px 0;
         }
         
         .mod-card {
             background: #1a0a2a;
             border: 2px solid #9f4dff;
-            border-radius: 20px;
-            padding: 25px;
+            border-radius: 15px;
+            padding: 15px;
             text-align: center;
         }
         
         .mod-card.owner {
             border-color: gold;
-            box-shadow: 0 0 30px gold;
+            box-shadow: 0 0 20px gold;
         }
         
         .mod-avatar {
-            font-size: 4em;
-            margin-bottom: 10px;
+            font-size: 2.5em;
+            margin-bottom: 8px;
         }
         
         .mod-name {
             color: #c800ff;
-            font-size: 1.5em;
+            font-size: 1.1em;
             font-weight: bold;
         }
         
         .mod-role {
             color: #b07cff;
-            margin: 10px 0;
+            font-size: 0.85em;
+            margin: 5px 0;
         }
         
-        /* KEY INPUT */
-        .key-access {
+        /* SECTION TITLE */
+        .section-title {
+            color: #c800ff;
+            font-size: 1.5em;
+            text-align: center;
+            margin: 25px 0 15px;
             display: flex;
+            align-items: center;
+            justify-content: center;
             gap: 10px;
-            max-width: 500px;
-            margin: 20px auto;
-            background: #1a0a2a;
-            padding: 10px;
-            border-radius: 50px;
-            border: 2px solid #9f4dff;
         }
         
-        .key-access input {
-            flex: 1;
-            padding: 15px;
-            background: #0a0a1a;
-            border: none;
-            color: white;
-            border-radius: 50px;
-        }
-        
-        .key-btn {
-            padding: 15px 30px;
-            background: #9f4dff;
-            border: none;
-            border-radius: 50px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
-        /* UPLOAD SECTION */
+        /* UPLOAD SECTION - PUBLIC (NO KEY) */
         .upload-section {
             background: #1a0a2a;
             border: 2px solid #9f4dff;
             border-radius: 20px;
-            padding: 30px;
-            margin: 30px 0;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 15px 0;
+        }
+        
+        .upload-field {
+            margin-bottom: 12px;
+        }
+        
+        .upload-field.full {
+            grid-column: span 2;
+        }
+        
+        .upload-field label {
+            display: block;
+            color: #b07cff;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        
+        .upload-field input,
+        .upload-field select,
+        .upload-field textarea {
+            width: 100%;
+            padding: 12px;
+            background: #0a0a1a;
+            border: 2px solid #9f4dff;
+            color: white;
+            border-radius: 10px;
+            font-size: 0.95em;
+        }
+        
+        .upload-field input:focus,
+        .upload-field select:focus,
+        .upload-field textarea:focus {
+            outline: none;
+            border-color: #c800ff;
+            box-shadow: 0 0 15px #b300ff;
+        }
+        
+        .premium-check {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            color: gold;
+            font-size: 1em;
+        }
+        
+        .premium-check input {
+            width: 20px;
+            height: 20px;
+            accent-color: gold;
         }
         
         .submit-btn {
             width: 100%;
             padding: 15px;
-            background: #9f4dff;
+            background: linear-gradient(45deg, #9f4dff, #b300ff);
             border: none;
             border-radius: 10px;
             color: white;
             font-size: 1.2em;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 15px;
+            transition: 0.3s;
+            border: 2px solid white;
+        }
+        
+        .submit-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px #b300ff;
+        }
+        
+        /* BUILDS GRID */
+        .build-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .build-card {
+            background: #1a0a2a;
+            border: 2px solid #9f4dff;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+        
+        .build-card.premium {
+            border-color: gold;
+            box-shadow: 0 0 20px gold;
+        }
+        
+        .build-media {
+            height: 150px;
+            background: #0a0a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            border-bottom: 1px solid #9f4dff;
+        }
+        
+        .build-info {
+            padding: 15px;
+        }
+        
+        .build-name {
+            color: #c800ff;
+            font-size: 1.2em;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .build-type {
+            color: #b07cff;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+        }
+        
+        .build-desc {
+            color: #aaa;
+            font-size: 0.85em;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        
+        .build-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .build-actions button {
+            flex: 1;
+            padding: 8px;
+            background: transparent;
+            border: 2px solid #9f4dff;
+            color: #b07cff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        
+        .build-actions button:hover {
+            background: #9f4dff;
+            color: black;
+        }
+        
+        /* PREMIUM PANEL */
+        .premium-section {
+            background: #1a0a2a;
+            border: 2px solid gold;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .premium-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .premium-card {
+            background: #0a0a1a;
+            border: 2px solid gold;
+            border-radius: 15px;
+            padding: 15px;
+        }
+        
+        .premium-card h4 {
+            color: gold;
+            margin-bottom: 8px;
+        }
+        
+        .premium-card button {
+            padding: 8px 12px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .premium-card .approve {
+            background: #00aa00;
+            color: white;
+        }
+        
+        .premium-card .reject {
+            background: #aa0000;
+            color: white;
+        }
+        
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+        }
+        
+        .modal-content {
+            width: 90%;
+            max-width: 450px;
+            margin: 50px auto;
+            background: #1a0a2a;
+            border: 2px solid #9f4dff;
+            border-radius: 20px;
+            padding: 20px;
+        }
+        
+        .close {
+            float: right;
+            font-size: 28px;
+            cursor: pointer;
+            color: #b07cff;
+        }
+        
+        .chat-box {
+            height: 250px;
+            overflow-y: auto;
+            background: #0a0a1a;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 15px 0;
+            border: 1px solid #9f4dff;
+        }
+        
+        .send-btn {
+            width: 100%;
+            padding: 12px;
+            background: #9f4dff;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
         }
         
         /* FOOTER */
         .footer {
             text-align: center;
             padding: 20px;
-            margin-top: 40px;
+            margin-top: 30px;
             border-top: 2px solid #9f4dff;
             color: #b07cff;
+        }
+        
+        .ox-footer {
+            font-size: 1.2em;
+            margin-bottom: 5px;
+            color: #c800ff;
         }
         
         /* SOUND BUTTON */
         .sound-btn {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
+            bottom: 15px;
+            right: 15px;
+            width: 50px;
+            height: 50px;
             background: #9f4dff;
             color: white;
             border: none;
             border-radius: 50%;
-            font-size: 30px;
+            font-size: 24px;
             cursor: pointer;
-            box-shadow: 0 0 30px #b300ff;
+            box-shadow: 0 0 20px #b300ff;
             z-index: 9999;
+            border: 2px solid white;
+        }
+        
+        /* NOTIFICATION */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            z-index: 10000;
+            animation: slideIn 0.3s;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
         
         /* RESPONSIVE */
@@ -189,12 +441,25 @@
                 grid-template-columns: 1fr;
             }
             
-            .key-access {
-                flex-direction: column;
+            .upload-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .upload-field.full {
+                grid-column: span 1;
             }
             
             h1 {
                 font-size: 2em;
+            }
+            
+            .discord-container {
+                flex-direction: column;
+            }
+            
+            .discord-btn {
+                width: 100%;
+                text-align: center;
             }
         }
     </style>
@@ -208,19 +473,15 @@
             
             <!-- DISCORD LINKS -->
             <div class="discord-container">
-                <a href="#" class="discord-btn">🔮 MAIN SERVER</a>
-                <a href="#" class="discord-btn">⚡ TRADE SERVER</a>
-                <a href="#" class="discord-btn">🎮 BUILDER SERVER</a>
+                <a href="#" class="https://discord.gg/autobuild"> MAIN SERVER</a>
+                <a href="#" class="https://discord.gg/boatbuilderhub"> SUPPORT SERVER</a>
+                <a href="#" class="https://discord.gg/boatbuilderhub"> BUILDER SERVER</a>
             </div>
         </div>
         
-        <!-- MODERATOR SECTION -->
-        <h2 style="color:#c800ff; text-align:center; margin:30px 0;">🔰 MARKET MODERATOR 🔰</h2>
-        
-        <!-- KEY ACCESS -->
-        <div class="key-access">
-            <input type="password" id="modKey" placeholder="Enter master key">
-            <button class="key-btn" onclick="unlockMod()">UNLOCK</button>
+        <!-- MODERATOR SECTION (HANYA UNTUK OWNER) -->
+        <div class="section-title">
+            <span>🔰</span> MARKET MODERATOR <span>🔰</span>
         </div>
         
         <!-- MOD CARDS -->
@@ -244,79 +505,170 @@
             </div>
         </div>
         
-        <!-- UPLOAD SECTION -->
+        <!-- UPLOAD SECTION - PUBLIC (NO KEY) -->
+        <div class="section-title">
+            <span>📤</span> UPLOAD BUILD <span>📤</span>
+        </div>
+        
         <div class="upload-section">
-            <h2 style="color:#c800ff; margin-bottom:20px;">📤 UPLOAD BUILD</h2>
-            
-            <div class="key-access">
-                <input type="password" id="uploadKey" placeholder="Enter upload key">
-                <button class="key-btn" onclick="unlockUpload()">UNLOCK</button>
+            <div class="upload-grid">
+                <div class="upload-field full">
+                    <label>Build Name</label>
+                    <input type="text" id="buildName" placeholder="e.g., Flying Dragon">
+                </div>
+                
+                <div class="upload-field">
+                    <label>Build Type</label>
+                    <select id="buildType">
+                        <option value="ship">🚢 Ship</option>
+                        <option value="plane">✈️ Plane</option>
+                        <option value="mech">🤖 Mech</option>
+                        <option value="vehicle">🚗 Vehicle</option>
+                        <option value="other">🎲 Other</option>
+                    </select>
+                </div>
+                
+                <div class="upload-field">
+                    <label>Price (Robux)</label>
+                    <input type="number" id="price" placeholder="0 = free" min="0">
+                </div>
+                
+                <div class="upload-field full">
+                    <label>Description</label>
+                    <textarea id="buildDesc" rows="3" placeholder="Describe your build..."></textarea>
+                </div>
+                
+                <div class="upload-field full">
+                    <label>Build Image</label>
+                    <input type="file" id="buildImage" accept="image/*">
+                </div>
+                
+                <div class="upload-field full">
+                    <label>Download Link (Google Drive / Mediafire)</label>
+                    <input type="url" id="downloadLink" placeholder="https://drive.google.com/...">
+                </div>
+                
+                <div class="upload-field full">
+                    <label>YouTube Link (optional)</label>
+                    <input type="url" id="youtubeLink" placeholder="https://youtube.com/watch?v=...">
+                </div>
             </div>
             
-            <div id="uploadForm" style="display:none; margin-top:30px;">
-                <input type="text" placeholder="Build Name" style="width:100%; padding:15px; margin:10px 0; background:#0a0a1a; border:2px solid #9f4dff; color:white; border-radius:10px;">
-                <textarea placeholder="Description" rows="4" style="width:100%; padding:15px; margin:10px 0; background:#0a0a1a; border:2px solid #9f4dff; color:white; border-radius:10px;"></textarea>
-                <input type="file" style="width:100%; padding:15px; margin:10px 0; background:#0a0a1a; border:2px solid #9f4dff; color:white; border-radius:10px;">
-                <button class="submit-btn">🚀 PUBLISH BUILD</button>
-            </div>
+            <label class="premium-check">
+                <input type="checkbox" id="isPremium"> 💎 Mark as PREMIUM (needs owner approval)
+            </label>
+            
+            <button class="submit-btn" onclick="submitBuild()">🚀 PUBLISH BUILD</button>
         </div>
         
         <!-- MARKETPLACE -->
-        <h2 style="color:#c800ff; text-align:center; margin:30px 0;">🏪 MARKETPLACE 🏪</h2>
+        <div class="section-title">
+            <span>🏪</span> MARKETPLACE <span>🏪</span>
+        </div>
         
-        <div style="text-align:center; padding:50px; color:#666; background:#1a0a2a; border-radius:20px;">
-            📦 No builds yet. Be the first to upload!
+        <div id="buildGrid" class="build-grid">
+            <!-- BUILDS WILL APPEAR HERE -->
+        </div>
+        
+        <!-- PREMIUM PENDING (HANYA UNTUK OWNER) -->
+        <div id="premiumPanel" style="display: none;" class="premium-section">
+            <div class="section-title">
+                <span>💎</span> PREMIUM PENDING <span>💎</span>
+            </div>
+            <div id="premiumGrid" class="premium-grid"></div>
         </div>
         
         <!-- FOOTER -->
         <div class="footer">
-            <div style="font-size:1.2em; margin-bottom:10px;">⬤ OXYX MARKET v1.0 ⬤</div>
+            <div class="ox-footer">⬤ OXYX MARKET v2.0 ⬤</div>
             <div>Powered by GitHub • For ROBLOX BABFT</div>
+        </div>
+    </div>
+    
+    <!-- CHAT MODAL -->
+    <div id="chatModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeChat()">&times;</span>
+            <h3 id="chatTitle" style="color:#c800ff;">💬 Contact Seller</h3>
+            <div id="chatMessages" class="chat-box"></div>
+            <textarea id="chatInput" placeholder="Type your message..." rows="3" style="width:100%; padding:10px; margin:10px 0; background:#0a0a1a; border:2px solid #9f4dff; color:white; border-radius:8px;"></textarea>
+            <button onclick="sendMessage()" class="send-btn">SEND MESSAGE</button>
         </div>
     </div>
     
     <!-- SOUND BUTTON -->
     <button class="sound-btn" onclick="playSound()">⚛️</button>
     
-    <!-- SIMPLE SCRIPT -->
+    <!-- SCRIPT -->
     <script>
-        // MASTER KEY
+        // MASTER KEY UNTUK OWNER (RAHASIA)
         const MASTER_KEY = "oxyx2025";
         
-        // SOUND FUNCTION
+        // DATA
+        let builds = JSON.parse(localStorage.getItem('oxyxBuilds')) || [];
+        let premiumPending = JSON.parse(localStorage.getItem('oxyxPremium')) || [];
+        
+        // INIT
+        document.addEventListener('DOMContentLoaded', function() {
+            displayBuilds();
+            displayPremiumPending();
+            
+            // AUTO SOUND
+            setTimeout(() => {
+                const audio = new Audio('https://www.myinstants.com/media/sounds/i-am-atomic.mp3');
+                audio.volume = 0.3;
+                audio.play().catch(() => {});
+            }, 1000);
+        });
+        
+        // PLAY SOUND
         function playSound() {
             const audio = new Audio('https://www.myinstants.com/media/sounds/i-am-atomic.mp3');
             audio.volume = 0.5;
             audio.play();
+            showNotification('⚛️ I AM ATOMIC!', 'info');
         }
         
-        // TRY AUTO PLAY
-        setTimeout(() => {
-            const audio = new Audio('https://www.myinstants.com/media/sounds/i-am-atomic.mp3');
-            audio.volume = 0.3;
-            audio.play().catch(() => console.log('Click button to play sound'));
-        }, 1000);
-        
-        // UNLOCK MOD
-        function unlockMod() {
-            const key = document.getElementById('modKey').value;
-            if (key === MASTER_KEY) {
-                alert('✅ MOD PANEL UNLOCKED!');
-            } else {
-                alert('❌ Wrong key!');
+        // SUBMIT BUILD (PUBLIC - TANPA KEY)
+        function submitBuild() {
+            const name = document.getElementById('buildName').value.trim();
+            const type = document.getElementById('buildType').value;
+            const price = document.getElementById('price').value || 0;
+            const desc = document.getElementById('buildDesc').value.trim();
+            const downloadLink = document.getElementById('downloadLink').value.trim();
+            const youtubeLink = document.getElementById('youtubeLink').value.trim();
+            const isPremium = document.getElementById('isPremium').checked;
+            
+            if (!name || !desc) {
+                showNotification('❌ Name and description required!', 'error');
+                return;
             }
-        }
-        
-        // UNLOCK UPLOAD
-        function unlockUpload() {
-            const key = document.getElementById('uploadKey').value;
-            if (key === MASTER_KEY) {
-                document.getElementById('uploadForm').style.display = 'block';
-                alert('✅ UPLOAD UNLOCKED!');
+            
+            const build = {
+                id: Date.now(),
+                name,
+                type,
+                price: parseInt(price),
+                desc,
+                downloadLink,
+                youtubeLink,
+                isPremium,
+                date: new Date().toLocaleString(),
+                seller: 'User_' + Math.floor(Math.random() * 1000),
+                approved: !isPremium // Premium perlu approval owner
+            };
+            
+            if (isPremium) {
+                premiumPending.push(build);
+                localStorage.setItem('oxyxPremium', JSON.stringify(premiumPending));
+                showNotification('💎 Premium build sent for owner review!', 'info');
             } else {
-                alert('❌ Wrong key!');
+                builds.push(build);
+                localStorage.setItem('oxyxBuilds', JSON.stringify(builds));
+                displayBuilds();
+                showNotification('✅ Build published successfully!', 'success');
             }
-        }
-    </script>
-</body>
-</html>
+            
+            // Reset form
+            document.getElementById('buildName').value = '';
+            document.getElementById('price').value = '';
