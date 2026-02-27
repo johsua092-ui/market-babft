@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OXYX MARKET - HWID SYSTEM</title>
+    <title>OXYX MARKET - HWID + MOD SERVER</title>
     <style>
         * {
             margin: 0;
@@ -137,6 +137,7 @@
             border-radius: 20px;
             padding: 25px;
             text-align: center;
+            position: relative;
         }
         
         .mod-card.owner {
@@ -166,6 +167,29 @@
             border-radius: 20px;
             font-size: 0.8em;
             display: inline-block;
+            margin-bottom: 10px;
+        }
+        
+        .mod-server-btn {
+            background: #5865F2;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .mod-server-btn:hover {
+            background: #404EED;
+        }
+        
+        .mod-server-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
         }
         
         /* EDIT PANEL */
@@ -184,10 +208,15 @@
             margin: 15px 0;
         }
         
+        .edit-item {
+            margin-bottom: 10px;
+        }
+        
         .edit-item label {
             display: block;
             color: #b07cff;
             margin-bottom: 5px;
+            font-weight: bold;
         }
         
         .edit-item input {
@@ -197,6 +226,11 @@
             border: 2px solid #9f4dff;
             color: white;
             border-radius: 8px;
+        }
+        
+        .edit-item small {
+            color: #888;
+            font-size: 0.7em;
         }
         
         .save-btn {
@@ -209,6 +243,7 @@
             font-size: 1.1em;
             font-weight: bold;
             cursor: pointer;
+            margin-top: 10px;
         }
         
         /* UPLOAD */
@@ -244,6 +279,12 @@
         
         .field input[type="file"] {
             padding: 10px;
+        }
+        
+        .price-note {
+            color: #ffaa00;
+            font-size: 0.8em;
+            margin-top: 5px;
         }
         
         .premium-box {
@@ -296,6 +337,12 @@
             font-size: 1.2em;
             font-weight: bold;
             margin-bottom: 5px;
+        }
+        
+        .build-price {
+            color: #ffaa00;
+            font-weight: bold;
+            margin: 5px 0;
         }
         
         .build-actions {
@@ -438,6 +485,7 @@
                 <div class="name" id="mod2Name">MODERATOR 1</div>
                 <div class="role" id="mod2Role">MODERATOR</div>
                 <span class="badge">✨ EDITABLE</span>
+                <button class="mod-server-btn" id="mod2ServerBtn" onclick="joinModServer(2)" disabled>🔗 MOD SERVER</button>
             </div>
             
             <div class="mod-card" id="mod3">
@@ -445,6 +493,7 @@
                 <div class="name" id="mod3Name">MODERATOR 2</div>
                 <div class="role" id="mod3Role">MODERATOR</div>
                 <span class="badge">✨ EDITABLE</span>
+                <button class="mod-server-btn" id="mod3ServerBtn" onclick="joinModServer(3)" disabled>🔗 MOD SERVER</button>
             </div>
         </div>
 
@@ -465,6 +514,12 @@
                     <input type="text" id="editAvatar2" value="🛡️">
                 </div>
                 <div class="edit-item">
+                    <label>Mod 1 Server Link (Discord):</label>
+                    <input type="url" id="editServer2" placeholder="https://discord.gg/...">
+                    <small>Kosongkan jika tidak ada</small>
+                </div>
+                
+                <div class="edit-item">
                     <label>Mod 2 Name:</label>
                     <input type="text" id="editName3" value="MODERATOR 2">
                 </div>
@@ -475,6 +530,11 @@
                 <div class="edit-item">
                     <label>Mod 2 Avatar:</label>
                     <input type="text" id="editAvatar3" value="⚔️">
+                </div>
+                <div class="edit-item">
+                    <label>Mod 2 Server Link (Discord):</label>
+                    <input type="url" id="editServer3" placeholder="https://discord.gg/...">
+                    <small>Kosongkan jika tidak ada</small>
                 </div>
             </div>
             <button class="save-btn" onclick="saveModChanges()">💾 SAVE CHANGES</button>
@@ -502,8 +562,9 @@
             </div>
             
             <div class="field">
-                <label>Price (Robux)</label>
-                <input type="number" id="price" min="0" value="0">
+                <label>Price (Robux) <span style="color:#ff4444;">*</span></label>
+                <input type="number" id="price" min="1" value="1">
+                <div class="price-note">⚠️ Minimal harga 1 Robux</div>
             </div>
             
             <div class="field">
@@ -546,7 +607,7 @@
 
         <!-- FOOTER -->
         <div class="footer">
-            <div style="color:#c800ff; font-size:1.2em;">OXYX MARKET v4.0 - HWID Protected</div>
+            <div style="color:#c800ff; font-size:1.2em;">OXYX MARKET v5.0 - MOD SERVER</div>
             <div>Powered by GitHub • For ROBLOX BABFT</div>
         </div>
     </div>
@@ -559,7 +620,7 @@
 
     <script>
         // ============================================
-        // OXYX MARKET - HWID SYSTEM
+        // OXYX MARKET - HWID SYSTEM + MOD SERVER
         // MASTER KEY: jawahamajawa2026
         // MAX USERS: 2
         // ============================================
@@ -573,10 +634,27 @@
         // Data HWID yang diizinkan
         let allowedHWIDs = JSON.parse(localStorage.getItem('oxyxAllowedHWIDs')) || [];
         
+        // Data moderator termasuk link server
         let moderators = {
-            2: { name: "MODERATOR 1", role: "MODERATOR", avatar: "🛡️" },
-            3: { name: "MODERATOR 2", role: "MODERATOR", avatar: "⚔️" }
+            2: { 
+                name: "MODERATOR 1", 
+                role: "MODERATOR", 
+                avatar: "🛡️",
+                serverLink: ""
+            },
+            3: { 
+                name: "MODERATOR 2", 
+                role: "MODERATOR", 
+                avatar: "⚔️",
+                serverLink: ""
+            }
         };
+        
+        // Load moderator data dari localStorage
+        const savedMods = localStorage.getItem('oxyxModerators');
+        if (savedMods) {
+            moderators = JSON.parse(savedMods);
+        }
         
         let builds = JSON.parse(localStorage.getItem('oxyxBuilds')) || [];
         let premiumPending = JSON.parse(localStorage.getItem('oxyxPremium')) || [];
@@ -588,69 +666,4 @@
             const components = [
                 navigator.userAgent,
                 navigator.language,
-                screen.width,
-                screen.height,
-                screen.colorDepth,
-                navigator.hardwareConcurrency,
-                navigator.platform,
-                new Date().getTimezoneOffset(),
-                Intl.DateTimeFormat().resolvedOptions().timeZone
-            ];
-            
-            // Buat string fingerprint
-            const fingerprint = components.join('|');
-            
-            // Encode ke base64
-            return btoa(fingerprint).substring(0, 32);
-        }
-
-        // ============================================
-        // CEK AKSES KEY
-        // ============================================
-        function checkKeyAccess() {
-            const hwid = generateHWID();
-            currentHWID = hwid;
-            
-            // Tampilkan HWID di info
-            document.getElementById('hwidInfo').innerHTML = `
-                <span style="color:#9f4dff;">🔐 HWID:</span> ${hwid.substring(0, 16)}...<br>
-                <span style="color:#b07cff;">Authorized Users: ${allowedHWIDs.length}/${MAX_USERS}</span>
-            `;
-            
-            // Cek apakah HWID ini sudah terdaftar
-            const isAuthorized = allowedHWIDs.includes(hwid);
-            
-            if (isAuthorized) {
-                document.getElementById('unlockBtn').disabled = false;
-            }
-            
-            return isAuthorized;
-        }
-
-        // ============================================
-        // UNLOCK MOD EDIT DENGAN HWID CHECK
-        // ============================================
-        function unlockModEdit() {
-            const hwid = generateHWID();
-            const key = document.getElementById('modKey').value;
-            
-            // Cek key benar atau salah
-            if (key !== MASTER_KEY) {
-                showNotif('❌ Master key salah!', '#aa0000');
-                return;
-            }
-            
-            // Cek apakah HWID sudah terdaftar
-            if (allowedHWIDs.includes(hwid)) {
-                // HWID sudah terdaftar, izinkan akses
-                grantAccess();
-                showNotif('✅ Selamat datang kembali!', '#00aa00');
-                return;
-            }
-            
-            // HWID belum terdaftar, cek kuota
-            if (allowedHWIDs.length < MAX_USERS) {
-                // Masih ada kuota, daftarkan HWID baru
-                allowedHWIDs.push(hwid);
-                localStorage.setItem('oxyxAllowedHWIDs', JSON.stringify(allowedHWIDs));
-                grantAcc
+                screen.wi
