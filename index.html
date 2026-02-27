@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATOMIC MARKET - ROBLOX BABFT</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ATOMIC BACKGROUND -->
+    <div class="atomic-bg"></div>
+    <div class="particles"></div>
+    
+    <div class="container">
+        <!-- HEADER WITH ATOMIC LOGO -->
+        <div class="header">
+            <div class="atomic-logo">
+                <span class="atom">⚛️</span>
+                <h1 class="glitch" data-text="ATOMIC MARKET">ATOMIC MARKET</h1>
+                <span class="atom">⚛️</span>
+            </div>
+            <div class="subtitle">Build A Boat For Treasure • Marketplace</div>
+            
+            <!-- DISCORD LINK -->
+            <div class="discord-box">
+                <a href="https://discord.gg/tuanku" target="_blank" class="discord-btn">
+                    <span>💬 JOIN DISCORD</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- MODERATOR SECTION (BISA DI-CUSTOM) -->
+        <div class="mod-section">
+            <h2 class="section-title">
+                <span class="neon">🔰</span> 
+                MARKET MODERATOR 
+                <span class="neon">🔰</span>
+            </h2>
+            <div class="mod-grid" id="modGrid">
+                <!-- MODERATOR 1 (DEFAULT) -->
+                <div class="mod-card" data-mod="1">
+                    <div class="mod-avatar">👑</div>
+                    <div class="mod-name" id="modName1">Tuanku</div>
+                    <div class="mod-role">OWNER</div>
+                    <button class="custom-mod-btn" onclick="customMod(1)">Custom</button>
+                </div>
+                
+                <!-- MODERATOR 2 (BISA DI-CUSTOM) -->
+                <div class="mod-card" data-mod="2">
+                    <div class="mod-avatar">🛡️</div>
+                    <div class="mod-name" id="modName2">Mod 2</div>
+                    <div class="mod-role">MODERATOR</div>
+                    <button class="custom-mod-btn" onclick="customMod(2)">Custom</button>
+                </div>
+                
+                <!-- SLOT KOSONG UNTUK MODERATOR 3 (OPSIONAL) -->
+                <div class="mod-card empty" id="modSlot3">
+                    <div class="mod-avatar">➕</div>
+                    <div class="mod-name">Empty Slot</div>
+                    <div class="mod-role">Available</div>
+                    <button class="custom-mod-btn" onclick="addMod(3)">Add</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- UPLOAD SECTION (HANYA DENGAN AKSES) -->
+        <div class="upload-section" id="uploadSection">
+            <h2 class="section-title">
+                <span class="neon">📤</span> 
+                UPLOAD BUILD 
+                <span class="neon">📤</span>
+            </h2>
+            
+            <!-- ACCESS CODE INPUT -->
+            <div class="access-box">
+                <input type="password" id="accessCode" placeholder="Enter access code" maxlength="20">
+                <button onclick="checkAccess()" class="access-btn">🔓 UNLOCK</button>
+            </div>
+            
+            <!-- UPLOAD FORM (HIDDEN AWAL) -->
+            <div id="uploadForm" style="display: none;">
+                <div class="upload-grid">
+                    <div class="upload-field">
+                        <label>Build Name</label>
+                        <input type="text" id="buildName" placeholder="e.g., Flying Dragon">
+                    </div>
+                    <div class="upload-field">
+                        <label>Build Type</label>
+                        <select id="buildType">
+                            <option value="ship">🚢 Ship</option>
+                            <option value="plane">✈️ Plane</option>
+                            <option value="mech">🤖 Mech</option>
+                            <option value="vehicle">🚗 Vehicle</option>
+                            <option value="other">🎲 Other</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="upload-field full">
+                    <label>Description</label>
+                    <textarea id="buildDesc" rows="3" placeholder="Describe your build..."></textarea>
+                </div>
+                
+                <div class="upload-field full">
+                    <label>Build File (image/video)</label>
+                    <input type="file" id="buildFile" accept="image/*,video/*">
+                    <small class="file-note">Max 10MB • Image/Video only</small>
+                </div>
+                
+                <div class="upload-field full">
+                    <label>YouTube/Video Link (optional)</label>
+                    <input type="url" id="videoLink" placeholder="https://youtube.com/watch?v=...">
+                </div>
+                
+                <button onclick="submitBuild()" class="submit-btn">
+                    <span>🚀 PUBLISH BUILD</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- MARKETPLACE GRID (BUILDS) -->
+        <div class="marketplace">
+            <h2 class="section-title">
+                <span class="neon">🏪</span> 
+                FEATURED BUILDS 
+                <span class="neon">🏪</span>
+            </h2>
+            
+            <div class="build-grid" id="buildGrid">
+                <!-- BUILD ITEMS AKAN MUNCUL DI SINI -->
+            </div>
+        </div>
+        
+        <!-- FOOTER -->
+        <div class="footer">
+            <div class="atomic-footer">
+                <span>⚛️ ATOMIC MARKET v1.0 ⚛️</span>
+            </div>
+            <div class="credits">
+                Powered by GitHub • For ROBLOX BABFT
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL FOR CUSTOM MOD -->
+    <div id="modModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>Customize Moderator</h3>
+            <input type="hidden" id="currentModId">
+            
+            <label>Moderator Name:</label>
+            <input type="text" id="modCustomName" placeholder="Enter name">
+            
+            <label>Moderator Role:</label>
+            <input type="text" id="modCustomRole" placeholder="e.g., HEAD MOD">
+            
+            <label>Avatar Emoji/Icon:</label>
+            <input type="text" id="modCustomAvatar" placeholder="e.g., 👑 or 🔥">
+            
+            <button onclick="saveModCustom()" class="save-mod-btn">SAVE CHANGES</button>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
