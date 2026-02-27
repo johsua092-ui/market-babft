@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OXYX MARKET - HWID + MOD SERVER</title>
+    <title>OXYX MARKET - FIXED</title>
     <style>
         * {
             margin: 0;
@@ -23,7 +23,6 @@
             margin: 0 auto;
         }
         
-        /* HEADER */
         .header {
             background: #1a0a2a;
             border: 3px solid #9f4dff;
@@ -45,7 +44,6 @@
             margin-bottom: 20px;
         }
         
-        /* DISCORD */
         .discord-container {
             display: flex;
             gap: 10px;
@@ -62,7 +60,6 @@
             font-weight: bold;
         }
         
-        /* KEY ACCESS */
         .key-box {
             background: #1a0a2a;
             border: 2px solid #9f4dff;
@@ -97,25 +94,6 @@
             background: #b300ff;
         }
         
-        .key-box button:disabled {
-            background: #666;
-            cursor: not-allowed;
-        }
-        
-        /* HWID INFO */
-        .hwid-info {
-            background: #1a1a2a;
-            border: 1px solid #9f4dff;
-            border-radius: 10px;
-            padding: 10px;
-            margin: 10px auto;
-            max-width: 500px;
-            text-align: center;
-            font-size: 0.8em;
-            color: #b07cff;
-        }
-        
-        /* TITLE */
         .title {
             color: #c800ff;
             font-size: 2em;
@@ -123,7 +101,6 @@
             margin: 30px 0 20px;
         }
         
-        /* MOD CARDS */
         .mod-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -137,7 +114,6 @@
             border-radius: 20px;
             padding: 25px;
             text-align: center;
-            position: relative;
         }
         
         .mod-card.owner {
@@ -167,32 +143,8 @@
             border-radius: 20px;
             font-size: 0.8em;
             display: inline-block;
-            margin-bottom: 10px;
         }
         
-        .mod-server-btn {
-            background: #5865F2;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 0.8em;
-            font-weight: bold;
-            margin-top: 10px;
-            width: 100%;
-        }
-        
-        .mod-server-btn:hover {
-            background: #404EED;
-        }
-        
-        .mod-server-btn:disabled {
-            background: #666;
-            cursor: not-allowed;
-        }
-        
-        /* EDIT PANEL */
         .edit-panel {
             background: #1a0a2a;
             border: 2px solid #b300ff;
@@ -228,11 +180,6 @@
             border-radius: 8px;
         }
         
-        .edit-item small {
-            color: #888;
-            font-size: 0.7em;
-        }
-        
         .save-btn {
             width: 100%;
             padding: 15px;
@@ -243,10 +190,8 @@
             font-size: 1.1em;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 10px;
         }
         
-        /* UPLOAD */
         .upload-section {
             background: #1a0a2a;
             border: 2px solid #9f4dff;
@@ -313,7 +258,6 @@
             background: #b300ff;
         }
         
-        /* BUILD GRID */
         .build-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -361,12 +305,6 @@
             cursor: pointer;
         }
         
-        .build-actions button:hover {
-            background: #9f4dff;
-            color: black;
-        }
-        
-        /* FOOTER */
         .footer {
             text-align: center;
             padding: 20px;
@@ -375,7 +313,6 @@
             color: #b07cff;
         }
         
-        /* ACTION BUTTONS */
         .action-buttons {
             position: fixed;
             bottom: 20px;
@@ -405,7 +342,6 @@
             color: white;
         }
         
-        /* NOTIFICATION */
         .notif {
             position: fixed;
             top: 20px;
@@ -416,7 +352,6 @@
             font-weight: bold;
             z-index: 9999;
             animation: slideIn 0.3s;
-            box-shadow: 0 0 20px black;
         }
         
         @keyframes slideIn {
@@ -428,15 +363,12 @@
             .mod-grid {
                 grid-template-columns: 1fr;
             }
-            
             .edit-grid {
                 grid-template-columns: 1fr;
             }
-            
             .key-box {
                 flex-direction: column;
             }
-            
             h1 {
                 font-size: 2em;
             }
@@ -445,11 +377,9 @@
 </head>
 <body>
     <div class="container">
-        <!-- HEADER -->
         <div class="header">
             <h1>OXYX MARKET</h1>
             <div class="subtitle">Build A Boat For Treasure • Premium Marketplace</div>
-            
             <div class="discord-container">
                 <a href="#" class="discord-btn">MAIN SERVER</a>
                 <a href="#" class="discord-btn">TRADE SERVER</a>
@@ -457,47 +387,34 @@
             </div>
         </div>
 
-        <!-- MARKET MODERATOR TITLE -->
         <div class="title">🔰 MARKET MODERATOR 🔰</div>
 
-        <!-- HWID INFO -->
-        <div class="hwid-info" id="hwidInfo">
-            Generating HWID...
-        </div>
-
-        <!-- KEY ACCESS -->
         <div class="key-box">
             <input type="password" id="modKey" placeholder="Enter master key" autocomplete="off">
-            <button onclick="unlockModEdit()" id="unlockBtn">UNLOCK EDIT</button>
+            <button onclick="unlockModEdit()">UNLOCK EDIT</button>
         </div>
 
-        <!-- MOD CARDS -->
-        <div class="mod-grid" id="modGrid">
+        <div class="mod-grid">
             <div class="mod-card owner">
                 <div class="avatar">👑</div>
                 <div class="name">OXYX</div>
                 <div class="role">OWNER/CREATOR</div>
                 <span class="badge">🔒 FIXED</span>
             </div>
-            
             <div class="mod-card" id="mod2">
                 <div class="avatar" id="mod2Avatar">🛡️</div>
                 <div class="name" id="mod2Name">MODERATOR 1</div>
                 <div class="role" id="mod2Role">MODERATOR</div>
                 <span class="badge">✨ EDITABLE</span>
-                <button class="mod-server-btn" id="mod2ServerBtn" onclick="joinModServer(2)" disabled>🔗 MOD SERVER</button>
             </div>
-            
             <div class="mod-card" id="mod3">
                 <div class="avatar" id="mod3Avatar">⚔️</div>
                 <div class="name" id="mod3Name">MODERATOR 2</div>
                 <div class="role" id="mod3Role">MODERATOR</div>
                 <span class="badge">✨ EDITABLE</span>
-                <button class="mod-server-btn" id="mod3ServerBtn" onclick="joinModServer(3)" disabled>🔗 MOD SERVER</button>
             </div>
         </div>
 
-        <!-- MOD EDIT PANEL (HIDDEN) -->
         <div id="modEditPanel" style="display: none;" class="edit-panel">
             <h3 style="color:#c800ff; text-align:center;">⚙️ EDIT MODERATOR</h3>
             <div class="edit-grid">
@@ -514,12 +431,6 @@
                     <input type="text" id="editAvatar2" value="🛡️">
                 </div>
                 <div class="edit-item">
-                    <label>Mod 1 Server Link (Discord):</label>
-                    <input type="url" id="editServer2" placeholder="https://discord.gg/...">
-                    <small>Kosongkan jika tidak ada</small>
-                </div>
-                
-                <div class="edit-item">
                     <label>Mod 2 Name:</label>
                     <input type="text" id="editName3" value="MODERATOR 2">
                 </div>
@@ -531,16 +442,10 @@
                     <label>Mod 2 Avatar:</label>
                     <input type="text" id="editAvatar3" value="⚔️">
                 </div>
-                <div class="edit-item">
-                    <label>Mod 2 Server Link (Discord):</label>
-                    <input type="url" id="editServer3" placeholder="https://discord.gg/...">
-                    <small>Kosongkan jika tidak ada</small>
-                </div>
             </div>
             <button class="save-btn" onclick="saveModChanges()">💾 SAVE CHANGES</button>
         </div>
 
-        <!-- UPLOAD SECTION -->
         <div class="title">📤 UPLOAD BUILD 📤</div>
 
         <div class="upload-section">
@@ -563,8 +468,8 @@
             
             <div class="field">
                 <label>Price (Robux) <span style="color:#ff4444;">*</span></label>
-                <input type="number" id="price" min="1" value="1">
-                <div class="price-note">⚠️ Minimal harga 1 Robux</div>
+                <input type="number" id="price" min="100" value="100">
+                <div class="price-note">⚠️ Minimal harga 100 Robux</div>
             </div>
             
             <div class="field">
@@ -583,7 +488,6 @@
                 <input type="url" id="downloadLink" placeholder="https://...">
             </div>
             
-            <!-- PREMIUM CHECKBOX (HIDDEN UNTIL LOGIN) -->
             <div id="premiumBox" style="display: none;" class="premium-box">
                 <label style="display:flex; align-items:center; gap:10px;">
                     <input type="checkbox" id="isPremium" style="width:20px; height:20px;"> 💎 Premium (need owner approval)
@@ -593,26 +497,22 @@
             <button class="publish-btn" onclick="validateAndSubmit()">🚀 PUBLISH BUILD</button>
         </div>
 
-        <!-- MARKETPLACE -->
         <div class="title">🏪 MARKETPLACE 🏪</div>
         <div id="buildGrid" class="build-grid">
             <div style="grid-column:1/-1; text-align:center; padding:40px; color:#666;">📦 No builds yet</div>
         </div>
 
-        <!-- PREMIUM PENDING -->
         <div id="premiumPanel" style="display: none;" class="upload-section" style="border-color: gold;">
             <div class="title">💎 PREMIUM PENDING 💎</div>
             <div id="premiumGrid" class="build-grid"></div>
         </div>
 
-        <!-- FOOTER -->
         <div class="footer">
-            <div style="color:#c800ff; font-size:1.2em;">OXYX MARKET v5.0 - MOD SERVER</div>
+            <div style="color:#c800ff; font-size:1.2em;">OXYX MARKET v6.0 - FIXED</div>
             <div>Powered by GitHub • For ROBLOX BABFT</div>
         </div>
     </div>
 
-    <!-- ACTION BUTTONS -->
     <div class="action-buttons">
         <button class="action-btn sound-btn" onclick="playSound()">⚛️</button>
         <button class="action-btn support-btn" onclick="reportBug()">🐞</button>
@@ -620,50 +520,111 @@
 
     <script>
         // ============================================
-        // OXYX MARKET - HWID SYSTEM + MOD SERVER
-        // MASTER KEY: jawahamajawa2026
-        // MAX USERS: 2
+        // OXYX MARKET - FIXED VERSION
+        // MASTER KEY: jawahamajawa2026 (PASTI WORK)
+        // MIN PRICE: 100
         // ============================================
         
         const MASTER_KEY = "jawahamajawa2026";
-        const MAX_USERS = 2; // Maksimal 2 orang
-        
         let isLoggedIn = false;
-        let currentHWID = '';
         
-        // Data HWID yang diizinkan
-        let allowedHWIDs = JSON.parse(localStorage.getItem('oxyxAllowedHWIDs')) || [];
-        
-        // Data moderator termasuk link server
         let moderators = {
-            2: { 
-                name: "MODERATOR 1", 
-                role: "MODERATOR", 
-                avatar: "🛡️",
-                serverLink: ""
-            },
-            3: { 
-                name: "MODERATOR 2", 
-                role: "MODERATOR", 
-                avatar: "⚔️",
-                serverLink: ""
-            }
+            2: { name: "MODERATOR 1", role: "MODERATOR", avatar: "🛡️" },
+            3: { name: "MODERATOR 2", role: "MODERATOR", avatar: "⚔️" }
         };
-        
-        // Load moderator data dari localStorage
-        const savedMods = localStorage.getItem('oxyxModerators');
-        if (savedMods) {
-            moderators = JSON.parse(savedMods);
-        }
         
         let builds = JSON.parse(localStorage.getItem('oxyxBuilds')) || [];
         let premiumPending = JSON.parse(localStorage.getItem('oxyxPremium')) || [];
 
-        // ============================================
-        // GENERATE HWID (FINGERPRINT)
-        // ============================================
-        function generateHWID() {
-            const components = [
-                navigator.userAgent,
-                navigator.language,
-                screen.wi
+        // INIT
+        document.addEventListener('DOMContentLoaded', function() {
+            displayBuilds();
+            displayPremiumPending();
+            updateModDisplay();
+            
+            // Auto sound
+            setTimeout(() => {
+                new Audio('https://www.myinstants.com/media/sounds/i-am-atomic.mp3').play().catch(()=>{});
+            }, 1000);
+        });
+
+        function updateModDisplay() {
+            document.getElementById('mod2Name').textContent = moderators[2].name;
+            document.getElementById('mod2Role').textContent = moderators[2].role;
+            document.getElementById('mod2Avatar').textContent = moderators[2].avatar;
+            document.getElementById('mod3Name').textContent = moderators[3].name;
+            document.getElementById('mod3Role').textContent = moderators[3].role;
+            document.getElementById('mod3Avatar').textContent = moderators[3].avatar;
+        }
+
+        // UNLOCK MOD EDIT - FIXED!
+        function unlockModEdit() {
+            const key = document.getElementById('modKey').value;
+            
+            if (key === MASTER_KEY) {
+                isLoggedIn = true;
+                document.getElementById('modEditPanel').style.display = 'block';
+                document.getElementById('premiumBox').style.display = 'block';
+                
+                document.getElementById('editName2').value = moderators[2].name;
+                document.getElementById('editRole2').value = moderators[2].role;
+                document.getElementById('editAvatar2').value = moderators[2].avatar;
+                document.getElementById('editName3').value = moderators[3].name;
+                document.getElementById('editRole3').value = moderators[3].role;
+                document.getElementById('editAvatar3').value = moderators[3].avatar;
+                
+                showNotif('✅ Moderator panel unlocked!', '#00aa00');
+            } else {
+                showNotif('❌ Wrong master key!', '#aa0000');
+            }
+        }
+
+        function saveModChanges() {
+            moderators[2] = {
+                name: document.getElementById('editName2').value || "MODERATOR 1",
+                role: document.getElementById('editRole2').value || "MODERATOR",
+                avatar: document.getElementById('editAvatar2').value || "🛡️"
+            };
+            moderators[3] = {
+                name: document.getElementById('editName3').value || "MODERATOR 2",
+                role: document.getElementById('editRole3').value || "MODERATOR",
+                avatar: document.getElementById('editAvatar3').value || "⚔️"
+            };
+            
+            updateModDisplay();
+            showNotif('✅ Moderators updated!', '#00aa00');
+        }
+
+        // VALIDASI & SUBMIT - FIXED!
+        function validateAndSubmit() {
+            const name = document.getElementById('buildName').value.trim();
+            const type = document.getElementById('buildType').value;
+            const price = parseInt(document.getElementById('price').value);
+            const desc = document.getElementById('buildDesc').value.trim();
+            const fileInput = document.getElementById('buildFile');
+            
+            // Validasi 1: Nama build
+            if (!name) {
+                showNotif('❌ Tolong beri nama build nya!', '#aa0000');
+                return;
+            }
+            
+            // Validasi 2: Type build
+            if (!type) {
+                showNotif('❌ Tolong pilih type build nya!', '#aa0000');
+                return;
+            }
+            
+            // Validasi 3: Harga (minimal 100)
+            if (!price || price < 100) {
+                showNotif('❌ Harga minimal 100 Robux!', '#aa0000');
+                return;
+            }
+            
+            // Validasi 4: Deskripsi
+            if (!desc) {
+                showNotif('❌ Tolong tulis deskripsi build!', '#aa0000');
+                return;
+            }
+            
+            // Validasi 5: File build
