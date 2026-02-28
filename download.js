@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OXYX MARKET</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        body { background: #0a0a0a; color: white; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #b87cff; text-align: center; margin-bottom: 30px; border-bottom: 2px solid #9f4dff; padding-bottom: 10px; }
+        .card { background: #1a1a2a; border: 2px solid #9f4dff; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+        .discord-links { display: flex; gap: 10px; justify-content: center; margin: 20px 0; flex-wrap: wrap; }
+        .discord-links a { padding: 10px 20px; background: #5865F2; color: white; text-decoration: none; border-radius: 5px; }
+        .key-section { display: flex; gap: 10px; margin: 20px 0; }
+        .key-section input { flex: 1; padding: 12px; background: #2a2a3a; border: 2px solid #9f4dff; border-radius: 5px; color: white; }
+        .key-section button { padding: 12px 30px; background: #9f4dff; border: none; border-radius: 5px; color: white; cursor: pointer; }
+        .status { padding: 10px; border-radius: 5px; margin: 10px 0; display: none; }
+        .success { background: #1a3a1a; border: 1px solid #00ff00; color: #00ff00; }
+        .error { background: #3a1a1a; border: 1px solid #ff0000; color: #ff0000; }
+        .chat-box { background: #0a0a1a; border: 2px solid #9f4dff; border-radius: 5px; padding: 15px; height: 200px; overflow-y: auto; margin-bottom: 15px; }
+        .chat-message { padding: 8px; border-bottom: 1px solid #333; }
+        .chat-message b { color: #b87cff; }
+        .publish-btn { width: 100%; padding: 15px; background: #9f4dff; border: none; border-radius: 5px; color: white; font-size: 1.2em; cursor: pointer; margin-top: 15px; }
+        .sort-buttons { display: flex; gap: 10px; margin: 20px 0; }
+        .sort-btn { flex: 1; padding: 12px; background: #2a2a3a; border: 2px solid #9f4dff; border-radius: 5px; color: white; cursor: pointer; }
+        .sort-btn.active { background: #9f4dff; }
+        .build-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+        .build-card { background: #2a2a3a; border: 2px solid #9f4dff; border-radius: 5px; padding: 15px; }
+        .build-card.free { border-color: #00ff00; }
+        .build-card.premium { border-color: gold; }
+        .build-price { font-size: 1.2em; font-weight: bold; margin: 10px 0; }
+        .free .build-price { color: #00ff00; }
+        .premium .build-price { color: gold; }
+        .footer { text-align: center; color: #666; margin-top: 30px; padding-top: 20px; border-top: 1px solid #333; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ OXYX MARKET ⚡</h1>
+
+        <!-- DISCORD -->
+        <div class="discord-links">
+            <a href="https://discord.gg/autobuild" target="_blank">MAIN SERVER</a>
+            <a href="https://discord.gg/boatbuilderhub" target="_blank">SUPPORT 1</a>
+            <a href="https://discord.gg/boatbuilderhub" target="_blank">SUPPORT 2</a>
+        </div>
+
+        <!-- KEY SECTION - PAKAI KEY BARU -->
+        <div class="card">
+            <h3>🔐 MOD KEY</h3>
+            <div class="key-section">
+                <input type="password" id="keyInput" placeholder="Masukkan key">
+                <button onclick="activateKey()">AKTIFKAN</button>
+            </div>
+            <div id="keyStatus" class="status"></div>
+        </div>
+
+        <!-- MOD CHAT -->
+        <div id="modSection" style="display: none;" class="card">
+            <h3>💬 MOD CHAT</h3>
+            <div class="chat-box" id="chatMessages">Loading...</div>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="chatInput" placeholder="Ketik pesan..." style="flex:1; padding:12px; background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; color:white;">
+                <button onclick="sendChat()" style="padding:12px 30px; background:#9f4dff; border:none; border-radius:5px; color:white;">KIRIM</button>
+            </div>
+        </div>
+
+        <!-- UPLOAD BUILD -->
+        <div class="card">
+            <h3>📤 UPLOAD BUILD</h3>
+            <input type="text" id="buildName" placeholder="Nama Build" style="width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; color:white;">
+            <select id="buildType" style="width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; color:white;">
+                <option value="Ship">🚢 Ship</option>
+                <option value="Plane">✈️ Plane</option>
+                <option value="Mech">🤖 Mech</option>
+            </select>
+            <input type="number" id="buildPrice" min="0" value="0" placeholder="Harga (Robux)" style="width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; color:white;">
+            <textarea id="buildDesc" rows="3" placeholder="Deskripsi build..." style="width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; color:white;"></textarea>
+            <input type="file" id="buildFile" accept=".build" style="width:100%; padding:12px; margin:8px 0; color:white;">
+            <button class="publish-btn" onclick="publishBuild()">🚀 PUBLISH BUILD</button>
+            <div id="uploadStatus" class="status"></div>
+        </div>
+
+        <!-- SORT BUTTONS -->
+        <div class="sort-buttons">
+            <button class="sort-btn active" onclick="filterBuilds('all')">📋 SEMUA</button>
+            <button class="sort-btn" onclick="filterBuilds('free')">🆓 GRATIS (0)</button>
+            <button class="sort-btn" onclick="filterBuilds('premium')">💎 PREMIUM (90-100)</button>
+        </div>
+
+        <!-- MARKETPLACE -->
+        <div class="card">
+            <h3>🏪 MARKETPLACE</h3>
+            <div id="marketplace" class="build-grid">Loading...</div>
+        </div>
+
+        <div class="footer">OXYX MARKET • Hanya Moderator yang Bisa Publish</div>
+    </div>
+
+    <script>
+        // ========== DATA ==========
+        let builds = JSON.parse(localStorage.getItem('builds')) || [];
+        let chats = JSON.parse(localStorage.getItem('chats')) || [];
+        let isMod = false;
+        let currentUser = '';
+        let currentFilter = 'all';
+
+        // ========== KEY SYSTEM - PAKAI KEY BARU ==========
+        function activateKey() {
+            const key = document.getElementById('keyInput').value;
+            const status = document.getElementById('keyStatus');
+            
+            // KEY BARU YANG SUSAH DITEBAK
+            if (key === 'owner_oxyx_2026' || key === 'mod1_builder_2026' || key === 'mod2_helper_2026') {
+                isMod = true;
+                currentUser = key;
+                document.getElementById('modSection').style.display = 'block';
+                
+                showStatus('keyStatus', '✅ Key valid! Selamat datang', 'success');
+                displayChats();
+            } else {
+                showStatus('keyStatus', '❌ Key salah!', 'error');
+            }
+        }
+
+        function showStatus(id, msg, type) {
+            const el = document.getElementById(id);
+            el.style.display = 'block';
+            el.className = 'status ' + type;
+            el.textContent = msg;
+            setTimeout(() => el.style.display = 'none', 3000);
+        }
+
+        // ========== CHAT ==========
+        function displayChats() {
+            const box = document.getElementById('chatMessages');
+            if (!box) return;
+            let html = '';
+            chats.slice(-20).forEach(c => {
+                html += `<div class="chat-message"><b>${c.user}:</b> ${c.msg}</div>`;
+            });
+            box.innerHTML = html || 'Belum ada chat';
+        }
+
+        function sendChat() {
+            if (!isMod) return alert('Aktivasi key dulu!');
+            const msg = document.getElementById('chatInput').value;
+            if (!msg) return;
+            
+            chats.push({ user: currentUser, msg: msg });
+            localStorage.setItem('chats', JSON.stringify(chats));
+            document.getElementById('chatInput').value = '';
+            displayChats();
+        }
+
+        // ========== PUBLISH BUILD (HANYA MOD) ==========
+        function publishBuild() {
+            if (!isMod) {
+                alert('❌ Hanya moderator yang bisa publish build!');
+                return;
+            }
+
+            const name = document.getElementById('buildName').value.trim();
+            const type = document.getElementById('buildType').value;
+            const price = parseInt(document.getElementById('buildPrice').value);
+            const desc = document.getElementById('buildDesc').value.trim();
+            const fileInput = document.getElementById('buildFile');
+
+            if (!name || !type || !desc || !fileInput.files[0]) {
+                alert('Isi semua!');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            if (!file.name.toLowerCase().endsWith('.build')) {
+                alert('File harus .build!');
+                return;
+            }
+
+            builds.push({
+                id: Date.now(),
+                name: name,
+                type: type,
+                price: price,
+                desc: desc,
+                fileName: file.name,
+                seller: currentUser
+            });
+
+            localStorage.setItem('builds', JSON.stringify(builds));
+
+            document.getElementById('buildName').value = '';
+            document.getElementById('buildPrice').value = '0';
+            document.getElementById('buildDesc').value = '';
+            document.getElementById('buildFile').value = '';
+
+            alert('✅ Build berhasil dipublish!');
+            displayBuilds();
+        }
+
+        // ========== FILTER ==========
+        function filterBuilds(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            displayBuilds();
+        }
+
+        function displayBuilds() {
+            const grid = document.getElementById('marketplace');
+            
+            let filtered = builds;
+            if (currentFilter === 'free') filtered = builds.filter(b => b.price === 0);
+            if (currentFilter === 'premium') filtered = builds.filter(b => b.price >= 90 && b.price <= 100);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<p style="text-align:center; color:#666;">Belum ada build</p>';
+                return;
+            }
+
+            let html = '';
+            filtered.slice().reverse().forEach(b => {
+                const isFree = b.price === 0;
+                const isPremium = b.price >= 90 && b.price <= 100;
+                let cardClass = isFree ? 'free' : (isPremium ? 'premium' : '');
+
+                html += `
+                    <div class="build-card ${cardClass}">
+                        <h3>${b.name}</h3>
+                        <div>${b.type}</div>
+                        <div class="build-price">💰 ${b.price} Robux</div>
+                        <p>${b.desc}</p>
+                        <div style="margin-top:10px;"><small>Seller: ${b.seller}</small></div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+        // ========== INIT ==========
+        displayBuilds();
+        displayChats();
+    </script>
+</body>
+</html>
