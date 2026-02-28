@@ -3,25 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OXYX Market - Build A Boat</title>
-    
-    <!-- Supabase Library -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+    <title>OXYX Market - Local Version</title>
     <style>
-        /* ===== STYLE SEDERHANA TAPI KEREN ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: Arial, sans-serif;
         }
         
         body {
             background-color: #0a0a0a;
-            color: #ffffff;
+            color: white;
             padding: 20px;
-            line-height: 1.6;
         }
         
         .container {
@@ -29,151 +23,82 @@
             margin: 0 auto;
         }
         
-        /* Header */
         h1 {
             color: #b87cff;
             text-align: center;
-            margin-bottom: 20px;
-            font-size: 2.5em;
+            margin-bottom: 30px;
             border-bottom: 2px solid #9f4dff;
             padding-bottom: 10px;
+        }
+        
+        .card {
+            background: #1a1a2a;
+            border: 2px solid #9f4dff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
         
         h2 {
             color: #b87cff;
             margin-bottom: 15px;
-            font-size: 1.5em;
         }
         
-        h3 {
-            color: #b87cff;
-            margin-bottom: 10px;
-        }
-        
-        /* Card style */
-        .card {
-            background-color: #1a1a2a;
-            border: 2px solid #9f4dff;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 8px rgba(159, 77, 255, 0.2);
-        }
-        
-        /* Form elements */
         input, select, textarea {
             width: 100%;
             padding: 12px;
-            margin: 8px 0 16px 0;
-            background-color: #2a2a3a;
+            margin: 8px 0 15px 0;
+            background: #2a2a3a;
             border: 2px solid #9f4dff;
-            border-radius: 8px;
+            border-radius: 5px;
             color: white;
             font-size: 16px;
-        }
-        
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #c08aff;
-            box-shadow: 0 0 8px #9f4dff;
         }
         
         button {
-            background-color: #9f4dff;
+            background: #9f4dff;
             color: white;
             border: none;
-            border-radius: 8px;
-            padding: 12px 24px;
+            border-radius: 5px;
+            padding: 12px 20px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s;
             margin: 5px 0;
         }
         
         button:hover {
-            background-color: #b87cff;
+            background: #b87cff;
         }
         
-        button:disabled {
-            background-color: #555;
-            cursor: not-allowed;
-        }
-        
-        /* File input */
-        input[type="file"] {
-            padding: 10px;
-            background-color: #2a2a3a;
-        }
-        
-        /* Status messages */
-        .status {
-            padding: 10px;
-            border-radius: 8px;
-            margin: 10px 0;
-            font-weight: bold;
-        }
-        
-        .success {
-            background-color: #1a3a1a;
-            color: #8aff8a;
-            border: 1px solid #00aa00;
-        }
-        
-        .error {
-            background-color: #3a1a1a;
-            color: #ff8a8a;
-            border: 1px solid #aa0000;
-        }
-        
-        .info {
-            background-color: #1a2a3a;
-            color: #8acfff;
-            border: 1px solid #0088ff;
-        }
-        
-        /* Chat box */
         .chat-box {
-            background-color: #0a0a1a;
+            background: #0a0a1a;
             border: 2px solid #9f4dff;
-            border-radius: 8px;
+            border-radius: 5px;
             padding: 15px;
-            height: 250px;
+            height: 200px;
             overflow-y: auto;
             margin-bottom: 15px;
         }
         
         .chat-message {
+            background: #2a2a3a;
             padding: 8px;
             margin-bottom: 8px;
-            background-color: #2a2a3a;
             border-radius: 5px;
             border-left: 3px solid #9f4dff;
         }
         
-        .chat-name {
-            color: #b87cff;
-            font-weight: bold;
-        }
-        
-        .chat-time {
-            color: #888;
-            font-size: 0.8em;
-            float: right;
-        }
-        
-        /* Marketplace grid */
         .market-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 15px;
-            margin-top: 15px;
         }
         
         .build-card {
-            background-color: #2a2a3a;
+            background: #2a2a3a;
             border: 2px solid #9f4dff;
-            border-radius: 8px;
+            border-radius: 5px;
             padding: 15px;
         }
         
@@ -192,41 +117,37 @@
         
         .download-link {
             display: inline-block;
-            background-color: #4a4a5a;
+            background: #4a4a5a;
             color: white;
             padding: 5px 10px;
-            border-radius: 5px;
+            border-radius: 3px;
             text-decoration: none;
             margin-top: 10px;
         }
         
-        .download-link:hover {
-            background-color: #6a6a8a;
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
         }
         
-        /* Key section */
-        .key-grid {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
+        .success {
+            background: #1a3a1a;
+            color: #8aff8a;
+            border: 1px solid #00aa00;
         }
         
-        .key-grid input {
-            flex: 1;
-            min-width: 200px;
-            margin: 0;
+        .error {
+            background: #3a1a1a;
+            color: #ff8a8a;
+            border: 1px solid #aa0000;
         }
         
-        .key-grid button {
-            margin: 0;
-        }
-        
-        /* Footer */
         .footer {
             text-align: center;
             color: #888;
-            margin-top: 40px;
+            margin-top: 30px;
             padding-top: 20px;
             border-top: 1px solid #333;
         }
@@ -235,293 +156,240 @@
 <body>
     <div class="container">
         <h1>⚡ OXYX MARKET ⚡</h1>
-        <p style="text-align: center; color: #b87cff; margin-bottom: 30px;">Build A Boat For Treasure • Marketplace</p>
         
-        <!-- ===== SECTION 1: MODERATOR KEY ===== -->
+        <!-- KEY SECTION -->
         <div class="card">
-            <h2>🔐 Moderator Access</h2>
-            <div class="key-grid">
-                <input type="text" id="keyInput" placeholder="Masukkan key (owner / mod1 / mod2)">
-                <button onclick="activateKey()">Aktivasi Key</button>
-            </div>
-            <div id="keyStatus" class="status" style="display: none;"></div>
+            <h2>🔐 MOD KEY</h2>
+            <input type="text" id="keyInput" placeholder="Masukkan key (owner / mod1 / mod2)">
+            <button onclick="activateKey()">AKTIVASI KEY</button>
+            <div id="keyStatus" class="status"></div>
         </div>
         
-        <!-- ===== SECTION 2: MOD SERVER (HIDDEN) ===== -->
-        <div id="modSection" style="display: none;">
-            <div class="card">
-                <h2>💬 Mod Server (Private)</h2>
-                
-                <!-- Chat box -->
-                <div class="chat-box" id="chatMessages">
-                    <p style="color: #888;">Belum ada pesan. Aktivasi key untuk chat.</p>
-                </div>
-                
-                <!-- Chat input -->
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="chatInput" placeholder="Ketik pesan..." style="flex: 1; margin: 0;">
-                    <button onclick="sendChat()">Kirim</button>
-                </div>
+        <!-- MOD SERVER -->
+        <div id="modSection" style="display: none;" class="card">
+            <h2>💬 MOD SERVER</h2>
+            <div class="chat-box" id="chatMessages"></div>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="chatInput" placeholder="Ketik pesan..." style="flex: 1;">
+                <button onclick="sendChat()">KIRIM</button>
             </div>
         </div>
         
-        <!-- ===== SECTION 3: UPLOAD BUILD ===== -->
+        <!-- UPLOAD BUILD -->
         <div class="card">
-            <h2>📤 Upload Build</h2>
-            
-            <form id="uploadForm">
-                <label for="buildName">Nama Build:</label>
-                <input type="text" id="buildName" placeholder="Contoh: Flying Dragon">
-                
-                <label for="buildType">Tipe Build:</label>
-                <select id="buildType">
-                    <option value="">-- Pilih Tipe --</option>
-                    <option value="Ship">🚢 Ship</option>
-                    <option value="Plane">✈️ Plane</option>
-                    <option value="Mech">🤖 Mech</option>
-                    <option value="Vehicle">🚗 Vehicle</option>
-                    <option value="Other">🎲 Other</option>
-                </select>
-                
-                <label for="buildPrice">Harga (Robux):</label>
-                <input type="number" id="buildPrice" min="100" value="100">
-                
-                <label for="buildDesc">Deskripsi:</label>
-                <textarea id="buildDesc" rows="3" placeholder="Jelaskan build kamu..."></textarea>
-                
-                <label for="buildFile">File Build (.build):</label>
-                <input type="file" id="buildFile" accept=".build">
-                
-                <button type="button" onclick="publishBuild()" style="width: 100%;">🚀 Publish Build</button>
-                <div id="uploadStatus" class="status" style="display: none;"></div>
-            </form>
+            <h2>📤 UPLOAD BUILD</h2>
+            <input type="text" id="buildName" placeholder="Nama Build">
+            <select id="buildType">
+                <option value="">Pilih Tipe</option>
+                <option value="Ship">🚢 Ship</option>
+                <option value="Plane">✈️ Plane</option>
+                <option value="Mech">🤖 Mech</option>
+                <option value="Vehicle">🚗 Vehicle</option>
+            </select>
+            <input type="number" id="buildPrice" placeholder="Harga (min 100)" min="100" value="100">
+            <textarea id="buildDesc" rows="2" placeholder="Deskripsi"></textarea>
+            <input type="file" id="buildFile" accept=".build">
+            <button onclick="publishBuild()">PUBLISH BUILD</button>
+            <div id="uploadStatus" class="status"></div>
         </div>
         
-        <!-- ===== SECTION 4: MARKETPLACE ===== -->
+        <!-- MARKETPLACE -->
         <div class="card">
-            <h2>🏪 Marketplace</h2>
-            <div id="marketplace" class="market-grid">
-                <p style="color: #888; text-align: center; grid-column: 1/-1;">Loading builds...</p>
-            </div>
+            <h2>🏪 MARKETPLACE</h2>
+            <div id="marketplace" class="market-grid"></div>
         </div>
         
-        <!-- ===== FOOTER ===== -->
         <div class="footer">
-            <p>OXYX MARKET • Database by Supabase</p>
-            <p style="font-size: 0.9em;">Key: owner / mod1 / mod2</p>
+            <p>OXYX MARKET • Data disimpan di browser lokal</p>
+            <p>Key: owner / mod1 / mod2</p>
         </div>
     </div>
-    
+
     <script>
         // ============================================
-        // KONFIGURASI SUPABASE
+        // DATA DISIMPAN DI LOCALSTORAGE
         // ============================================
-        const SUPABASE_URL = 'https://crbbdjmzybqvkjauqyxzj.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyYmJkam16eWJxdmtqYXVxeXpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjI1MTAsImV4cCI6MjA4Nzc5ODUxMH0.qO0kfhyMYcXZkhDQJRWI7YOM35AqW1EEoRZG9GdKnws';
         
-        // Inisialisasi Supabase
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        
-        // ============================================
-        // VARIABEL GLOBAL
-        // ============================================
-        let isModerator = false;
+        // Inisialisasi data
+        let builds = JSON.parse(localStorage.getItem('builds')) || [];
+        let chats = JSON.parse(localStorage.getItem('chats')) || [];
+        let isMod = false;
         let currentUser = '';
         
-        // ============================================
-        // FUNGSI UTILITY: TAMPILKAN STATUS
-        // ============================================
-        function showStatus(elementId, message, type) {
-            const element = document.getElementById(elementId);
-            element.style.display = 'block';
-            element.textContent = message;
-            element.className = 'status ' + type;
+        // Tampilkan builds
+        function displayBuilds() {
+            const grid = document.getElementById('marketplace');
             
-            // Auto hide setelah 5 detik
-            setTimeout(() => {
-                element.style.display = 'none';
-            }, 5000);
+            if (builds.length === 0) {
+                grid.innerHTML = '<p style="color: #888; text-align: center;">Belum ada build</p>';
+                return;
+            }
+            
+            let html = '';
+            builds.forEach((build, index) => {
+                html += `
+                    <div class="build-card">
+                        <div class="build-title">${build.name}</div>
+                        <div>${build.type}</div>
+                        <div class="build-price">💰 ${build.price} Robux</div>
+                        <div style="color: #aaa;">${build.desc}</div>
+                        <div style="color: #888;">📁 ${build.fileName}</div>
+                        ${build.fileData ? `
+                            <button onclick="downloadBuild(${index})" class="download-link">⬇️ Download</button>
+                        ` : ''}
+                        <div style="color: #666; margin-top: 10px;">Seller: ${build.seller}</div>
+                    </div>
+                `;
+            });
+            
+            grid.innerHTML = html;
         }
         
-        // ============================================
-        // FUNGSI KEY / LOGIN
-        // ============================================
-        function activateKey() {
-            const key = document.getElementById('keyInput').value.trim().toLowerCase();
-            const statusEl = document.getElementById('keyStatus');
+        // Download build
+        function downloadBuild(index) {
+            const build = builds[index];
+            if (build.fileData) {
+                const link = document.createElement('a');
+                link.href = build.fileData;
+                link.download = build.fileName;
+                link.click();
+            }
+        }
+        
+        // Tampilkan chat
+        function displayChats() {
+            const box = document.getElementById('chatMessages');
             
-            // Validasi key
+            if (chats.length === 0) {
+                box.innerHTML = '<p style="color: #888;">Belum ada chat</p>';
+                return;
+            }
+            
+            let html = '';
+            chats.forEach(chat => {
+                html += `
+                    <div class="chat-message">
+                        <b style="color: #b87cff;">${chat.user}:</b> ${chat.msg}
+                        <small style="color: #666; float: right;">${chat.time}</small>
+                    </div>
+                `;
+            });
+            
+            box.innerHTML = html;
+            box.scrollTop = box.scrollHeight;
+        }
+        
+        // Aktivasi key
+        function activateKey() {
+            const key = document.getElementById('keyInput').value.toLowerCase();
+            const status = document.getElementById('keyStatus');
+            
             if (key === 'owner' || key === 'mod1' || key === 'mod2') {
-                isModerator = true;
+                isMod = true;
                 currentUser = key;
-                
-                // Tampilkan mod section
                 document.getElementById('modSection').style.display = 'block';
                 
-                // Tampilkan status sukses
-                statusEl.style.display = 'block';
-                statusEl.className = 'status success';
-                statusEl.textContent = `✅ Key valid! Selamat datang ${key}.`;
+                status.style.display = 'block';
+                status.className = 'status success';
+                status.textContent = '✅ Key valid! Mod server aktif.';
                 
-                // Load chat
-                loadChats();
-                
-                // Auto refresh chat setiap 3 detik
-                setInterval(loadChats, 3000);
+                displayChats();
             } else {
-                // Tampilkan status error
-                statusEl.style.display = 'block';
-                statusEl.className = 'status error';
-                statusEl.textContent = '❌ Key salah! Coba: owner, mod1, atau mod2';
+                status.style.display = 'block';
+                status.className = 'status error';
+                status.textContent = '❌ Key salah! Coba: owner, mod1, mod2';
             }
         }
         
-        // ============================================
-        // FUNGSI CHAT (HANYA UNTUK MOD)
-        // ============================================
-        async function loadChats() {
-            if (!isModerator) return;
-            
-            try {
-                const { data, error } = await supabase
-                    .from('chats')
-                    .select('*')
-                    .order('id', { ascending: true })
-                    .limit(50);
-                    
-                if (error) throw error;
-                
-                const chatBox = document.getElementById('chatMessages');
-                
-                if (!data || data.length === 0) {
-                    chatBox.innerHTML = '<p style="color: #888;">Belum ada pesan. Mulai percakapan!</p>';
-                    return;
-                }
-                
-                let html = '';
-                data.forEach(chat => {
-                    const time = new Date(chat.created_at).toLocaleTimeString();
-                    html += `
-                        <div class="chat-message">
-                            <span class="chat-name">${chat.user_name}</span>
-                            <span class="chat-time">${time}</span>
-                            <div style="margin-top: 5px;">${chat.message}</div>
-                        </div>
-                    `;
-                });
-                
-                chatBox.innerHTML = html;
-                chatBox.scrollTop = chatBox.scrollHeight;
-                
-            } catch (error) {
-                console.error('Error loading chats:', error);
-            }
-        }
-        
-        async function sendChat() {
-            if (!isModerator) {
+        // Kirim chat
+        function sendChat() {
+            if (!isMod) {
                 alert('Aktivasi key dulu!');
                 return;
             }
             
-            const message = document.getElementById('chatInput').value.trim();
-            if (!message) return;
+            const msg = document.getElementById('chatInput').value.trim();
+            if (!msg) return;
             
-            try {
-                const { error } = await supabase
-                    .from('chats')
-                    .insert([{
-                        user_name: currentUser,
-                        message: message
-                    }]);
-                    
-                if (error) throw error;
-                
-                document.getElementById('chatInput').value = '';
-                loadChats();
-                
-            } catch (error) {
-                console.error('Error sending chat:', error);
-                alert('Gagal mengirim pesan: ' + error.message);
-            }
+            chats.push({
+                user: currentUser,
+                msg: msg,
+                time: new Date().toLocaleTimeString()
+            });
+            
+            localStorage.setItem('chats', JSON.stringify(chats));
+            document.getElementById('chatInput').value = '';
+            displayChats();
         }
         
-        // ============================================
-        // FUNGSI PUBLISH BUILD
-        // ============================================
-        async function publishBuild() {
+        // Publish build
+        function publishBuild() {
             const name = document.getElementById('buildName').value.trim();
             const type = document.getElementById('buildType').value;
-            const price = parseInt(document.getElementById('buildPrice').value);
+            const price = document.getElementById('buildPrice').value;
             const desc = document.getElementById('buildDesc').value.trim();
             const fileInput = document.getElementById('buildFile');
+            const status = document.getElementById('uploadStatus');
             
             // Validasi
             if (!name) {
-                showStatus('uploadStatus', '❌ Nama build harus diisi!', 'error');
+                status.style.display = 'block';
+                status.className = 'status error';
+                status.textContent = '❌ Nama harus diisi!';
                 return;
             }
             
             if (!type) {
-                showStatus('uploadStatus', '❌ Pilih tipe build!', 'error');
+                status.style.display = 'block';
+                status.className = 'status error';
+                status.textContent = '❌ Pilih tipe!';
                 return;
             }
             
             if (!price || price < 100) {
-                showStatus('uploadStatus', '❌ Harga minimal 100 Robux!', 'error');
+                status.style.display = 'block';
+                status.className = 'status error';
+                status.textContent = '❌ Harga minimal 100!';
                 return;
             }
             
             if (!desc) {
-                showStatus('uploadStatus', '❌ Deskripsi harus diisi!', 'error');
+                status.style.display = 'block';
+                status.className = 'status error';
+                status.textContent = '❌ Deskripsi harus diisi!';
                 return;
             }
             
             if (!fileInput.files || fileInput.files.length === 0) {
-                showStatus('uploadStatus', '❌ Pilih file .build!', 'error');
+                status.style.display = 'block';
+                status.className = 'status error';
+                status.textContent = '❌ Pilih file .build!';
                 return;
             }
             
             const file = fileInput.files[0];
             if (!file.name.toLowerCase().endsWith('.build')) {
-                showStatus('uploadStatus', '❌ File harus berekstensi .build!', 'error');
+                status.style.display = 'block';
+                status.className = 'status error';
+                status.textContent = '❌ File harus .build!';
                 return;
             }
             
-            // Proses upload
-            showStatus('uploadStatus', '⏫ Mengupload file...', 'info');
-            
-            try {
-                // Upload file ke storage
-                const fileName = `${Date.now()}_${file.name}`;
-                const { error: uploadError } = await supabase.storage
-                    .from('build-files')
-                    .upload(fileName, file);
-                    
-                if (uploadError) throw uploadError;
+            // Konversi file ke base64
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const build = {
+                    name: name,
+                    type: type,
+                    price: price,
+                    desc: desc,
+                    fileName: file.name,
+                    fileData: e.target.result,
+                    seller: isMod ? currentUser : 'Guest'
+                };
                 
-                // Dapatkan URL publik
-                const { data: urlData } = supabase.storage
-                    .from('build-files')
-                    .getPublicUrl(fileName);
-                
-                // Simpan ke database
-                const { error: dbError } = await supabase
-                    .from('builds')
-                    .insert([{
-                        id: Date.now(),
-                        name: name,
-                        type: type,
-                        price: price,
-                        description: desc,
-                        file_name: file.name,
-                        file_url: urlData.publicUrl,
-                        seller: isModerator ? currentUser : 'Guest'
-                    }]);
-                    
-                if (dbError) throw dbError;
-                
-                showStatus('uploadStatus', '✅ Build berhasil dipublish!', 'success');
+                builds.push(build);
+                localStorage.setItem('builds', JSON.stringify(builds));
                 
                 // Reset form
                 document.getElementById('buildName').value = '';
@@ -530,42 +398,19 @@
                 document.getElementById('buildDesc').value = '';
                 document.getElementById('buildFile').value = '';
                 
-                // Refresh marketplace
-                loadBuilds();
+                status.style.display = 'block';
+                status.className = 'status success';
+                status.textContent = '✅ Build berhasil dipublish!';
                 
-            } catch (error) {
-                console.error('Error publishing build:', error);
-                showStatus('uploadStatus', '❌ Error: ' + error.message, 'error');
-            }
+                displayBuilds();
+            };
+            
+            reader.readAsDataURL(file);
         }
         
-        // ============================================
-        // FUNGSI LOAD MARKETPLACE
-        // ============================================
-        async function loadBuilds() {
-            const marketplace = document.getElementById('marketplace');
-            
-            try {
-                const { data, error } = await supabase
-                    .from('builds')
-                    .select('*')
-                    .order('id', { ascending: false });
-                    
-                if (error) throw error;
-                
-                if (!data || data.length === 0) {
-                    marketplace.innerHTML = '<p style="color: #888; text-align: center; grid-column: 1/-1;">Belum ada build. Jadi yang pertama upload!</p>';
-                    return;
-                }
-                
-                let html = '';
-                data.forEach(build => {
-                    html += `
-                        <div class="build-card">
-                            <div class="build-title">${build.name}</div>
-                            <div style="color: #b87cff;">${build.type}</div>
-                            <div class="build-price">💰 ${build.price} Robux</div>
-                            <div style="color: #aaa; margin: 10px 0;">${build.description.substring(0, 50)}${build.description.length > 50 ? '...' : ''}</div>
-                            <div style="color: #888; font-size: 0.9em;">📁 ${build.file_name}</div>
-                            ${build.file_url ? `<a href="${build.file_url}" download="${build.file_name}" class="download-link">⬇️ Download</a>` : ''}
-                            <div style="color: #666; font-size:
+        // Load data saat pertama kali
+        displayBuilds();
+        displayChats();
+    </script>
+</body>
+</html>
