@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>OXYX MARKET - FINAL</title>
+    <title>OXYX MARKET - ONLINE</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
         body { background: #0a0a0a; color: white; padding: 20px; }
-        .container { max-width: 1000px; margin: 0 auto; }
+        .container { max-width: 1200px; margin: 0 auto; }
         h1 { color: #b87cff; text-align: center; margin-bottom: 20px; }
         .card { background: #1a1a2a; border: 2px solid #9f4dff; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
         input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #2a2a3a; border: 2px solid #9f4dff; border-radius: 5px; color: white; }
@@ -36,11 +36,12 @@
         .premium .build-price { color: gold; }
         .preview-image { width: 100%; height: 150px; border: 2px dashed #9f4dff; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: #666; margin: 10px 0; overflow: hidden; }
         .footer { text-align: center; color: #666; margin-top: 30px; padding-top: 20px; border-top: 1px solid #333; }
+        .loading { text-align: center; color: #666; padding: 20px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>⚡ OXYX MARKET ⚡</h1>
+        <h1>⚡ OXYX MARKET ONLINE ⚡</h1>
 
         <!-- DISCORD LINKS -->
         <div class="discord-links">
@@ -49,7 +50,7 @@
             <a href="https://discord.gg/boatbuilderhub" target="_blank">SUPPORT 2</a>
         </div>
 
-        <!-- KEY SYSTEM DENGAN LOCALSTORAGE -->
+        <!-- KEY SYSTEM DENGAN SERVER -->
         <div class="card">
             <h3>🔐 MODERATOR ACCESS</h3>
             <div class="key-section">
@@ -62,7 +63,7 @@
         <!-- MOD CHAT (HANYA UNTUK MOD) -->
         <div id="modSection" style="display: none;" class="card">
             <h3>💬 MOD CHAT</h3>
-            <div class="chat-box" id="chatMessages"></div>
+            <div class="chat-box" id="chatMessages">Loading...</div>
             <div style="display: flex; gap: 10px;">
                 <input type="text" id="chatInput" placeholder="Ketik pesan..." style="flex: 1;">
                 <button onclick="sendChat()">KIRIM</button>
@@ -102,93 +103,144 @@
         </div>
 
         <div class="footer">
-            <p>OXYX MARKET • Data tersimpan di browser</p>
+            <p>OXYX MARKET • Data tersimpan di server</p>
         </div>
     </div>
 
     <script>
         // ============================================
-        // DATA DISIMPAN DI LOCALSTORAGE
+        // KONFIGURASI JSONBIN.IO
         // ============================================
-        let builds = JSON.parse(localStorage.getItem('builds')) || [];
-        let chats = JSON.parse(localStorage.getItem('chats')) || [];
+        const API_KEY = '$2a$10$RYz0R2fKkR23Gf1qGguLi.5Tlr.5UlfHymp1bYXB5Zhp352m4fdua';
+        const BIN_ID = '69a24d2a43b1c97be9a53651';
+        
+        // ============================================
+        // VARIABEL GLOBAL
+        // ============================================
         let isMod = false;
         let currentUser = '';
         let currentFilter = 'all';
+        let builds = [];
+        let chats = [];
+        let deviceId = '';
+        
+        // ============================================
+        // GENERATE DEVICE ID (CEGAH BYPASS)
+        // ============================================
+        function generateDeviceId() {
+            const components = [
+                navigator.userAgent,
+                screen.width,
+                screen.height,
+                navigator.language,
+                new Date().getTimezoneOffset()
+            ];
+            return components.join('|');
+        }
+        
+        deviceId = generateDeviceId();
+        
+        // ============================================
+        // LOAD DATA DARI JSONBIN
+        // ============================================
+        async function loadData() {
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                    headers: { 'X-Access-Key': API_KEY }
+                });
+                const data = await response.json();
+                builds = data.record.builds || [];
+                chats = data.record.chats || [];
+                
+                // Filter builds yang valid
+                builds = builds.filter(b => b && b.name && b.fileData);
+                
+                displayBuilds();
+                displayChats();
+            } catch (error) {
+                console.error('Error loading:', error);
+                document.getElementById('marketplace').innerHTML = '<p class="loading">Gagal load data</p>';
+            }
+        }
+        
+        // ============================================
+        // SAVE DATA KE JSONBIN
+        // ============================================
+        async function saveData() {
+            try {
+                await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Access-Key': API_KEY
+                    },
+                    body: JSON.stringify({ builds, chats })
+                });
+                return true;
+            } catch (error) {
+                console.error('Error saving:', error);
+                return false;
+            }
+        }
         
         // ============================================
         // KEY SYSTEM - TIDAK BISA BYPASS
         // ============================================
+        let keyAttempts = JSON.parse(localStorage.getItem('keyAttempts')) || {};
+        
         function activateKey() {
             const key = document.getElementById('keyInput').value.toLowerCase().trim();
             const status = document.getElementById('keyStatus');
             
-            // Reset status
-            status.style.display = 'none';
+            // Cek percobaan berlebihan
+            if (keyAttempts[deviceId] && keyAttempts[deviceId] >= 5) {
+                status.style.display = 'block';
+                status.className = 'status error';
+                status.textContent = '❌ Terlalu banyak percobaan! Tunggu 10 menit.';
+                return;
+            }
             
             // Validasi key
             if (key === 'owner' || key === 'mod1' || key === 'mod2') {
                 isMod = true;
                 currentUser = key;
                 
-                // Tampilkan mod section
+                // Reset percobaan
+                delete keyAttempts[deviceId];
+                localStorage.setItem('keyAttempts', JSON.stringify(keyAttempts));
+                
                 document.getElementById('modSection').style.display = 'block';
                 
-                // Tampilkan status sukses
                 status.style.display = 'block';
                 status.className = 'status success';
                 status.textContent = '✅ Key valid! Selamat datang ' + key;
                 
-                // Load chat
                 displayChats();
             } else {
-                // Tampilkan status error
+                // Catat percobaan gagal
+                keyAttempts[deviceId] = (keyAttempts[deviceId] || 0) + 1;
+                localStorage.setItem('keyAttempts', JSON.stringify(keyAttempts));
+                
                 status.style.display = 'block';
                 status.className = 'status error';
-                status.textContent = '❌ Key salah! Coba: owner, mod1, mod2';
+                status.textContent = `❌ Key salah! Percobaan ke-${keyAttempts[deviceId]}/5`;
             }
         }
         
         // ============================================
-        // CHAT SYSTEM - TERSIMPAN
+        // CHAT SYSTEM - SEMUA ORANG LIHAT
         // ============================================
-        function sendChat() {
-            if (!isMod) {
-                alert('Aktivasi key dulu!');
-                return;
-            }
-            
-            const msg = document.getElementById('chatInput').value.trim();
-            if (!msg) return;
-            
-            // Simpan chat
-            chats.push({
-                user: currentUser,
-                msg: msg,
-                time: new Date().toLocaleTimeString()
-            });
-            
-            // Simpan ke localStorage
-            localStorage.setItem('chats', JSON.stringify(chats));
-            
-            // Clear input
-            document.getElementById('chatInput').value = '';
-            
-            // Tampilkan ulang
-            displayChats();
-        }
-        
         function displayChats() {
             const box = document.getElementById('chatMessages');
             if (!box) return;
             
-            if (chats.length === 0) {
+            if (!chats || chats.length === 0) {
                 box.innerHTML = '<p style="color:#666;">Belum ada chat</p>';
                 return;
             }
             
             let html = '';
-            chats.forEach(chat => {
+            chats.slice().reverse().forEach(chat => {
                 html += `
                     <div class="chat-message">
                         <b>${escapeHtml(chat.user)}:</b> ${escapeHtml(chat.msg)}
@@ -199,6 +251,27 @@
             
             box.innerHTML = html;
             box.scrollTop = box.scrollHeight;
+        }
+        
+        async function sendChat() {
+            if (!isMod) {
+                alert('Aktivasi key dulu!');
+                return;
+            }
+            
+            const msg = document.getElementById('chatInput').value.trim();
+            if (!msg) return;
+            
+            chats.push({
+                user: currentUser,
+                msg: msg,
+                time: new Date().toLocaleTimeString()
+            });
+            
+            if (await saveData()) {
+                document.getElementById('chatInput').value = '';
+                displayChats();
+            }
         }
         
         // ============================================
@@ -220,9 +293,9 @@
         }
         
         // ============================================
-        // PUBLISH BUILD - WORKING!
+        // PUBLISH BUILD - SEMUA ORANG LIHAT
         // ============================================
-        function publishBuild() {
+        async function publishBuild() {
             const name = document.getElementById('buildName').value.trim();
             const type = document.getElementById('buildType').value;
             const price = parseInt(document.getElementById('buildPrice').value);
@@ -242,44 +315,39 @@
             if (!buildFile.name.toLowerCase().endsWith('.build')) {
                 status.style.display = 'block';
                 status.className = 'status error';
-                status.textContent = '❌ File harus berekstensi .build!';
+                status.textContent = '❌ File harus .build!';
                 return;
             }
             
             status.style.display = 'block';
             status.className = 'status success';
-            status.textContent = '⏫ Processing...';
+            status.textContent = '⏫ Uploading ke server...';
             
-            // Baca file gambar
-            const imgReader = new FileReader();
-            imgReader.onload = function(imgEvent) {
-                const imageData = imgEvent.result;
+            try {
+                // Baca file gambar
+                const imageData = await readFileAsBase64(imageFile);
                 
                 // Baca file build
-                const fileReader = new FileReader();
-                fileReader.onload = function(fileEvent) {
-                    const fileData = fileEvent.result;
-                    
-                    // Buat object build
-                    const newBuild = {
-                        id: Date.now(),
-                        name: name,
-                        type: type,
-                        price: price,
-                        desc: desc,
-                        image: imageData,
-                        fileName: buildFile.name,
-                        fileData: fileData,
-                        seller: isMod ? currentUser : 'Guest',
-                        waktu: new Date().toLocaleString()
-                    };
-                    
-                    // Simpan ke array
-                    builds.push(newBuild);
-                    
-                    // Simpan ke localStorage
-                    localStorage.setItem('builds', JSON.stringify(builds));
-                    
+                const fileData = await readFileAsBase64(buildFile);
+                
+                // Buat build baru
+                const newBuild = {
+                    id: Date.now(),
+                    name: name,
+                    type: type,
+                    price: price,
+                    desc: desc,
+                    image: imageData,
+                    fileName: buildFile.name,
+                    fileData: fileData,
+                    seller: isMod ? currentUser : 'Guest',
+                    waktu: new Date().toLocaleString()
+                };
+                
+                builds.push(newBuild);
+                
+                // Simpan ke server
+                if (await saveData()) {
                     // Reset form
                     document.getElementById('buildName').value = '';
                     document.getElementById('buildType').value = 'Ship';
@@ -289,24 +357,33 @@
                     document.getElementById('buildFile').value = '';
                     document.getElementById('imagePreview').innerHTML = 'Preview foto';
                     
-                    // Tampilkan status sukses
                     status.style.display = 'block';
                     status.className = 'status success';
-                    status.textContent = '✅ Build berhasil dipublish!';
+                    status.textContent = '✅ Build berhasil dipublish ke server!';
                     
-                    // Refresh tampilan
-                    filterBuilds(currentFilter);
+                    displayBuilds();
                     
-                    // Hilangkan status setelah 3 detik
                     setTimeout(() => {
                         status.style.display = 'none';
                     }, 3000);
-                };
-                
-                fileReader.readAsDataURL(buildFile);
-            };
-            
-            imgReader.readAsDataURL(imageFile);
+                }
+            } catch (error) {
+                status.style.display = 'block';
+                status.className = 'status error';
+                status.textContent = '❌ Error: ' + error.message;
+            }
+        }
+        
+        // ============================================
+        // READ FILE AS BASE64
+        // ============================================
+        function readFileAsBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
         }
         
         // ============================================
@@ -315,38 +392,37 @@
         function filterBuilds(filter) {
             currentFilter = filter;
             
-            // Update active button
             document.querySelectorAll('.sort-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             event.target.classList.add('active');
             
-            // Filter builds
-            let filtered = [];
-            if (filter === 'all') {
-                filtered = builds;
-            } else if (filter === 'free') {
-                filtered = builds.filter(b => b.price === 0);
-            } else if (filter === 'premium') {
-                filtered = builds.filter(b => b.price >= 90 && b.price <= 100);
-            }
-            
-            displayBuilds(filtered);
+            displayBuilds();
         }
         
-        function displayBuilds(buildsToShow) {
+        function displayBuilds() {
             const grid = document.getElementById('marketplace');
             
-            if (buildsToShow.length === 0) {
-                grid.innerHTML = '<p style="text-align:center; color:#666;">Tidak ada build</p>';
+            if (!builds || builds.length === 0) {
+                grid.innerHTML = '<p style="text-align:center; color:#666;">Belum ada build</p>';
                 return;
             }
             
-            // Urutkan dari yang terbaru
-            const sorted = [...buildsToShow].reverse();
+            // Filter
+            let filtered = [];
+            if (currentFilter === 'all') {
+                filtered = builds;
+            } else if (currentFilter === 'free') {
+                filtered = builds.filter(b => b.price === 0);
+            } else if (currentFilter === 'premium') {
+                filtered = builds.filter(b => b.price >= 90 && b.price <= 100);
+            }
+            
+            // Urutkan dari terbaru
+            filtered.sort((a, b) => b.id - a.id);
             
             let html = '';
-            sorted.forEach(build => {
+            filtered.forEach(build => {
                 const isFree = build.price === 0;
                 const isPremium = build.price >= 90 && build.price <= 100;
                 let cardClass = '';
@@ -356,7 +432,7 @@
                 html += `
                     <div class="build-card ${cardClass}">
                         <div class="build-image">
-                            <img src="${build.image}" alt="${escapeHtml(build.name)}">
+                            <img src="${build.image || ''}" alt="${escapeHtml(build.name)}">
                         </div>
                         <h3>${escapeHtml(build.name)}</h3>
                         <div>${escapeHtml(build.type)}</div>
@@ -376,33 +452,4 @@
         
         // ============================================
         // DOWNLOAD BUILD
-        // ============================================
-        function downloadBuild(fileData, fileName) {
-            const link = document.createElement('a');
-            link.href = fileData;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-        
-        // ============================================
-        // HELPER ESCAPE HTML
-        // ============================================
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        // ============================================
-        // INITIAL LOAD
-        // ============================================
-        document.addEventListener('DOMContentLoaded', function() {
-            displayBuilds(builds);
-            displayChats();
-        });
-    </script>
-</body>
-</html>
+        // ===========================
