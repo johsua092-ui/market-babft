@@ -8,8 +8,7 @@
 
 ### 🔐 **MODERATOR/OWNER ONLY**
 - **Key system** only mods & owner know
-- Keys: `owner_oxyx_2026`, `mod1_builder_2026`, `mod2_helper_2026`
-- Once activated, u get access to **MOD CHAT** (private)
+
 
 ### 💬 **MOD CHAT**
 - Real-time chat between mods
@@ -106,8 +105,7 @@
 
 ### 🔐 **MODERATOR/OWNER ONLY**
 - **Key system** yang cuma moderator & owner tau
-- Key: `owner_oxyx_2026`, `mod1_builder_2026`, `mod2_helper_2026`
-- Begitu masuk, langsung kebuka **MOD CHAT** khusus
+
 
 ### 💬 **MOD CHAT**
 - Chat realtime antar moderator
