@@ -11,7 +11,7 @@
         .discord-links { display:flex; gap:10px; justify-content:center; margin:20px 0; flex-wrap:wrap; }
         .discord-links a { padding:10px 20px; background:#5865F2; color:white; text-decoration:none; border-radius:5px; }
         
-        /* Layout Login Baru */
+        /* Layout Login */
         #loginOverlay { position:fixed; top:0; left:0; width:100%; height:100%; background:#0a0a0a; display:flex; justify-content:center; align-items:center; z-index:9999; }
         .login-box { background:#1a1a2a; padding:40px; border:2px solid #9f4dff; border-radius:10px; text-align:center; box-shadow: 0 0 20px rgba(159, 77, 255, 0.3); }
         .github-btn { background:#333; color:white; padding:15px 30px; border:none; border-radius:5px; font-size:1.2em; cursor:pointer; margin-top:20px; font-weight:bold; }
@@ -38,6 +38,12 @@
         .download-btn:hover { background:#00ff00; }
         .footer { text-align:center; color:#666; margin-top:30px; padding-top:20px; border-top:1px solid #333; }
         input, select, textarea { width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; color:white; }
+        
+        /* Tambahan label Role */
+        .role-badge { display:inline-block; padding:3px 8px; border-radius:3px; font-size:0.8em; font-weight:bold; margin-left:10px; }
+        .role-owner { background:gold; color:black; }
+        .role-mod { background:#9f4dff; color:white; }
+        .role-member { background:#00aa00; color:white; }
     </style>
 </head>
 <body>
@@ -52,6 +58,11 @@
 
 <div id="mainApp" class="container" style="display:none;">
     <h1>⚡ OXYX MARKET ⚡</h1>
+    
+    <div style="text-align:center; margin-bottom:20px; background:#1a1a2a; padding:10px; border-radius:5px; border:1px solid #333;">
+        Login sebagai: <span id="displayUsername" style="font-weight:bold; color:#b87cff;">...</span>
+        <span id="displayRole" class="role-badge">...</span>
+    </div>
 
     <div class="discord-links">
         <a href="https://discord.gg/autobuild" target="_blank">MAIN SERVER</a>
@@ -59,8 +70,8 @@
         <a href="https://discord.gg/boatbuilderhub" target="_blank">SUPPORT 2</a>
     </div>
 
-    <div class="card">
-        <h3>💬 DEVELOPER CHAT</h3>
+    <div class="card" id="modChatSection" style="display:none;">
+        <h3>💬 DEVELOPER CHAT (Admin Only)</h3>
         <div class="chat-box" id="chatMessages">Loading...</div>
         <div style="display:flex; gap:10px;">
             <input type="text" id="chatInput" placeholder="Type message..." style="flex:1;">
@@ -68,7 +79,7 @@
         </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="uploadSection" style="display:none;">
         <h3>📤 UPLOAD BUILD</h3>
         <input type="text" id="buildName" placeholder="Build Name" maxlength="50">
         <select id="buildType">
@@ -98,7 +109,6 @@
 </div>
 
 <script type="module">
-    // 1. IMPORT FIREBASE (Versi 10)
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getAuth, signInWithPopup, GithubAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
@@ -113,54 +123,81 @@
     };
     // -----------------------------------------------------
 
-    // Inisialisasi Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const provider = new GithubAuthProvider();
 
-    // --- 👇 DAFTAR USERNAME GITHUB YANG DIIZINKAN MASUK 👇 ---
-    const ALLOWED_USERS = ["johsua092-ui", "anindyakurniaputri2077-del", "teman2"];
+    // --- PEMBAGIAN HAK AKSES (ROLE) ---
+    const OWNER = "johsua092-ui";
+    const MOD1 = "anindyakurniaputri2077-del";
+    
+    // Masukkan username GitHub teman/anggota lain di sini
+    const REGULAR_MEMBERS = ["nama_github_teman1", "nama_github_teman2"]; 
 
     // Variabel Global
-    window.isMod = false;
     window.currentUser = '';
+    window.userRole = ''; // 'owner', 'mod', atau 'member'
     
-    // Konfigurasi Database Lama (JSONBin)
     const API_KEY = '$2a$10$RYz0R2fKkR23Gf1qGguLi.5Tlr.5UlfHymp1bYXB5Zhp352m4fdua';
     const BIN_ID = '69a24d2a43b1c97be9a53651';
     const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
     let builds=[], chats=[], currentFilter='all';
 
-    // 2. SISTEM LOGIN GITHUB
+    // SISTEM LOGIN GITHUB & PENGECEKAN ROLE
     document.getElementById('githubLoginBtn').addEventListener('click', () => {
         signInWithPopup(auth, provider).then((result) => {
-            // Ambil username GitHub (screenName)
             const username = result._tokenResponse.screenName;
+            window.currentUser = username;
             
-            if (ALLOWED_USERS.includes(username)) {
-                // Berhasil & Diizinkan
-                window.currentUser = username;
-                window.isMod = true;
-                
-                document.getElementById('loginOverlay').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'block';
-                
-                // Baru load data database setelah sukses masuk
-                loadData();
-                setInterval(loadData, 3000); // Auto-refresh tiap 3 detik
+            // Cek apakah dia Owner/Mod atau Member biasa
+            if (username === OWNER) {
+                window.userRole = 'owner';
+                setupUI('OWNER', 'role-owner', true);
+            } else if (username === MOD1) {
+                window.userRole = 'mod';
+                setupUI('MODERATOR', 'role-mod', true);
+            } else if (REGULAR_MEMBERS.includes(username)) {
+                window.userRole = 'member';
+                setupUI('MEMBER', 'role-member', false); // false = chat disembunyikan
             } else {
-                // Ditolak
-                alert(`Akses Ditolak! Username GitHub '${username}' tidak terdaftar dalam tim OXYX.`);
+                alert(`Akses Ditolak! Username GitHub '${username}' tidak terdaftar.`);
                 signOut(auth);
+                return; // Hentikan proses jika ditolak
             }
+            
+            // Jika lolos pengecekan di atas, mulai jalankan aplikasi
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            
+            loadData();
+            setInterval(loadData, 3000);
+
         }).catch((error) => {
             console.error("Login Gagal:", error);
             alert("Terjadi kesalahan saat login GitHub.");
         });
     });
 
+    // Fungsi mengatur tampilan berdasarkan Role
+    function setupUI(roleName, roleClass, showChat) {
+        const usernameEl = document.getElementById('displayUsername');
+        const roleEl = document.getElementById('displayRole');
+        
+        usernameEl.textContent = window.currentUser;
+        roleEl.textContent = roleName;
+        roleEl.className = 'role-badge ' + roleClass;
+
+        document.getElementById('uploadSection').style.display = 'block'; // Semua bisa upload
+        
+        if (showChat) {
+            document.getElementById('modChatSection').style.display = 'block'; // Tampilkan chat untuk mod/owner
+        } else {
+            document.getElementById('modChatSection').style.display = 'none'; // Sembunyikan dari member
+        }
+    }
+
     // ==========================================
-    // SISA KODE LAMA YANG SUDAH DIPERBAIKI (JSONBin & XSS)
+    // LOGIC DATABASE & UI BAWAHAN
     // ==========================================
 
     function escapeHTML(str) {
@@ -171,14 +208,16 @@
     }
 
     async function loadData() {
-        if(!window.isMod) return; // Jangan load jika belum login
+        if(!window.userRole) return; 
         try {
             const res = await fetch(API_URL + '/latest', { headers:{ 'X-Access-Key':API_KEY }});
             const data = await res.json();
             builds = data.record.builds || [];
             chats = data.record.chats || [];
             displayBuilds();
-            displayChats();
+            if (window.userRole === 'owner' || window.userRole === 'mod') {
+                displayChats(); // Hanya render chat jika user adalah admin/mod
+            }
         } catch(e){console.error(e);}
     }
 
@@ -211,6 +250,8 @@
     }
 
     window.sendChat = async function(){
+        if(window.userRole === 'member') return; // Validasi ganda agar member tidak bisa kirim chat lewat console
+        
         const msg=document.getElementById('chatInput').value.trim();
         if(!msg) return;
         
