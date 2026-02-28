@@ -1,47 +1,50 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>OXYX Market - FULL</title>
+    <title>OXYX Market - FIXED</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { background: black; color: white; font-family: Arial; padding: 20px; }
         .box { background: #1a1a2a; border: 2px solid purple; border-radius: 10px; padding: 15px; margin: 10px 0; }
-        input, button, textarea { padding: 10px; margin: 5px; background: #333; color: white; border: 1px solid purple; border-radius: 5px; }
-        button { background: purple; cursor: pointer; }
-        h1 { color: #c800ff; }
+        input, button, textarea { width: 100%; padding: 10px; margin: 5px 0; background: #333; color: white; border: 1px solid purple; border-radius: 5px; }
+        button { background: purple; cursor: pointer; font-weight: bold; }
+        button:hover { background: #b300ff; }
+        h1 { color: #c800ff; text-align: center; }
         .build-card { border: 1px solid purple; margin: 10px 0; padding: 10px; border-radius: 8px; }
         .chat-message { border-bottom: 1px solid #333; padding: 5px; }
         a { color: #9f4dff; }
+        .status { color: #ffaa00; margin-top: 5px; }
     </style>
 </head>
 <body>
-    <h1>OXYX MARKET - FULL VERSION</h1>
+    <h1>🔥 OXYX MARKET 🔥</h1>
     
     <!-- KEY SECTION -->
     <div class="box">
         <h3>🔐 MOD KEY</h3>
         <input type="text" id="keyInput" placeholder="owner / mod1 / mod2">
-        <button onclick="checkKey()">ACTIVATE</button>
-        <p id="keyStatus"></p>
+        <button onclick="checkKey()">AKTIVASI KEY</button>
+        <div id="keyStatus" class="status"></div>
     </div>
     
     <!-- MOD SERVER -->
     <div id="modPanel" style="display:none;" class="box">
         <h3 style="color:gold;">💬 MOD SERVER</h3>
         <div id="chatBox" style="height:200px; overflow-y:auto; background:#0a0a1a; padding:10px; margin:10px 0;"></div>
-        <input type="text" id="chatMsg" placeholder="Type message" style="width:70%;">
-        <button onclick="sendChat()">SEND</button>
+        <input type="text" id="chatMsg" placeholder="Ketik pesan...">
+        <button onclick="sendChat()">KIRIM CHAT</button>
     </div>
     
     <!-- UPLOAD BUILD -->
     <div class="box">
         <h3>📤 UPLOAD BUILD</h3>
-        <input type="text" id="buildName" placeholder="Build name"><br>
-        <input type="text" id="buildType" placeholder="Type (Ship/Plane/etc)"><br>
-        <input type="number" id="buildPrice" placeholder="Price (min 100)" min="100" value="100"><br>
-        <textarea id="buildDesc" rows="2" placeholder="Description"></textarea><br>
-        <input type="file" id="buildFile" accept=".build"><br>
-        <button onclick="publishBuild()">PUBLISH</button>
+        <input type="text" id="buildName" placeholder="Nama Build">
+        <input type="text" id="buildType" placeholder="Tipe (Ship/Plane/Mech)">
+        <input type="number" id="buildPrice" placeholder="Harga (min 100)" min="100" value="100">
+        <textarea id="buildDesc" rows="2" placeholder="Deskripsi"></textarea>
+        <input type="file" id="buildFile" accept=".build">
+        <button onclick="publishBuild()">PUBLISH BUILD</button>
+        <div id="uploadStatus" class="status"></div>
     </div>
     
     <!-- MARKETPLACE -->
@@ -52,38 +55,42 @@
 
     <script>
         // ============================================
-        // SUPABASE CONFIG
+        // SUPABASE CONFIG - PASTE PASTIKAN BENAR
         // ============================================
         const SUPABASE_URL = 'https://crbbdjmzybqvkjauqyxzj.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyYmJkam16eWJxdmtqYXVxeXpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjI1MTAsImV4cCI6MjA4Nzc5ODUxMH0.qO0kfhyMYcXZkhDQJRWI7YOM35AqW1EEoRZG9GdKnws';
         
+        // Inisialisasi Supabase
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
-        // ============================================
-        // VARIABLES
-        // ============================================
+        // Variabel global
         let isMod = false;
         let currentUser = '';
         
         // ============================================
-        // KEY SYSTEM (YANG UDAH WORK)
+        // KEY SYSTEM - SUDAH WORK
         // ============================================
         function checkKey() {
             let key = document.getElementById('keyInput').value;
             let status = document.getElementById('keyStatus');
             
+            console.log('Key entered:', key); // Debug
+            
             if (key === 'owner' || key === 'mod1' || key === 'mod2') {
                 isMod = true;
                 currentUser = key;
-                status.innerHTML = '✅ KEY BENAR!';
-                status.style.color = 'green';
+                status.innerHTML = '✅ KEY VALID! Mod server aktif.';
+                status.style.color = '#00ff00';
                 document.getElementById('modPanel').style.display = 'block';
                 
-                // Load chat setelah aktivasi
+                // Load chat
                 loadChats();
+                
+                // Auto refresh chat
+                setInterval(loadChats, 3000);
             } else {
-                status.innerHTML = '❌ KEY SALAH! Coba: owner, mod1, mod2';
-                status.style.color = 'red';
+                status.innerHTML = '❌ KEY INVALID! Coba: owner, mod1, mod2';
+                status.style.color = '#ff4444';
             }
         }
         
@@ -91,48 +98,56 @@
         // CHAT FUNCTIONS
         // ============================================
         async function loadChats() {
-            const { data, error } = await supabase
-                .from('chats')
-                .select('*')
-                .order('id', { ascending: true });
+            try {
+                const { data, error } = await supabase
+                    .from('chats')
+                    .select('*')
+                    .order('id', { ascending: true });
+                    
+                if (error) throw error;
                 
-            if (error) {
-                console.error('Error loading chats:', error);
-                return;
+                let html = '';
+                if (data && data.length > 0) {
+                    data.forEach(c => {
+                        html += `<div class="chat-message">
+                            <b>${c.user_name}:</b> ${c.message}
+                        </div>`;
+                    });
+                } else {
+                    html = '<p>Belum ada chat</p>';
+                }
+                document.getElementById('chatBox').innerHTML = html;
+                
+            } catch (error) {
+                console.error('Chat error:', error);
             }
-            
-            let html = '';
-            if (data && data.length > 0) {
-                data.forEach(c => {
-                    html += `<div class="chat-message">
-                        <b>${c.user_name}:</b> ${c.message}
-                    </div>`;
-                });
-            } else {
-                html = '<p>Belum ada chat</p>';
-            }
-            document.getElementById('chatBox').innerHTML = html;
         }
         
         async function sendChat() {
             if (!isMod) {
-                alert('Aktivasi dulu!');
+                alert('Aktivasi key dulu!');
                 return;
             }
             
             let msg = document.getElementById('chatMsg').value;
             if (!msg) return;
             
-            const { error } = await supabase
-                .from('chats')
-                .insert([{
-                    user_name: currentUser,
-                    message: msg
-                }]);
+            try {
+                const { error } = await supabase
+                    .from('chats')
+                    .insert([{
+                        user_name: currentUser,
+                        message: msg
+                    }]);
+                    
+                if (error) throw error;
                 
-            if (!error) {
                 document.getElementById('chatMsg').value = '';
                 loadChats();
+                
+            } catch (error) {
+                console.error('Send chat error:', error);
+                alert('Gagal kirim chat: ' + error.message);
             }
         }
         
@@ -140,31 +155,33 @@
         // BUILD FUNCTIONS
         // ============================================
         async function loadBuilds() {
-            const { data, error } = await supabase
-                .from('builds')
-                .select('*')
-                .order('id', { ascending: false });
+            try {
+                const { data, error } = await supabase
+                    .from('builds')
+                    .select('*')
+                    .order('id', { ascending: false });
+                    
+                if (error) throw error;
                 
-            if (error) {
-                console.error('Error loading builds:', error);
-                return;
+                let html = '';
+                if (data && data.length > 0) {
+                    data.forEach(b => {
+                        html += `<div class="build-card">
+                            <b>${b.name}</b> (${b.type}) - ${b.price} Robux<br>
+                            ${b.description || '-'}<br>
+                            <small>File: ${b.file_name}</small><br>
+                            ${b.file_url ? `<a href="${b.file_url}" download="${b.file_name}">⬇️ DOWNLOAD FILE</a>` : ''}
+                            <br><small>Seller: ${b.seller}</small>
+                        </div>`;
+                    });
+                } else {
+                    html = '<p>Belum ada build</p>';
+                }
+                document.getElementById('marketGrid').innerHTML = html;
+                
+            } catch (error) {
+                console.error('Load builds error:', error);
             }
-            
-            let html = '';
-            if (data && data.length > 0) {
-                data.forEach(b => {
-                    html += `<div class="build-card">
-                        <b>${b.name}</b> (${b.type}) - ${b.price} Robux<br>
-                        ${b.description || '-'}<br>
-                        <small>File: ${b.file_name}</small><br>
-                        ${b.file_url ? `<a href="${b.file_url}" download="${b.file_name}">⬇️ DOWNLOAD</a>` : ''}
-                        <br><small>Seller: ${b.seller}</small>
-                    </div>`;
-                });
-            } else {
-                html = '<p>Belum ada build</p>';
-            }
-            document.getElementById('marketGrid').innerHTML = html;
         }
         
         async function publishBuild() {
@@ -173,24 +190,32 @@
             let price = document.getElementById('buildPrice').value;
             let desc = document.getElementById('buildDesc').value;
             let file = document.getElementById('buildFile').files[0];
+            let status = document.getElementById('uploadStatus');
             
+            // Validasi input
             if (!name || !type || !price || !desc || !file) {
-                alert('Semua harus diisi!');
+                status.innerHTML = '❌ Semua field harus diisi!';
+                status.style.color = '#ff4444';
                 return;
             }
             
             if (!file.name.toLowerCase().endsWith('.build')) {
-                alert('File harus .build!');
+                status.innerHTML = '❌ File harus .build!';
+                status.style.color = '#ff4444';
                 return;
             }
             
             if (price < 100) {
-                alert('Harga minimal 100 Robux!');
+                status.innerHTML = '❌ Harga minimal 100 Robux!';
+                status.style.color = '#ff4444';
                 return;
             }
             
+            status.innerHTML = '⏳ Uploading...';
+            status.style.color = '#ffaa00';
+            
             try {
-                // Upload file
+                // Upload file ke Supabase Storage
                 const fileName = `${Date.now()}_${file.name}`;
                 const { error: uploadError } = await supabase.storage
                     .from('build-files')
@@ -198,12 +223,12 @@
                     
                 if (uploadError) throw uploadError;
                 
-                // Dapatkan URL
+                // Dapatkan URL publik
                 const { data: urlData } = supabase.storage
                     .from('build-files')
                     .getPublicUrl(fileName);
                 
-                // Simpan ke database
+                // Simpan data build ke database
                 const { error: dbError } = await supabase
                     .from('builds')
                     .insert([{
@@ -219,7 +244,8 @@
                     
                 if (dbError) throw dbError;
                 
-                alert('✅ Build dipublish!');
+                status.innerHTML = '✅ Build berhasil dipublish!';
+                status.style.color = '#00ff00';
                 
                 // Reset form
                 document.getElementById('buildName').value = '';
@@ -228,24 +254,24 @@
                 document.getElementById('buildDesc').value = '';
                 document.getElementById('buildFile').value = '';
                 
+                // Reload marketplace
                 loadBuilds();
                 
             } catch (error) {
-                console.error('Error:', error);
-                alert('❌ Gagal: ' + error.message);
+                console.error('Publish error:', error);
+                status.innerHTML = '❌ Error: ' + error.message;
+                status.style.color = '#ff4444';
             }
         }
-        
-        // ============================================
-        // AUTO REFRESH
-        // ============================================
-        setInterval(loadChats, 3000);
-        setInterval(loadBuilds, 5000);
         
         // ============================================
         // LOAD DATA AWAL
         // ============================================
         loadBuilds();
+        
+        // Auto refresh marketplace setiap 5 detik
+        setInterval(loadBuilds, 5000);
+        
     </script>
 </body>
 </html>
