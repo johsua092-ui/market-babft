@@ -30,6 +30,8 @@
         .build-price { font-size: 1.2em; font-weight: bold; margin: 10px 0; }
         .free .build-price { color: #00ff00; }
         .premium .build-price { color: gold; }
+        .download-btn { width: 100%; padding: 10px; margin-top: 10px; background: #00aa00; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; }
+        .download-btn:hover { background: #00ff00; }
         .footer { text-align: center; color: #666; margin-top: 30px; padding-top: 20px; border-top: 1px solid #333; }
     </style>
 </head>
@@ -44,7 +46,7 @@
             <a href="https://discord.gg/boatbuilderhub" target="_blank">SUPPORT 2</a>
         </div>
 
-        <!-- KEY SECTION - PAKAI KEY BARU -->
+        <!-- KEY SECTION -->
         <div class="card">
             <h3>🔐 MOD KEY</h3>
             <div class="key-section">
@@ -104,12 +106,11 @@
         let currentUser = '';
         let currentFilter = 'all';
 
-        // ========== KEY SYSTEM - PAKAI KEY BARU ==========
+        // ========== KEY SYSTEM ==========
         function activateKey() {
             const key = document.getElementById('keyInput').value;
             const status = document.getElementById('keyStatus');
             
-            // KEY BARU YANG SUSAH DITEBAK
             if (key === 'owner_oxyx_2026' || key === 'mod1_builder_2026' || key === 'mod2_helper_2026') {
                 isMod = true;
                 currentUser = key;
@@ -152,7 +153,7 @@
             displayChats();
         }
 
-        // ========== PUBLISH BUILD (HANYA MOD) ==========
+        // ========== PUBLISH BUILD ==========
         function publishBuild() {
             if (!isMod) {
                 alert('❌ Hanya moderator yang bisa publish build!');
@@ -176,25 +177,46 @@
                 return;
             }
 
-            builds.push({
-                id: Date.now(),
-                name: name,
-                type: type,
-                price: price,
-                desc: desc,
-                fileName: file.name,
-                seller: currentUser
-            });
+            // Baca file sebagai data URL untuk disimpan
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                builds.push({
+                    id: Date.now(),
+                    name: name,
+                    type: type,
+                    price: price,
+                    desc: desc,
+                    fileName: file.name,
+                    fileData: e.target.result, // Simpan data file
+                    seller: currentUser
+                });
 
-            localStorage.setItem('builds', JSON.stringify(builds));
+                localStorage.setItem('builds', JSON.stringify(builds));
 
-            document.getElementById('buildName').value = '';
-            document.getElementById('buildPrice').value = '0';
-            document.getElementById('buildDesc').value = '';
-            document.getElementById('buildFile').value = '';
+                document.getElementById('buildName').value = '';
+                document.getElementById('buildPrice').value = '0';
+                document.getElementById('buildDesc').value = '';
+                document.getElementById('buildFile').value = '';
 
-            alert('✅ Build berhasil dipublish!');
-            displayBuilds();
+                alert('✅ Build berhasil dipublish!');
+                displayBuilds();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ========== DOWNLOAD BUILD (FITUR BARU) ==========
+        function downloadBuild(fileData, fileName) {
+            if (!fileData) {
+                alert('File tidak tersedia!');
+                return;
+            }
+            
+            const link = document.createElement('a');
+            link.href = fileData;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         // ========== FILTER ==========
@@ -230,6 +252,7 @@
                         <div class="build-price">💰 ${b.price} Robux</div>
                         <p>${b.desc}</p>
                         <div style="margin-top:10px;"><small>Seller: ${b.seller}</small></div>
+                        ${b.fileData ? `<button class="download-btn" onclick="downloadBuild('${b.fileData}', '${b.fileName}')">⬇️ DOWNLOAD BUILD</button>` : ''}
                     </div>
                 `;
             });
