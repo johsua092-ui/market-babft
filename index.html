@@ -23,23 +23,24 @@
         .sort-buttons { display: flex; gap: 10px; margin: 20px 0; }
         .sort-btn { flex: 1; padding: 12px; background: #2a2a3a; border: 2px solid #9f4dff; border-radius: 5px; color: white; cursor: pointer; }
         .sort-btn.active { background: #9f4dff; }
-        .build-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+        .build-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
         .build-card { background: #2a2a3a; border: 2px solid #9f4dff; border-radius: 5px; padding: 15px; }
         .build-card.free { border-color: #00ff00; }
         .build-card.premium { border-color: gold; }
         .build-price { font-size: 1.2em; font-weight: bold; margin: 10px 0; }
         .free .build-price { color: #00ff00; }
         .premium .build-price { color: gold; }
-        .download-btn { width: 100%; padding: 10px; margin-top: 10px; background: #00aa00; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; }
+        .download-btn { width: 100%; padding: 12px; margin-top: 15px; background: #00aa00; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; font-size: 1em; }
         .download-btn:hover { background: #00ff00; }
         .footer { text-align: center; color: #666; margin-top: 30px; padding-top: 20px; border-top: 1px solid #333; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #2a2a3a; border: 2px solid #9f4dff; border-radius: 5px; color: white; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>⚡ OXYX MARKET ⚡</h1>
 
-        <!-- DISCORD -->
+        <!-- DISCORD LINKS -->
         <div class="discord-links">
             <a href="https://discord.gg/autobuild" target="_blank">MAIN SERVER</a>
             <a href="https://discord.gg/boatbuilderhub" target="_blank">SUPPORT 1</a>
@@ -50,8 +51,8 @@
         <div class="card">
             <h3>🔐 MOD KEY</h3>
             <div class="key-section">
-                <input type="password" id="keyInput" placeholder="Masukkan key">
-                <button onclick="activateKey()">AKTIFKAN</button>
+                <input type="password" id="keyInput" placeholder="Enter key">
+                <button onclick="activateKey()">ACTIVATE</button>
             </div>
             <div id="keyStatus" class="status"></div>
         </div>
@@ -61,31 +62,31 @@
             <h3>💬 MOD CHAT</h3>
             <div class="chat-box" id="chatMessages">Loading...</div>
             <div style="display: flex; gap: 10px;">
-                <input type="text" id="chatInput" placeholder="Ketik pesan..." style="flex:1; padding:12px; background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; color:white;">
-                <button onclick="sendChat()" style="padding:12px 30px; background:#9f4dff; border:none; border-radius:5px; color:white;">KIRIM</button>
+                <input type="text" id="chatInput" placeholder="Type message..." style="flex:1; padding:12px; background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; color:white;">
+                <button onclick="sendChat()" style="padding:12px 30px; background:#9f4dff; border:none; border-radius:5px; color:white;">SEND</button>
             </div>
         </div>
 
-        <!-- UPLOAD BUILD -->
+        <!-- UPLOAD BUILD (ONLY MODS) -->
         <div class="card">
             <h3>📤 UPLOAD BUILD</h3>
-            <input type="text" id="buildName" placeholder="Nama Build" style="width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; color:white;">
-            <select id="buildType" style="width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; color:white;">
+            <input type="text" id="buildName" placeholder="Build Name">
+            <select id="buildType">
                 <option value="Ship">🚢 Ship</option>
                 <option value="Plane">✈️ Plane</option>
                 <option value="Mech">🤖 Mech</option>
             </select>
-            <input type="number" id="buildPrice" min="0" value="0" placeholder="Harga (Robux)" style="width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; color:white;">
-            <textarea id="buildDesc" rows="3" placeholder="Deskripsi build..." style="width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; color:white;"></textarea>
-            <input type="file" id="buildFile" accept=".build" style="width:100%; padding:12px; margin:8px 0; color:white;">
+            <input type="number" id="buildPrice" min="0" value="0" placeholder="Price (Robux)">
+            <textarea id="buildDesc" rows="3" placeholder="Build description..."></textarea>
+            <input type="file" id="buildFile" accept=".build">
             <button class="publish-btn" onclick="publishBuild()">🚀 PUBLISH BUILD</button>
             <div id="uploadStatus" class="status"></div>
         </div>
 
         <!-- SORT BUTTONS -->
         <div class="sort-buttons">
-            <button class="sort-btn active" onclick="filterBuilds('all')">📋 SEMUA</button>
-            <button class="sort-btn" onclick="filterBuilds('free')">🆓 GRATIS (0)</button>
+            <button class="sort-btn active" onclick="filterBuilds('all')">📋 ALL</button>
+            <button class="sort-btn" onclick="filterBuilds('free')">🆓 FREE (0)</button>
             <button class="sort-btn" onclick="filterBuilds('premium')">💎 PREMIUM (90-100)</button>
         </div>
 
@@ -95,7 +96,7 @@
             <div id="marketplace" class="build-grid">Loading...</div>
         </div>
 
-        <div class="footer">OXYX MARKET • Hanya Moderator yang Bisa Publish</div>
+        <div class="footer">OXYX MARKET • Only Moderators Can Publish • Everyone Can Download</div>
     </div>
 
     <script>
@@ -116,10 +117,10 @@
                 currentUser = key;
                 document.getElementById('modSection').style.display = 'block';
                 
-                showStatus('keyStatus', '✅ Key valid! Selamat datang', 'success');
+                showStatus('keyStatus', '✅ Key valid! Welcome ' + key, 'success');
                 displayChats();
             } else {
-                showStatus('keyStatus', '❌ Key salah!', 'error');
+                showStatus('keyStatus', '❌ Wrong key!', 'error');
             }
         }
 
@@ -139,11 +140,11 @@
             chats.slice(-20).forEach(c => {
                 html += `<div class="chat-message"><b>${c.user}:</b> ${c.msg}</div>`;
             });
-            box.innerHTML = html || 'Belum ada chat';
+            box.innerHTML = html || 'No messages yet';
         }
 
         function sendChat() {
-            if (!isMod) return alert('Aktivasi key dulu!');
+            if (!isMod) return alert('Activate key first!');
             const msg = document.getElementById('chatInput').value;
             if (!msg) return;
             
@@ -153,10 +154,10 @@
             displayChats();
         }
 
-        // ========== PUBLISH BUILD ==========
+        // ========== PUBLISH BUILD (ONLY MODS) ==========
         function publishBuild() {
             if (!isMod) {
-                alert('❌ Hanya moderator yang bisa publish build!');
+                alert('❌ Only moderators can publish builds!');
                 return;
             }
 
@@ -167,17 +168,17 @@
             const fileInput = document.getElementById('buildFile');
 
             if (!name || !type || !desc || !fileInput.files[0]) {
-                alert('Isi semua!');
+                alert('Fill all fields!');
                 return;
             }
 
             const file = fileInput.files[0];
             if (!file.name.toLowerCase().endsWith('.build')) {
-                alert('File harus .build!');
+                alert('File must be .build!');
                 return;
             }
 
-            // Baca file sebagai data URL untuk disimpan
+            // Read file as data URL
             const reader = new FileReader();
             reader.onload = function(e) {
                 builds.push({
@@ -187,36 +188,42 @@
                     price: price,
                     desc: desc,
                     fileName: file.name,
-                    fileData: e.target.result, // Simpan data file
+                    fileData: e.target.result,
                     seller: currentUser
                 });
 
                 localStorage.setItem('builds', JSON.stringify(builds));
 
+                // Reset form
                 document.getElementById('buildName').value = '';
                 document.getElementById('buildPrice').value = '0';
                 document.getElementById('buildDesc').value = '';
                 document.getElementById('buildFile').value = '';
 
-                alert('✅ Build berhasil dipublish!');
+                alert('✅ Build published successfully!');
                 displayBuilds();
             };
             reader.readAsDataURL(file);
         }
 
-        // ========== DOWNLOAD BUILD (FITUR BARU) ==========
+        // ========== DOWNLOAD BUILD (EVERYONE CAN DOWNLOAD) ==========
         function downloadBuild(fileData, fileName) {
             if (!fileData) {
-                alert('File tidak tersedia!');
+                alert('File not available!');
                 return;
             }
             
-            const link = document.createElement('a');
-            link.href = fileData;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            try {
+                const link = document.createElement('a');
+                link.href = fileData;
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showStatus('uploadStatus', '✅ Download started!', 'success');
+            } catch (error) {
+                alert('Download failed: ' + error.message);
+            }
         }
 
         // ========== FILTER ==========
@@ -235,7 +242,7 @@
             if (currentFilter === 'premium') filtered = builds.filter(b => b.price >= 90 && b.price <= 100);
 
             if (filtered.length === 0) {
-                grid.innerHTML = '<p style="text-align:center; color:#666;">Belum ada build</p>';
+                grid.innerHTML = '<p style="text-align:center; color:#666;">No builds available</p>';
                 return;
             }
 
@@ -252,7 +259,11 @@
                         <div class="build-price">💰 ${b.price} Robux</div>
                         <p>${b.desc}</p>
                         <div style="margin-top:10px;"><small>Seller: ${b.seller}</small></div>
-                        ${b.fileData ? `<button class="download-btn" onclick="downloadBuild('${b.fileData}', '${b.fileName}')">⬇️ DOWNLOAD BUILD</button>` : ''}
+                        ${b.fileData ? `
+                            <button class="download-btn" onclick="downloadBuild('${b.fileData}', '${b.fileName}')">
+                                ⬇️ DOWNLOAD ${b.fileName}
+                            </button>
+                        ` : ''}
                     </div>
                 `;
             });
