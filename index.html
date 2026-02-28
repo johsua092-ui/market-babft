@@ -1,34 +1,93 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>OXYX MARKET</title>
-    <!-- ANTI DEVTOOLS -->
+    
+    <!-- ANTI SEMUA SHORTCUT -->
     <script>
-        // Anti F12, Anti Right Click, Anti Inspect Element
+        // Blok SEMUA shortcut yang bisa buka source
+        document.addEventListener('keydown', function(e) {
+            // Blok Ctrl+U (View Source)
+            if (e.ctrlKey && e.key === 'u') {
+                e.preventDefault();
+                alert('🔒 Source code dikunci!');
+                return false;
+            }
+            
+            // Blok Ctrl+Shift+I (Inspect)
+            if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+                e.preventDefault();
+                alert('🔒 Developer tools diblokir!');
+                return false;
+            }
+            
+            // Blok Ctrl+Shift+J (Console)
+            if (e.ctrlKey && e.shiftKey && e.key === 'J') {
+                e.preventDefault();
+                alert('🔒 Console diblokir!');
+                return false;
+            }
+            
+            // Blok F12
+            if (e.key === 'F12') {
+                e.preventDefault();
+                alert('🔒 F12 diblokir!');
+                return false;
+            }
+            
+            // Blok Ctrl+S (Save)
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Blok Ctrl+P (Print)
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Blok Ctrl+C di area sensitif
+            if (e.ctrlKey && e.key === 'c') {
+                if (!e.target.matches('input, textarea')) {
+                    e.preventDefault();
+                    return false;
+                }
+            }
+        });
+        
+        // Blok right click
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
             return false;
         });
         
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'F12' || 
-                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-                (e.ctrlKey && e.shiftKey && e.key === 'J') ||
-                (e.ctrlKey && e.key === 'U') ||
-                (e.ctrlKey && e.shiftKey && e.key === 'C')) {
-                e.preventDefault();
-                alert('🔒 Developer tools diblokir untuk keamanan!');
-                return false;
-            }
-        });
-        
-        // Detect DevTools terbuka
+        // Deteksi DevTools (lebih canggih)
         setInterval(function() {
+            const start = performance.now();
+            debugger;
+            const end = performance.now();
+            
+            // Kalau debugger kena, berarti DevTools terbuka
+            if (end - start > 100) {
+                document.body.innerHTML = '<h1 style="color:red; text-align:center; margin-top:100px;">🔒 DevTools terdeteksi! Halaman ditutup.</h1>';
+                setTimeout(function() {
+                    window.close();
+                }, 1000);
+            }
+            
+            // Cek ukuran window
             if (window.outerHeight - window.innerHeight > 200 || 
                 window.outerWidth - window.innerWidth > 200) {
-                document.body.innerHTML = '<h1 style="color:red; text-align:center; margin-top:50px;">🔒 DevTools terdeteksi! Halaman ini ditutup demi keamanan.</h1>';
+                document.body.innerHTML = '<h1 style="color:red; text-align:center; margin-top:100px;">🔒 Inspect element terdeteksi!</h1>';
             }
-        }, 1000);
+        }, 500);
+        
+        // Redirect kalau pake view-source:
+        if (window.location.protocol === 'view-source:') {
+            window.location.href = 'about:blank';
+        }
     </script>
     
     <style>
@@ -87,30 +146,30 @@
             <button onclick="activateKey()">ACTIVATE</button>
         </div>
         <div id="keyStatus" class="status"></div>
-        <div class="super-bypass" onclick="initiateBypass()">🔒 SECURE BYPASS (click to start)</div>
+        <div class="super-bypass" onclick="initiateBypass()">🔒 SUPER SECURE BYPASS</div>
     </div>
 
-    <!-- BYPASS VERIFICATION PANEL -->
+    <!-- BYPASS PASSWORD PANEL -->
     <div id="bypassPanel" class="admin-section">
-        <h3 style="color:gold;">🔐 VERIFIKASI KEAMANAN</h3>
-        <p style="color:#ffaa00;">Masukkan password untuk mengakses bypass</p>
+        <h3 style="color:gold;">🔐 VERIFIKASI ADMIN</h3>
+        <p style="color:#ffaa00;">Masukkan password super rahasia</p>
         
         <div style="display:flex; gap:10px;">
-            <input type="password" id="securePassword" placeholder="Enter secure password" style="flex:1;">
-            <button class="admin-btn" onclick="verifySecurePassword()">VERIFY</button>
+            <input type="password" id="adminPassword" placeholder="Enter admin password" style="flex:1;">
+            <button class="admin-btn" onclick="verifyAdminPassword()">VERIFY</button>
         </div>
         
         <div id="bypassStatus" class="status" style="margin-top:10px;"></div>
     </div>
 
-    <!-- BYPASS MENU (HIDDEN) -->
+    <!-- BYPASS MENU -->
     <div id="bypassMenu" class="admin-section" style="display:none;">
         <h3 style="color:gold;">👑 SUPER ADMIN BYPASS</h3>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="admin-btn" onclick="secureBypass('owner')">👑 BYPASS AS OWNER</button>
-            <button class="admin-btn" onclick="secureBypass('mod1')">🛡️ BYPASS AS MOD 1</button>
-            <button class="admin-btn" onclick="secureBypass('mod2')">⚔️ BYPASS AS MOD 2</button>
-            <button class="admin-btn" onclick="resetSecureBypass()">🔄 RESET</button>
+            <button class="admin-btn" onclick="secureBypass('owner')">👑 OWNER</button>
+            <button class="admin-btn" onclick="secureBypass('mod1')">🛡️ MOD 1</button>
+            <button class="admin-btn" onclick="secureBypass('mod2')">⚔️ MOD 2</button>
+            <button class="admin-btn" onclick="resetBypass()">🔄 RESET</button>
         </div>
     </div>
 
@@ -153,257 +212,260 @@
 </div>
 
 <script>
-// ========== KONFIGURASI RAHASIA (DIENKRIPSI) ==========
-// Data ini diencode base64 biar gak keliatan langsung di source
-const ENCRYPTED_CONFIG = {
-    // owner_oxyx_2026 dalam base64
-    ownerKey: atob('b3duZXJfb3h5eF8yMDI2'),
-    // mod1_builder_2026 dalam base64
-    mod1Key: atob('bW9kMV9idWlsZGVyXzIwMjY='),
-    // mod2_helper_2026 dalam base64
-    mod2Key: atob('bW9kMl9oZWxwZXJfMjAyNg=='),
-    // Password bypass (ganti dengan punya Tuanku)
-    bypassPassword: 'OXYX_SECURE_2026'
-};
-
-const API_KEY = '$2a$10$RYz0R2fKkR23Gf1qGguLi.5Tlr.5UlfHymp1bYXB5Zhp352m4fdua';
-const BIN_ID = '69a24d2a43b1c97be9a53651';
-const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-let builds=[], chats=[], isMod=false, currentUser='', currentFilter='all';
-let bypassVerified = false;
-
-// ========== ANTI DEBUG ==========
-// Hapus console.log biar gak bisa debug
-console.log = function() {};
-console.error = function() {};
-console.warn = function() {};
-console.info = function() {};
-
-// ========== LOAD DATA ==========
-async function loadData() {
-    try {
-        const res = await fetch(API_URL + '/latest', { headers:{ 'X-Access-Key':API_KEY }});
-        const data = await res.json();
-        builds = data.record.builds || [];
-        chats = data.record.chats || [];
-        displayBuilds();
-        displayChats();
-    } catch(e){}
-}
-
-async function saveData(){
-    try {
-        await fetch(API_URL,{method:'PUT', headers:{'Content-Type':'application/json','X-Access-Key':API_KEY}, body:JSON.stringify({builds,chats})});
-        return true;
-    } catch(e){ return false;}
-}
-
-// ========== NORMAL KEY SYSTEM (PAKE ENCRYPTED KEYS) ==========
-function activateKey(){
-    const key=document.getElementById('keyInput').value;
-    const status=document.getElementById('keyStatus');
-    
-    // Compare dengan encrypted keys
-    if(key === ENCRYPTED_CONFIG.ownerKey || 
-       key === ENCRYPTED_CONFIG.mod1Key || 
-       key === ENCRYPTED_CONFIG.mod2Key){
+    // ========== KONFIGURASI SUPER RAHASIA ==========
+    // Data diencode pake kombinasi biar susah ditebak
+    const SECRETS = {
+        // owner_oxyx_2026 di-reverse trus encode
+        owner: (() => {
+            const encoded = ['6','2','0','2','_','x','y','x','o','_','r','e','n','w','o'];
+            return encoded.reverse().join('');
+        })(),
         
-        isMod=true; 
-        currentUser=key;
-        document.getElementById('modSection').style.display='block';
-        showStatus('keyStatus','✅ Key valid! Welcome','success');
-        displayChats();
-    } else {
-        showStatus('keyStatus','❌ Wrong key!','error');
-    }
-}
-
-// ========== SECURE BYPASS SYSTEM ==========
-function initiateBypass() {
-    document.getElementById('bypassPanel').style.display = 'block';
-    document.getElementById('bypassMenu').style.display = 'none';
-    document.getElementById('securePassword').value = '';
-    showBypassStatus('🔒 Masukkan password bypass', 'info');
-}
-
-function verifySecurePassword() {
-    const password = document.getElementById('securePassword').value;
-    
-    // Bandingkan dengan password yang sudah ditentukan
-    if (password === ENCRYPTED_CONFIG.bypassPassword) {
-        bypassVerified = true;
-        document.getElementById('bypassPanel').style.display = 'none';
-        document.getElementById('bypassMenu').style.display = 'block';
-        showBypassStatus('✅ Verifikasi berhasil! Pilih role', 'success');
+        // mod1_builder_2026
+        mod1: (() => {
+            const encoded = ['6','2','0','2','_','r','e','d','l','i','u','b','_','1','d','o','m'];
+            return encoded.reverse().join('');
+        })(),
         
-        // Hapus password dari memory
-        document.getElementById('securePassword').value = '';
-    } else {
-        showBypassStatus('❌ Password salah!', 'error');
-    }
-}
-
-function secureBypass(role) {
-    if (!bypassVerified) {
-        showBypassStatus('❌ Harap verifikasi password dulu!', 'error');
-        return;
-    }
-    
-    switch(role) {
-        case 'owner':
-            currentUser = ENCRYPTED_CONFIG.ownerKey;
-            break;
-        case 'mod1':
-            currentUser = ENCRYPTED_CONFIG.mod1Key;
-            break;
-        case 'mod2':
-            currentUser = ENCRYPTED_CONFIG.mod2Key;
-            break;
-    }
-    
-    isMod = true;
-    document.getElementById('modSection').style.display = 'block';
-    document.getElementById('bypassMenu').style.display = 'none';
-    showBypassStatus(`✅ Bypass berhasil sebagai ${role.toUpperCase()}!`, 'success');
-    displayChats();
-}
-
-function resetSecureBypass() {
-    isMod = false;
-    currentUser = '';
-    bypassVerified = false;
-    document.getElementById('modSection').style.display = 'none';
-    document.getElementById('bypassMenu').style.display = 'none';
-    document.getElementById('bypassPanel').style.display = 'none';
-    showBypassStatus('🔄 Bypass direset', 'success');
-}
-
-function showBypassStatus(msg, type) {
-    const el = document.getElementById('bypassStatus');
-    el.style.display = 'block';
-    el.className = 'status ' + type;
-    el.textContent = msg;
-    setTimeout(() => el.style.display = 'none', 3000);
-}
-
-function showStatus(id,msg,type){
-    const el=document.getElementById(id);
-    el.style.display='block'; el.className='status '+type; el.textContent=msg;
-    setTimeout(()=>el.style.display='none',3000);
-}
-
-// ========== CHAT FUNCTIONS ==========
-function displayChats(){
-    const box=document.getElementById('chatMessages');
-    if(!box) return;
-    let html='';
-    if(chats.length===0){
-        html='<p style="color:#666;">No messages yet</p>';
-    } else {
-        chats.forEach(c => {
-            html+=`<div class="chat-message"><b>${c.user}:</b> ${c.msg}</div>`;
-        });
-    }
-    box.innerHTML=html;
-    box.scrollTop = box.scrollHeight;
-}
-
-async function sendChat(){
-    if(!isMod){ alert('❌ Only moderators can chat!'); return; }
-    const msg=document.getElementById('chatInput').value.trim();
-    if(!msg) return;
-    
-    chats.push({user:currentUser,msg,time:new Date().toLocaleTimeString()});
-    
-    if(await saveData()){ 
-        document.getElementById('chatInput').value=''; 
-        await loadData();
-    } else showStatus('keyStatus','❌ Failed to send message','error');
-}
-
-// ========== PUBLISH BUILD ==========
-async function publishBuild(){
-    if(!isMod){ alert('❌ Only moderators can publish builds!'); return; }
-    const name=document.getElementById('buildName').value.trim();
-    const type=document.getElementById('buildType').value;
-    const price=parseInt(document.getElementById('buildPrice').value);
-    const desc=document.getElementById('buildDesc').value.trim();
-    const fileInput=document.getElementById('buildFile');
-    if(!name||!type||!desc||!fileInput.files[0]) { alert('Fill all fields!'); return; }
-    const file=fileInput.files[0];
-    if(!file.name.toLowerCase().endsWith('.build')){ alert('File must be .build!'); return; }
-
-    showStatus('uploadStatus','⏫ Uploading...', 'success');
-
-    const reader = new FileReader();
-    reader.onload = async function(e) {
-        builds.push({
-            id:Date.now(),
-            name,type,price,desc,
-            fileName:file.name,
-            fileData:e.target.result,
-            seller:currentUser
-        });
+        // mod2_helper_2026
+        mod2: (() => {
+            const encoded = ['6','2','0','2','_','r','e','p','l','e','h','_','2','d','o','m'];
+            return encoded.reverse().join('');
+        })(),
         
-        if(await saveData()){
-            document.getElementById('buildName').value='';
-            document.getElementById('buildPrice').value='0';
-            document.getElementById('buildDesc').value='';
-            document.getElementById('buildFile').value='';
-            showStatus('uploadStatus','✅ Build published successfully!','success');
-            await loadData();
-        } else showStatus('uploadStatus','❌ Failed to publish','error');
+        // Admin password: JawaTimur2026 (encode pake char code)
+        adminPass: String.fromCharCode(74,97,119,97,84,105,109,117,114,50,48,50,54)
     };
-    reader.readAsDataURL(file);
-}
 
-function downloadBuild(fileData,fileName){
-    if (!fileData) {
-        alert('❌ File not available!');
-        return;
+    const API_KEY = '$2a$10$RYz0R2fKkR23Gf1qGguLi.5Tlr.5UlfHymp1bYXB5Zhp352m4fdua';
+    const BIN_ID = '69a24d2a43b1c97be9a53651';
+    const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+    
+    let builds=[], chats=[], isMod=false, currentUser='', currentFilter='all';
+    let bypassVerified = false;
+
+    // ========== HAPUS SEMUA JEJAK ==========
+    // Hapus semua console
+    console = {};
+    window.console = {};
+    
+    // Hapus history
+    if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
     }
-    try {
+
+    // ========== LOAD DATA ==========
+    async function loadData() {
+        try {
+            const res = await fetch(API_URL + '/latest', { headers:{ 'X-Access-Key':API_KEY }});
+            const data = await res.json();
+            builds = data.record.builds || [];
+            chats = data.record.chats || [];
+            displayBuilds();
+            displayChats();
+        } catch(e){}
+    }
+
+    async function saveData(){
+        try {
+            await fetch(API_URL,{method:'PUT', headers:{'Content-Type':'application/json','X-Access-Key':API_KEY}, body:JSON.stringify({builds,chats})});
+            return true;
+        } catch(e){ return false;}
+    }
+
+    // ========== KEY SYSTEM ==========
+    function activateKey(){
+        const key=document.getElementById('keyInput').value;
+        const status=document.getElementById('keyStatus');
+        
+        if(key === SECRETS.owner || key === SECRETS.mod1 || key === SECRETS.mod2){
+            isMod=true; 
+            currentUser=key;
+            document.getElementById('modSection').style.display='block';
+            showStatus('keyStatus','✅ Key valid! Welcome','success');
+            displayChats();
+        } else {
+            showStatus('keyStatus','❌ Wrong key!','error');
+        }
+    }
+
+    // ========== SECURE BYPASS ==========
+    function initiateBypass() {
+        document.getElementById('bypassPanel').style.display = 'block';
+        document.getElementById('bypassMenu').style.display = 'none';
+        document.getElementById('adminPassword').value = '';
+        showBypassStatus('🔒 Masukkan password admin', 'info');
+    }
+
+    function verifyAdminPassword() {
+        const password = document.getElementById('adminPassword').value;
+        
+        if (password === SECRETS.adminPass) {
+            bypassVerified = true;
+            document.getElementById('bypassPanel').style.display = 'none';
+            document.getElementById('bypassMenu').style.display = 'block';
+            showBypassStatus('✅ Verifikasi berhasil!', 'success');
+            
+            // Hapus password
+            document.getElementById('adminPassword').value = '';
+            
+            // Randomize biar susah dilacak
+            setTimeout(() => {
+                document.getElementById('bypassMenu').style.display = 'block';
+            }, 100);
+        } else {
+            showBypassStatus('❌ Password salah!', 'error');
+        }
+    }
+
+    function secureBypass(role) {
+        if (!bypassVerified) {
+            showBypassStatus('❌ Verifikasi dulu!', 'error');
+            return;
+        }
+        
+        switch(role) {
+            case 'owner': currentUser = SECRETS.owner; break;
+            case 'mod1': currentUser = SECRETS.mod1; break;
+            case 'mod2': currentUser = SECRETS.mod2; break;
+        }
+        
+        isMod = true;
+        document.getElementById('modSection').style.display = 'block';
+        document.getElementById('bypassMenu').style.display = 'none';
+        showBypassStatus(`✅ Bypass sebagai ${role.toUpperCase()}!`, 'success');
+        displayChats();
+    }
+
+    function resetBypass() {
+        isMod = false;
+        currentUser = '';
+        bypassVerified = false;
+        document.getElementById('modSection').style.display = 'none';
+        document.getElementById('bypassMenu').style.display = 'none';
+        document.getElementById('bypassPanel').style.display = 'none';
+        showBypassStatus('🔄 Bypass direset', 'success');
+    }
+
+    function showBypassStatus(msg, type) {
+        const el = document.getElementById('bypassStatus');
+        el.style.display = 'block';
+        el.className = 'status ' + type;
+        el.textContent = msg;
+        setTimeout(() => el.style.display = 'none', 3000);
+    }
+
+    function showStatus(id,msg,type){
+        const el=document.getElementById(id);
+        el.style.display='block'; el.className='status '+type; el.textContent=msg;
+        setTimeout(()=>el.style.display='none',3000);
+    }
+
+    // ========== CHAT ==========
+    function displayChats(){
+        const box=document.getElementById('chatMessages');
+        if(!box) return;
+        let html='';
+        if(chats.length===0){
+            html='<p style="color:#666;">No messages yet</p>';
+        } else {
+            chats.forEach(c => {
+                html+=`<div class="chat-message"><b>${c.user}:</b> ${c.msg}</div>`;
+            });
+        }
+        box.innerHTML=html;
+        box.scrollTop = box.scrollHeight;
+    }
+
+    async function sendChat(){
+        if(!isMod){ alert('❌ Only moderators can chat!'); return; }
+        const msg=document.getElementById('chatInput').value.trim();
+        if(!msg) return;
+        
+        chats.push({user:currentUser,msg,time:new Date().toLocaleTimeString()});
+        
+        if(await saveData()){ 
+            document.getElementById('chatInput').value=''; 
+            await loadData();
+        }
+    }
+
+    // ========== PUBLISH BUILD ==========
+    async function publishBuild(){
+        if(!isMod){ alert('❌ Only moderators can publish builds!'); return; }
+        const name=document.getElementById('buildName').value.trim();
+        const type=document.getElementById('buildType').value;
+        const price=parseInt(document.getElementById('buildPrice').value);
+        const desc=document.getElementById('buildDesc').value.trim();
+        const fileInput=document.getElementById('buildFile');
+        if(!name||!type||!desc||!fileInput.files[0]) { alert('Fill all fields!'); return; }
+        const file=fileInput.files[0];
+        if(!file.name.toLowerCase().endsWith('.build')){ alert('File must be .build!'); return; }
+
+        showStatus('uploadStatus','⏫ Uploading...', 'success');
+
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            builds.push({
+                id:Date.now(),
+                name,type,price,desc,
+                fileName:file.name,
+                fileData:e.target.result,
+                seller:currentUser
+            });
+            
+            if(await saveData()){
+                document.getElementById('buildName').value='';
+                document.getElementById('buildPrice').value='0';
+                document.getElementById('buildDesc').value='';
+                document.getElementById('buildFile').value='';
+                showStatus('uploadStatus','✅ Build published!','success');
+                await loadData();
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function downloadBuild(fileData,fileName){
         const link=document.createElement('a'); 
         link.href=fileData; 
         link.download=fileName;
         document.body.appendChild(link); 
         link.click();
         setTimeout(()=>document.body.removeChild(link),1000);
-    } catch (error) {
-        alert('❌ Download failed: ' + error.message);
     }
-}
 
-function filterBuilds(filter,evt){
-    currentFilter=filter;
-    document.querySelectorAll('.sort-btn').forEach(btn=>btn.classList.remove('active'));
-    if(evt) evt.currentTarget.classList.add('active');
-    displayBuilds();
-}
+    function filterBuilds(filter,evt){
+        currentFilter=filter;
+        document.querySelectorAll('.sort-btn').forEach(btn=>btn.classList.remove('active'));
+        if(evt) evt.currentTarget.classList.add('active');
+        displayBuilds();
+    }
 
-function displayBuilds(){
-    const grid=document.getElementById('marketplace');
-    let filtered=builds;
-    if(currentFilter==='free') filtered=builds.filter(b=>b.price===0);
-    if(currentFilter==='premium') filtered=builds.filter(b=>b.price>=90&&b.price<=100);
-    if(filtered.length===0){ grid.innerHTML='<p style="text-align:center;color:#666;">No builds available</p>'; return;}
-    let html='';
-    filtered.slice().reverse().forEach(b=>{
-        const isFree=b.price===0; const isPremium=b.price>=90&&b.price<=100;
-        let cardClass=isFree?'free':(isPremium?'premium':'');
-        html+=`<div class="build-card ${cardClass}">
-            <h3>${b.name}</h3><div>${b.type}</div>
-            <div class="build-price">💰 ${b.price} Robux</div>
-            <p>${b.desc}</p>
-            <div style="margin-top:10px;"><small>Seller: ${b.seller}</small></div>
-            ${b.fileData?`<button class="download-btn" onclick="downloadBuild('${b.fileData}','${b.fileName}')">⬇️ DOWNLOAD ${b.fileName}</button>`:''}
-        </div>`;
-    });
-    grid.innerHTML=html;
-}
+    function displayBuilds(){
+        const grid=document.getElementById('marketplace');
+        let filtered=builds;
+        if(currentFilter==='free') filtered=builds.filter(b=>b.price===0);
+        if(currentFilter==='premium') filtered=builds.filter(b=>b.price>=90&&b.price<=100);
+        if(filtered.length===0){ grid.innerHTML='<p style="text-align:center;color:#666;">No builds available</p>'; return;}
+        
+        let html='';
+        filtered.slice().reverse().forEach(b=>{
+            const isFree=b.price===0; const isPremium=b.price>=90&&b.price<=100;
+            let cardClass=isFree?'free':(isPremium?'premium':'');
+            html+=`<div class="build-card ${cardClass}">
+                <h3>${b.name}</h3><div>${b.type}</div>
+                <div class="build-price">💰 ${b.price} Robux</div>
+                <p>${b.desc}</p>
+                <div><small>Seller: ${b.seller}</small></div>
+                ${b.fileData?`<button class="download-btn" onclick="downloadBuild('${b.fileData}','${b.fileName}')">⬇️ DOWNLOAD</button>`:''}
+            </div>`;
+        });
+        grid.innerHTML=html;
+    }
 
-setInterval(loadData,3000);
-loadData();
+    setInterval(loadData,3000);
+    loadData();
 </script>
 </body>
 </html>
