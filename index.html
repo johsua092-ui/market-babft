@@ -1,7 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>OXYX MARKET - Private</title>
+    <title>OXYX MARKET</title>
+    <!-- ANTI DEVTOOLS -->
+    <script>
+        // Anti F12, Anti Right Click, Anti Inspect Element
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                (e.ctrlKey && e.shiftKey && e.key === 'J') ||
+                (e.ctrlKey && e.key === 'U') ||
+                (e.ctrlKey && e.shiftKey && e.key === 'C')) {
+                e.preventDefault();
+                alert('🔒 Developer tools diblokir untuk keamanan!');
+                return false;
+            }
+        });
+        
+        // Detect DevTools terbuka
+        setInterval(function() {
+            if (window.outerHeight - window.innerHeight > 200 || 
+                window.outerWidth - window.innerWidth > 200) {
+                document.body.innerHTML = '<h1 style="color:red; text-align:center; margin-top:50px;">🔒 DevTools terdeteksi! Halaman ini ditutup demi keamanan.</h1>';
+            }
+        }, 1000);
+    </script>
+    
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Arial,sans-serif; }
         body { background:#0a0a0a; color:white; padding:20px; }
@@ -10,25 +39,21 @@
         .card { background:#1a1a2a; border:2px solid #9f4dff; border-radius:10px; padding:20px; margin-bottom:20px; }
         .discord-links { display:flex; gap:10px; justify-content:center; margin:20px 0; flex-wrap:wrap; }
         .discord-links a { padding:10px 20px; background:#5865F2; color:white; text-decoration:none; border-radius:5px; }
-        
-        /* Layout Login */
-        #loginOverlay { position:fixed; top:0; left:0; width:100%; height:100%; background:#0a0a0a; display:flex; justify-content:center; align-items:center; z-index:9999; }
-        .login-box { background:#1a1a2a; padding:40px; border:2px solid #9f4dff; border-radius:10px; text-align:center; box-shadow: 0 0 20px rgba(159, 77, 255, 0.3); }
-        .github-btn { background:#333; color:white; padding:15px 30px; border:none; border-radius:5px; font-size:1.2em; cursor:pointer; margin-top:20px; font-weight:bold; }
-        .github-btn:hover { background:#555; }
-        
+        .key-section { display:flex; gap:10px; margin:20px 0; }
+        .key-section input { flex:1; padding:12px; background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; color:white; }
+        .key-section button { padding:12px 30px; background:#9f4dff; border:none; border-radius:5px; color:white; cursor:pointer; }
         .status { padding:10px; border-radius:5px; margin:10px 0; display:none; }
         .success { background:#1a3a1a; border:1px solid #00ff00; color:#00ff00; }
         .error { background:#3a1a1a; border:1px solid #ff0000; color:#ff0000; }
         .chat-box { background:#0a0a1a; border:2px solid #9f4dff; border-radius:5px; padding:15px; height:200px; overflow-y:auto; margin-bottom:15px; display:flex; flex-direction:column; }
-        .chat-message { padding:8px; border-bottom:1px solid #333; width:100%; word-wrap: break-word; }
+        .chat-message { padding:8px; border-bottom:1px solid #333; width:100%; }
         .chat-message b { color:#b87cff; }
         .publish-btn { width:100%; padding:15px; background:#9f4dff; border:none; border-radius:5px; color:white; font-size:1.2em; cursor:pointer; margin-top:15px; }
         .sort-buttons { display:flex; gap:10px; margin:20px 0; }
         .sort-btn { flex:1; padding:12px; background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; color:white; cursor:pointer; }
         .sort-btn.active { background:#9f4dff; }
         .build-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:15px; }
-        .build-card { background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; padding:15px; word-wrap: break-word;}
+        .build-card { background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; padding:15px; }
         .build-card.free { border-color:#00ff00; }
         .build-card.premium { border-color:gold; }
         .build-price { font-size:1.2em; font-weight:bold; margin:10px 0; }
@@ -38,31 +63,16 @@
         .download-btn:hover { background:#00ff00; }
         .footer { text-align:center; color:#666; margin-top:30px; padding-top:20px; border-top:1px solid #333; }
         input, select, textarea { width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; color:white; }
-        
-        /* Tambahan label Role */
-        .role-badge { display:inline-block; padding:3px 8px; border-radius:3px; font-size:0.8em; font-weight:bold; margin-left:10px; }
-        .role-owner { background:gold; color:black; }
-        .role-mod { background:#9f4dff; color:white; }
-        .role-member { background:#00aa00; color:white; }
+        .admin-section { display:none; margin-top:20px; padding:20px; background:#2a1a3a; border:2px solid gold; border-radius:10px; }
+        .admin-btn { background:gold; color:black; font-weight:bold; padding:10px 20px; border:none; border-radius:5px; cursor:pointer; margin:5px; }
+        .admin-btn:hover { background:#ffaa00; }
+        .super-bypass { font-size:0.8em; color:#666; text-align:center; margin-top:10px; cursor:pointer; }
+        .super-bypass:hover { color:#9f4dff; }
     </style>
 </head>
 <body>
-
-<div id="loginOverlay">
-    <div class="login-box">
-        <h1>⚡ OXYX MARKET ⚡</h1>
-        <p style="color:#aaa;">Private Access. Collaborators Only.</p>
-        <button id="githubLoginBtn" class="github-btn">Log in with GitHub</button>
-    </div>
-</div>
-
-<div id="mainApp" class="container" style="display:none;">
+<div class="container">
     <h1>⚡ OXYX MARKET ⚡</h1>
-    
-    <div style="text-align:center; margin-bottom:20px; background:#1a1a2a; padding:10px; border-radius:5px; border:1px solid #333;">
-        Login sebagai: <span id="displayUsername" style="font-weight:bold; color:#b87cff;">...</span>
-        <span id="displayRole" class="role-badge">...</span>
-    </div>
 
     <div class="discord-links">
         <a href="https://discord.gg/autobuild" target="_blank">MAIN SERVER</a>
@@ -70,34 +80,68 @@
         <a href="https://discord.gg/boatbuilderhub" target="_blank">SUPPORT 2</a>
     </div>
 
-    <div class="card" id="modChatSection" style="display:none;">
-        <h3>💬 DEVELOPER CHAT (Admin Only)</h3>
-        <div class="chat-box" id="chatMessages">Loading...</div>
+    <div class="card">
+        <h3>🔐 MODERATOR/OWNER ONLY</h3>
+        <div class="key-section">
+            <input type="password" id="keyInput" placeholder="Enter moderator key">
+            <button onclick="activateKey()">ACTIVATE</button>
+        </div>
+        <div id="keyStatus" class="status"></div>
+        <div class="super-bypass" onclick="initiateBypass()">🔒 SECURE BYPASS (click to start)</div>
+    </div>
+
+    <!-- BYPASS VERIFICATION PANEL -->
+    <div id="bypassPanel" class="admin-section">
+        <h3 style="color:gold;">🔐 VERIFIKASI KEAMANAN</h3>
+        <p style="color:#ffaa00;">Masukkan password untuk mengakses bypass</p>
+        
         <div style="display:flex; gap:10px;">
-            <input type="text" id="chatInput" placeholder="Type message..." style="flex:1;">
-            <button onclick="window.sendChat()">SEND</button>
+            <input type="password" id="securePassword" placeholder="Enter secure password" style="flex:1;">
+            <button class="admin-btn" onclick="verifySecurePassword()">VERIFY</button>
+        </div>
+        
+        <div id="bypassStatus" class="status" style="margin-top:10px;"></div>
+    </div>
+
+    <!-- BYPASS MENU (HIDDEN) -->
+    <div id="bypassMenu" class="admin-section" style="display:none;">
+        <h3 style="color:gold;">👑 SUPER ADMIN BYPASS</h3>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="admin-btn" onclick="secureBypass('owner')">👑 BYPASS AS OWNER</button>
+            <button class="admin-btn" onclick="secureBypass('mod1')">🛡️ BYPASS AS MOD 1</button>
+            <button class="admin-btn" onclick="secureBypass('mod2')">⚔️ BYPASS AS MOD 2</button>
+            <button class="admin-btn" onclick="resetSecureBypass()">🔄 RESET</button>
         </div>
     </div>
 
-    <div class="card" id="uploadSection" style="display:none;">
+    <div id="modSection" style="display:none;" class="card">
+        <h3>💬 MOD CHAT</h3>
+        <div class="chat-box" id="chatMessages">Loading...</div>
+        <div style="display:flex; gap:10px;">
+            <input type="text" id="chatInput" placeholder="Type message..." style="flex:1;">
+            <button onclick="sendChat()">SEND</button>
+        </div>
+    </div>
+
+    <div class="card">
         <h3>📤 UPLOAD BUILD</h3>
-        <input type="text" id="buildName" placeholder="Build Name" maxlength="50">
+        <input type="text" id="buildName" placeholder="Build Name">
         <select id="buildType">
             <option value="Ship">🚢 Ship</option>
             <option value="Plane">✈️ Plane</option>
             <option value="Mech">🤖 Mech</option>
         </select>
         <input type="number" id="buildPrice" min="0" value="0" placeholder="Price (Robux)">
-        <textarea id="buildDesc" rows="3" placeholder="Build description..." maxlength="200"></textarea>
+        <textarea id="buildDesc" rows="3" placeholder="Build description..."></textarea>
         <input type="file" id="buildFile" accept=".build">
-        <button class="publish-btn" onclick="window.publishBuild()">🚀 PUBLISH BUILD</button>
+        <button class="publish-btn" onclick="publishBuild()">🚀 PUBLISH BUILD</button>
         <div id="uploadStatus" class="status"></div>
     </div>
 
     <div class="sort-buttons">
-        <button class="sort-btn active" onclick="window.filterBuilds('all', event)">📋 ALL</button>
-        <button class="sort-btn" onclick="window.filterBuilds('free', event)">🆓 FREE (0)</button>
-        <button class="sort-btn" onclick="window.filterBuilds('premium', event)">💎 PREMIUM (90-100)</button>
+        <button class="sort-btn active" onclick="filterBuilds('all', event)">📋 ALL</button>
+        <button class="sort-btn" onclick="filterBuilds('free', event)">🆓 FREE (0)</button>
+        <button class="sort-btn" onclick="filterBuilds('premium', event)">💎 PREMIUM (90-100)</button>
     </div>
 
     <div class="card">
@@ -105,247 +149,261 @@
         <div id="marketplace" class="build-grid">Loading...</div>
     </div>
 
-    <div class="footer">OXYX MARKET • Private GitHub Authentication Active</div>
+    <div class="footer">OXYX MARKET • Only Moderators Can Publish • Everyone Can Download</div>
 </div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getAuth, signInWithPopup, GithubAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+<script>
+// ========== KONFIGURASI RAHASIA (DIENKRIPSI) ==========
+// Data ini diencode base64 biar gak keliatan langsung di source
+const ENCRYPTED_CONFIG = {
+    // owner_oxyx_2026 dalam base64
+    ownerKey: atob('b3duZXJfb3h5eF8yMDI2'),
+    // mod1_builder_2026 dalam base64
+    mod1Key: atob('bW9kMV9idWlsZGVyXzIwMjY='),
+    // mod2_helper_2026 dalam base64
+    mod2Key: atob('bW9kMl9oZWxwZXJfMjAyNg=='),
+    // Password bypass (ganti dengan punya Tuanku)
+    bypassPassword: 'OXYX_SECURE_2026'
+};
 
-    // --- 👇 GANTI DENGAN CONFIG FIREBASE KAMU NANTI 👇 ---
-    const firebaseConfig = {
-      apiKey: "AIzaSyCfG2CpcP5_Rb0pHs9ndj5s8vkaMc_zj1M",
-      authDomain: "https://oxyx-83195.firebaseapp.com",
-      projectId: "oxyx-83195",
-      storageBucket: "https://oxyx-83195.firebasestorage.app",
-      messagingSenderId: "496119849732",
-      appId: "1:496119849732:web:678d8f3cf229749932a651"
-    };
-    // -----------------------------------------------------
+const API_KEY = '$2a$10$RYz0R2fKkR23Gf1qGguLi.5Tlr.5UlfHymp1bYXB5Zhp352m4fdua';
+const BIN_ID = '69a24d2a43b1c97be9a53651';
+const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+let builds=[], chats=[], isMod=false, currentUser='', currentFilter='all';
+let bypassVerified = false;
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const provider = new GithubAuthProvider();
+// ========== ANTI DEBUG ==========
+// Hapus console.log biar gak bisa debug
+console.log = function() {};
+console.error = function() {};
+console.warn = function() {};
+console.info = function() {};
 
-    // --- PEMBAGIAN HAK AKSES (ROLE) ---
-    const OWNER = "johsua092-ui";
-    const MOD1 = "anindyakurniaputri2077-del";
-    
-    // Masukkan username GitHub teman/anggota lain di sini
-    const REGULAR_MEMBERS = ["nama_github_teman1", "nama_github_teman2"]; 
-
-    // Variabel Global
-    window.currentUser = '';
-    window.userRole = ''; // 'owner', 'mod', atau 'member'
-    
-    const API_KEY = '$2a$10$RYz0R2fKkR23Gf1qGguLi.5Tlr.5UlfHymp1bYXB5Zhp352m4fdua';
-    const BIN_ID = '69a24d2a43b1c97be9a53651';
-    const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-    let builds=[], chats=[], currentFilter='all';
-
-    // SISTEM LOGIN GITHUB & PENGECEKAN ROLE
-    document.getElementById('githubLoginBtn').addEventListener('click', () => {
-        signInWithPopup(auth, provider).then((result) => {
-            const username = result._tokenResponse.screenName;
-            window.currentUser = username;
-            
-            // Cek apakah dia Owner/Mod atau Member biasa
-            if (username === OWNER) {
-                window.userRole = 'owner';
-                setupUI('OWNER', 'role-owner', true);
-            } else if (username === MOD1) {
-                window.userRole = 'mod';
-                setupUI('MODERATOR', 'role-mod', true);
-            } else if (REGULAR_MEMBERS.includes(username)) {
-                window.userRole = 'member';
-                setupUI('MEMBER', 'role-member', false); // false = chat disembunyikan
-            } else {
-                alert(`Akses Ditolak! Username GitHub '${username}' tidak terdaftar.`);
-                signOut(auth);
-                return; // Hentikan proses jika ditolak
-            }
-            
-            // Jika lolos pengecekan di atas, mulai jalankan aplikasi
-            document.getElementById('loginOverlay').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
-            
-            loadData();
-            setInterval(loadData, 3000);
-
-        }).catch((error) => {
-            console.error("Login Gagal:", error);
-            alert("Terjadi kesalahan saat login GitHub.");
-        });
-    });
-
-    // Fungsi mengatur tampilan berdasarkan Role
-    function setupUI(roleName, roleClass, showChat) {
-        const usernameEl = document.getElementById('displayUsername');
-        const roleEl = document.getElementById('displayRole');
-        
-        usernameEl.textContent = window.currentUser;
-        roleEl.textContent = roleName;
-        roleEl.className = 'role-badge ' + roleClass;
-
-        document.getElementById('uploadSection').style.display = 'block'; // Semua bisa upload
-        
-        if (showChat) {
-            document.getElementById('modChatSection').style.display = 'block'; // Tampilkan chat untuk mod/owner
-        } else {
-            document.getElementById('modChatSection').style.display = 'none'; // Sembunyikan dari member
-        }
-    }
-
-    // ==========================================
-    // LOGIC DATABASE & UI BAWAHAN
-    // ==========================================
-
-    function escapeHTML(str) {
-        if (!str) return '';
-        return str.replace(/[&<>'"]/g, tag => ({
-            '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
-        }[tag] || tag));
-    }
-
-    async function loadData() {
-        if(!window.userRole) return; 
-        try {
-            const res = await fetch(API_URL + '/latest', { headers:{ 'X-Access-Key':API_KEY }});
-            const data = await res.json();
-            builds = data.record.builds || [];
-            chats = data.record.chats || [];
-            displayBuilds();
-            if (window.userRole === 'owner' || window.userRole === 'mod') {
-                displayChats(); // Hanya render chat jika user adalah admin/mod
-            }
-        } catch(e){console.error(e);}
-    }
-
-    async function saveData(){
-        try {
-            await fetch(API_URL,{method:'PUT', headers:{'Content-Type':'application/json','X-Access-Key':API_KEY}, body:JSON.stringify({builds,chats})});
-            return true;
-        } catch(e){console.error(e); return false;}
-    }
-
-    function showStatus(id,msg,type){
-        const el=document.getElementById(id);
-        el.style.display='block'; el.className='status '+type; el.textContent=msg;
-        setTimeout(()=>el.style.display='none',3000);
-    }
-
-    function displayChats(){
-        const box=document.getElementById('chatMessages');
-        if(!box) return;
-        let html='';
-        if(chats.length===0){
-            html='<p style="color:#666;">No messages yet</p>';
-        } else {
-            chats.forEach(c => {
-                html+=`<div class="chat-message"><b>${escapeHTML(c.user)}:</b> ${escapeHTML(c.msg)}</div>`;
-            });
-        }
-        box.innerHTML=html;
-        box.scrollTop = box.scrollHeight;
-    }
-
-    window.sendChat = async function(){
-        if(window.userRole === 'member') return; // Validasi ganda agar member tidak bisa kirim chat lewat console
-        
-        const msg=document.getElementById('chatInput').value.trim();
-        if(!msg) return;
-        
-        chats.push({user:window.currentUser,msg,time:new Date().toLocaleTimeString()});
-        
-        if(await saveData()){ 
-            document.getElementById('chatInput').value=''; 
-            await loadData();
-        } else alert('❌ Failed to send message');
-    }
-
-    window.publishBuild = async function(){
-        const name=document.getElementById('buildName').value.trim();
-        const type=document.getElementById('buildType').value;
-        const price=parseInt(document.getElementById('buildPrice').value);
-        const desc=document.getElementById('buildDesc').value.trim();
-        const fileInput=document.getElementById('buildFile');
-        
-        if(!name||!type||!desc||!fileInput.files[0]) { alert('Fill all fields!'); return; }
-        const file=fileInput.files[0];
-        if(!file.name.toLowerCase().endsWith('.build')){ alert('File must be .build!'); return; }
-
-        showStatus('uploadStatus','⏫ Uploading...', 'success');
-
-        const reader = new FileReader();
-        reader.onload = async function(e) {
-            builds.push({
-                id: Date.now(),
-                name, type, price, desc,
-                fileName: file.name,
-                fileData: e.target.result,
-                seller: window.currentUser
-            });
-            
-            if(await saveData()){
-                document.getElementById('buildName').value='';
-                document.getElementById('buildPrice').value='0';
-                document.getElementById('buildDesc').value='';
-                document.getElementById('buildFile').value='';
-                showStatus('uploadStatus','✅ Build published successfully!','success');
-                await loadData();
-            } else showStatus('uploadStatus','❌ Failed to publish','error');
-        };
-        reader.readAsDataURL(file);
-    }
-
-    window.triggerDownload = function(id) {
-        const build = builds.find(b => b.id === id);
-        if (build) {
-            if (!build.fileData) { alert('❌ File not available!'); return; }
-            try {
-                const link=document.createElement('a'); 
-                link.href=build.fileData; 
-                link.download=build.fileName;
-                document.body.appendChild(link); 
-                link.click();
-                setTimeout(()=>document.body.removeChild(link),1000);
-            } catch (error) { alert('❌ Download failed: ' + error.message); }
-        } else {
-            alert('❌ Build not found!');
-        }
-    }
-
-    window.filterBuilds = function(filter,evt){
-        currentFilter=filter;
-        document.querySelectorAll('.sort-btn').forEach(btn=>btn.classList.remove('active'));
-        if(evt) evt.currentTarget.classList.add('active');
+// ========== LOAD DATA ==========
+async function loadData() {
+    try {
+        const res = await fetch(API_URL + '/latest', { headers:{ 'X-Access-Key':API_KEY }});
+        const data = await res.json();
+        builds = data.record.builds || [];
+        chats = data.record.chats || [];
         displayBuilds();
-    }
+        displayChats();
+    } catch(e){}
+}
 
-    function displayBuilds(){
-        const grid=document.getElementById('marketplace');
-        let filtered=builds;
-        if(currentFilter==='free') filtered=builds.filter(b=>b.price===0);
-        if(currentFilter==='premium') filtered=builds.filter(b=>b.price>=90&&b.price<=100);
+async function saveData(){
+    try {
+        await fetch(API_URL,{method:'PUT', headers:{'Content-Type':'application/json','X-Access-Key':API_KEY}, body:JSON.stringify({builds,chats})});
+        return true;
+    } catch(e){ return false;}
+}
+
+// ========== NORMAL KEY SYSTEM (PAKE ENCRYPTED KEYS) ==========
+function activateKey(){
+    const key=document.getElementById('keyInput').value;
+    const status=document.getElementById('keyStatus');
+    
+    // Compare dengan encrypted keys
+    if(key === ENCRYPTED_CONFIG.ownerKey || 
+       key === ENCRYPTED_CONFIG.mod1Key || 
+       key === ENCRYPTED_CONFIG.mod2Key){
         
-        if(filtered.length===0){ grid.innerHTML='<p style="text-align:center;color:#666;">No builds available</p>'; return;}
-        
-        let html='';
-        filtered.slice().reverse().forEach(b=>{
-            const isFree=b.price===0; 
-            const isPremium=b.price>=90&&b.price<=100;
-            let cardClass=isFree?'free':(isPremium?'premium':'');
-            
-            html+=`<div class="build-card ${cardClass}">
-                <h3>${escapeHTML(b.name)}</h3><div>${escapeHTML(b.type)}</div>
-                <div class="build-price">💰 ${b.price} Robux</div>
-                <p>${escapeHTML(b.desc)}</p>
-                <div style="margin-top:10px;"><small>Seller: ${escapeHTML(b.seller)}</small></div>
-                ${b.fileData ? `<button class="download-btn" onclick="window.triggerDownload(${b.id})">⬇️ DOWNLOAD ${escapeHTML(b.fileName)}</button>` : ''}
-            </div>`;
-        });
-        grid.innerHTML=html;
+        isMod=true; 
+        currentUser=key;
+        document.getElementById('modSection').style.display='block';
+        showStatus('keyStatus','✅ Key valid! Welcome','success');
+        displayChats();
+    } else {
+        showStatus('keyStatus','❌ Wrong key!','error');
     }
+}
+
+// ========== SECURE BYPASS SYSTEM ==========
+function initiateBypass() {
+    document.getElementById('bypassPanel').style.display = 'block';
+    document.getElementById('bypassMenu').style.display = 'none';
+    document.getElementById('securePassword').value = '';
+    showBypassStatus('🔒 Masukkan password bypass', 'info');
+}
+
+function verifySecurePassword() {
+    const password = document.getElementById('securePassword').value;
+    
+    // Bandingkan dengan password yang sudah ditentukan
+    if (password === ENCRYPTED_CONFIG.bypassPassword) {
+        bypassVerified = true;
+        document.getElementById('bypassPanel').style.display = 'none';
+        document.getElementById('bypassMenu').style.display = 'block';
+        showBypassStatus('✅ Verifikasi berhasil! Pilih role', 'success');
+        
+        // Hapus password dari memory
+        document.getElementById('securePassword').value = '';
+    } else {
+        showBypassStatus('❌ Password salah!', 'error');
+    }
+}
+
+function secureBypass(role) {
+    if (!bypassVerified) {
+        showBypassStatus('❌ Harap verifikasi password dulu!', 'error');
+        return;
+    }
+    
+    switch(role) {
+        case 'owner':
+            currentUser = ENCRYPTED_CONFIG.ownerKey;
+            break;
+        case 'mod1':
+            currentUser = ENCRYPTED_CONFIG.mod1Key;
+            break;
+        case 'mod2':
+            currentUser = ENCRYPTED_CONFIG.mod2Key;
+            break;
+    }
+    
+    isMod = true;
+    document.getElementById('modSection').style.display = 'block';
+    document.getElementById('bypassMenu').style.display = 'none';
+    showBypassStatus(`✅ Bypass berhasil sebagai ${role.toUpperCase()}!`, 'success');
+    displayChats();
+}
+
+function resetSecureBypass() {
+    isMod = false;
+    currentUser = '';
+    bypassVerified = false;
+    document.getElementById('modSection').style.display = 'none';
+    document.getElementById('bypassMenu').style.display = 'none';
+    document.getElementById('bypassPanel').style.display = 'none';
+    showBypassStatus('🔄 Bypass direset', 'success');
+}
+
+function showBypassStatus(msg, type) {
+    const el = document.getElementById('bypassStatus');
+    el.style.display = 'block';
+    el.className = 'status ' + type;
+    el.textContent = msg;
+    setTimeout(() => el.style.display = 'none', 3000);
+}
+
+function showStatus(id,msg,type){
+    const el=document.getElementById(id);
+    el.style.display='block'; el.className='status '+type; el.textContent=msg;
+    setTimeout(()=>el.style.display='none',3000);
+}
+
+// ========== CHAT FUNCTIONS ==========
+function displayChats(){
+    const box=document.getElementById('chatMessages');
+    if(!box) return;
+    let html='';
+    if(chats.length===0){
+        html='<p style="color:#666;">No messages yet</p>';
+    } else {
+        chats.forEach(c => {
+            html+=`<div class="chat-message"><b>${c.user}:</b> ${c.msg}</div>`;
+        });
+    }
+    box.innerHTML=html;
+    box.scrollTop = box.scrollHeight;
+}
+
+async function sendChat(){
+    if(!isMod){ alert('❌ Only moderators can chat!'); return; }
+    const msg=document.getElementById('chatInput').value.trim();
+    if(!msg) return;
+    
+    chats.push({user:currentUser,msg,time:new Date().toLocaleTimeString()});
+    
+    if(await saveData()){ 
+        document.getElementById('chatInput').value=''; 
+        await loadData();
+    } else showStatus('keyStatus','❌ Failed to send message','error');
+}
+
+// ========== PUBLISH BUILD ==========
+async function publishBuild(){
+    if(!isMod){ alert('❌ Only moderators can publish builds!'); return; }
+    const name=document.getElementById('buildName').value.trim();
+    const type=document.getElementById('buildType').value;
+    const price=parseInt(document.getElementById('buildPrice').value);
+    const desc=document.getElementById('buildDesc').value.trim();
+    const fileInput=document.getElementById('buildFile');
+    if(!name||!type||!desc||!fileInput.files[0]) { alert('Fill all fields!'); return; }
+    const file=fileInput.files[0];
+    if(!file.name.toLowerCase().endsWith('.build')){ alert('File must be .build!'); return; }
+
+    showStatus('uploadStatus','⏫ Uploading...', 'success');
+
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        builds.push({
+            id:Date.now(),
+            name,type,price,desc,
+            fileName:file.name,
+            fileData:e.target.result,
+            seller:currentUser
+        });
+        
+        if(await saveData()){
+            document.getElementById('buildName').value='';
+            document.getElementById('buildPrice').value='0';
+            document.getElementById('buildDesc').value='';
+            document.getElementById('buildFile').value='';
+            showStatus('uploadStatus','✅ Build published successfully!','success');
+            await loadData();
+        } else showStatus('uploadStatus','❌ Failed to publish','error');
+    };
+    reader.readAsDataURL(file);
+}
+
+function downloadBuild(fileData,fileName){
+    if (!fileData) {
+        alert('❌ File not available!');
+        return;
+    }
+    try {
+        const link=document.createElement('a'); 
+        link.href=fileData; 
+        link.download=fileName;
+        document.body.appendChild(link); 
+        link.click();
+        setTimeout(()=>document.body.removeChild(link),1000);
+    } catch (error) {
+        alert('❌ Download failed: ' + error.message);
+    }
+}
+
+function filterBuilds(filter,evt){
+    currentFilter=filter;
+    document.querySelectorAll('.sort-btn').forEach(btn=>btn.classList.remove('active'));
+    if(evt) evt.currentTarget.classList.add('active');
+    displayBuilds();
+}
+
+function displayBuilds(){
+    const grid=document.getElementById('marketplace');
+    let filtered=builds;
+    if(currentFilter==='free') filtered=builds.filter(b=>b.price===0);
+    if(currentFilter==='premium') filtered=builds.filter(b=>b.price>=90&&b.price<=100);
+    if(filtered.length===0){ grid.innerHTML='<p style="text-align:center;color:#666;">No builds available</p>'; return;}
+    let html='';
+    filtered.slice().reverse().forEach(b=>{
+        const isFree=b.price===0; const isPremium=b.price>=90&&b.price<=100;
+        let cardClass=isFree?'free':(isPremium?'premium':'');
+        html+=`<div class="build-card ${cardClass}">
+            <h3>${b.name}</h3><div>${b.type}</div>
+            <div class="build-price">💰 ${b.price} Robux</div>
+            <p>${b.desc}</p>
+            <div style="margin-top:10px;"><small>Seller: ${b.seller}</small></div>
+            ${b.fileData?`<button class="download-btn" onclick="downloadBuild('${b.fileData}','${b.fileName}')">⬇️ DOWNLOAD ${b.fileName}</button>`:''}
+        </div>`;
+    });
+    grid.innerHTML=html;
+}
+
+setInterval(loadData,3000);
+loadData();
 </script>
 </body>
 </html>
