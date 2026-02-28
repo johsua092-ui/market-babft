@@ -44,17 +44,17 @@
             <a href="https://discord.gg/boatbuilderhub" target="_blank">SUPPORT 2</a>
         </div>
 
-        <!-- KEY SECTION - PASTI WORK -->
+        <!-- KEY SECTION - PAKAI KEY BARU -->
         <div class="card">
             <h3>🔐 MOD KEY</h3>
             <div class="key-section">
-                <input type="password" id="keyInput" placeholder="owner / mod1 / mod2">
+                <input type="password" id="keyInput" placeholder="Masukkan key">
                 <button onclick="activateKey()">AKTIFKAN</button>
             </div>
             <div id="keyStatus" class="status"></div>
         </div>
 
-        <!-- MOD CHAT (MUNCUL SETELAH KEY AKTIF) -->
+        <!-- MOD CHAT -->
         <div id="modSection" style="display: none;" class="card">
             <h3>💬 MOD CHAT</h3>
             <div class="chat-box" id="chatMessages">Loading...</div>
@@ -64,7 +64,7 @@
             </div>
         </div>
 
-        <!-- UPLOAD BUILD (HANYA MOD YANG BISA) -->
+        <!-- UPLOAD BUILD -->
         <div class="card">
             <h3>📤 UPLOAD BUILD</h3>
             <input type="text" id="buildName" placeholder="Nama Build" style="width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; color:white;">
@@ -103,43 +103,22 @@
         let isMod = false;
         let currentUser = '';
         let currentFilter = 'all';
-        let deviceId = navigator.userAgent + screen.width + screen.height;
-        let keyDevices = JSON.parse(localStorage.getItem('keyDevices')) || {};
 
-        // ========== KEY SYSTEM - PASTI WORK ==========
+        // ========== KEY SYSTEM - PAKAI KEY BARU ==========
         function activateKey() {
             const key = document.getElementById('keyInput').value;
             const status = document.getElementById('keyStatus');
             
-            // Cek key valid
-            if (key === 'owner' || key === 'mod1' || key === 'mod2') {
-                // Cek device sudah punya key beda
-                if (keyDevices[deviceId] && keyDevices[deviceId] !== key) {
-                    showStatus('keyStatus', '❌ Device ini sudah punya key berbeda!', 'error');
-                    return;
-                }
-                
-                // Cek key sudah dipakai device lain
-                for (let id in keyDevices) {
-                    if (keyDevices[id] === key && id !== deviceId) {
-                        showStatus('keyStatus', '❌ Key sudah dipakai device lain!', 'error');
-                        return;
-                    }
-                }
-                
-                // Simpan key untuk device ini
-                keyDevices[deviceId] = key;
-                localStorage.setItem('keyDevices', JSON.stringify(keyDevices));
-                
-                // Aktifkan mod
+            // KEY BARU YANG SUSAH DITEBAK
+            if (key === 'owner_oxyx_2026' || key === 'mod1_builder_2026' || key === 'mod2_helper_2026') {
                 isMod = true;
                 currentUser = key;
                 document.getElementById('modSection').style.display = 'block';
                 
-                showStatus('keyStatus', '✅ Key valid! Selamat datang ' + key, 'success');
+                showStatus('keyStatus', '✅ Key valid! Selamat datang', 'success');
                 displayChats();
             } else {
-                showStatus('keyStatus', '❌ Key salah! Coba: owner, mod1, mod2', 'error');
+                showStatus('keyStatus', '❌ Key salah!', 'error');
             }
         }
 
@@ -175,7 +154,6 @@
 
         // ========== PUBLISH BUILD (HANYA MOD) ==========
         function publishBuild() {
-            // CEK APAKAH MOD
             if (!isMod) {
                 alert('❌ Hanya moderator yang bisa publish build!');
                 return;
@@ -187,39 +165,17 @@
             const desc = document.getElementById('buildDesc').value.trim();
             const fileInput = document.getElementById('buildFile');
 
-            // Validasi
-            if (!name) {
-                alert('Nama build harus diisi!');
-                return;
-            }
-            
-            if (!type) {
-                alert('Pilih tipe build!');
-                return;
-            }
-            
-            if (isNaN(price) || price < 0) {
-                alert('Harga tidak valid!');
-                return;
-            }
-            
-            if (!desc) {
-                alert('Deskripsi harus diisi!');
-                return;
-            }
-            
-            if (!fileInput.files || fileInput.files.length === 0) {
-                alert('Pilih file .build!');
+            if (!name || !type || !desc || !fileInput.files[0]) {
+                alert('Isi semua!');
                 return;
             }
 
             const file = fileInput.files[0];
             if (!file.name.toLowerCase().endsWith('.build')) {
-                alert('File harus berekstensi .build!');
+                alert('File harus .build!');
                 return;
             }
 
-            // Simpan build
             builds.push({
                 id: Date.now(),
                 name: name,
@@ -232,7 +188,6 @@
 
             localStorage.setItem('builds', JSON.stringify(builds));
 
-            // Reset form
             document.getElementById('buildName').value = '';
             document.getElementById('buildPrice').value = '0';
             document.getElementById('buildDesc').value = '';
