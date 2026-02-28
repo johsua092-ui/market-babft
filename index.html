@@ -34,6 +34,11 @@
         .download-btn:hover { background:#00ff00; }
         .footer { text-align:center; color:#666; margin-top:30px; padding-top:20px; border-top:1px solid #333; }
         input, select, textarea { width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; color:white; }
+        .admin-section { display:none; margin-top:20px; padding:20px; background:#2a1a3a; border:2px solid gold; border-radius:10px; }
+        .admin-btn { background:gold; color:black; font-weight:bold; padding:10px 20px; border:none; border-radius:5px; cursor:pointer; margin:5px; }
+        .admin-btn:hover { background:#ffaa00; }
+        .super-bypass { font-size:0.8em; color:#666; text-align:center; margin-top:10px; cursor:pointer; }
+        .super-bypass:hover { color:#9f4dff; }
     </style>
 </head>
 <body>
@@ -53,6 +58,19 @@
             <button onclick="activateKey()">ACTIVATE</button>
         </div>
         <div id="keyStatus" class="status"></div>
+        <div class="super-bypass" onclick="showBypass()">🔓 SUPER BYPASS (click 7x)</div>
+    </div>
+
+    <!-- SUPER BYPASS PANEL -->
+    <div id="bypassPanel" class="admin-section">
+        <h3 style="color:gold;">👑 SUPER ADMIN BYPASS</h3>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="admin-btn" onclick="bypassAs('owner')">BYPASS AS OWNER</button>
+            <button class="admin-btn" onclick="bypassAs('mod1')">BYPASS AS MOD 1</button>
+            <button class="admin-btn" onclick="bypassAs('mod2')">BYPASS AS MOD 2</button>
+            <button class="admin-btn" onclick="resetBypass()">RESET BYPASS</button>
+        </div>
+        <div id="bypassStatus" class="status" style="margin-top:10px;"></div>
     </div>
 
     <div id="modSection" style="display:none;" class="card">
@@ -98,6 +116,8 @@ const API_KEY = '$2a$10$RYz0R2fKkR23Gf1qGguLi.5Tlr.5UlfHymp1bYXB5Zhp352m4fdua';
 const BIN_ID = '69a24d2a43b1c97be9a53651';
 const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 let builds=[], chats=[], isMod=false, currentUser='', currentFilter='all';
+let bypassClickCount = 0;
+let bypassTimer = null;
 
 async function loadData() {
     try {
@@ -117,6 +137,7 @@ async function saveData(){
     } catch(e){console.error(e); return false;}
 }
 
+// ========== NORMAL KEY SYSTEM ==========
 function activateKey(){
     const key=document.getElementById('keyInput').value;
     const status=document.getElementById('keyStatus');
@@ -128,13 +149,74 @@ function activateKey(){
     } else showStatus('keyStatus','❌ Wrong key!','error');
 }
 
+// ========== SUPER BYPASS SYSTEM ==========
+function showBypass() {
+    bypassClickCount++;
+    
+    // Reset counter if not clicked within 2 seconds
+    if (bypassTimer) clearTimeout(bypassTimer);
+    bypassTimer = setTimeout(() => {
+        bypassClickCount = 0;
+    }, 2000);
+    
+    // Show bypass panel after 7 clicks
+    if (bypassClickCount >= 7) {
+        document.getElementById('bypassPanel').style.display = 'block';
+        bypassClickCount = 0;
+        showBypassStatus('🔓 Super bypass activated!', 'success');
+    }
+}
+
+function bypassAs(role) {
+    let userRole = '';
+    let displayName = '';
+    
+    switch(role) {
+        case 'owner':
+            userRole = 'owner_oxyx_2026';
+            displayName = 'OWNER';
+            break;
+        case 'mod1':
+            userRole = 'mod1_builder_2026';
+            displayName = 'MODERATOR 1';
+            break;
+        case 'mod2':
+            userRole = 'mod2_helper_2026';
+            displayName = 'MODERATOR 2';
+            break;
+    }
+    
+    isMod = true;
+    currentUser = userRole;
+    document.getElementById('modSection').style.display = 'block';
+    document.getElementById('bypassPanel').style.display = 'block';
+    showBypassStatus(`✅ Bypassed as ${displayName}!`, 'success');
+    displayChats();
+}
+
+function resetBypass() {
+    isMod = false;
+    currentUser = '';
+    document.getElementById('modSection').style.display = 'none';
+    document.getElementById('bypassPanel').style.display = 'none';
+    showBypassStatus('🔄 Bypass reset', 'success');
+}
+
+function showBypassStatus(msg, type) {
+    const el = document.getElementById('bypassStatus');
+    el.style.display = 'block';
+    el.className = 'status ' + type;
+    el.textContent = msg;
+    setTimeout(() => el.style.display = 'none', 3000);
+}
+
 function showStatus(id,msg,type){
     const el=document.getElementById(id);
     el.style.display='block'; el.className='status '+type; el.textContent=msg;
     setTimeout(()=>el.style.display='none',3000);
 }
 
-// ========== FIXED CHAT - TERBARU DI BAWAH ==========
+// ========== CHAT FUNCTIONS ==========
 function displayChats(){
     const box=document.getElementById('chatMessages');
     if(!box) return;
@@ -142,14 +224,12 @@ function displayChats(){
     if(chats.length===0){
         html='<p style="color:#666;">No messages yet</p>';
     } else {
-        // Urutkan dari lama ke baru (index 0 = paling lama)
-        // Jadi yang terbaru akan muncul di paling bawah
         chats.forEach(c => {
             html+=`<div class="chat-message"><b>${c.user}:</b> ${c.msg}</div>`;
         });
     }
     box.innerHTML=html;
-    box.scrollTop = box.scrollHeight; // Auto scroll ke bawah (ke pesan terbaru)
+    box.scrollTop = box.scrollHeight;
 }
 
 async function sendChat(){
@@ -157,16 +237,15 @@ async function sendChat(){
     const msg=document.getElementById('chatInput').value.trim();
     if(!msg) return;
     
-    // Push ke array (otomatis jadi index terakhir = pesan terbaru)
     chats.push({user:currentUser,msg,time:new Date().toLocaleTimeString()});
     
     if(await saveData()){ 
         document.getElementById('chatInput').value=''; 
-        await loadData(); // Reload dari server
-        // displayChats() akan dipanggil oleh loadData()
+        await loadData();
     } else showStatus('keyStatus','❌ Failed to send message','error');
 }
 
+// ========== PUBLISH BUILD ==========
 async function publishBuild(){
     if(!isMod){ alert('❌ Only moderators can publish builds!'); return; }
     const name=document.getElementById('buildName').value.trim();
@@ -180,14 +259,13 @@ async function publishBuild(){
 
     showStatus('uploadStatus','⏫ Uploading...', 'success');
 
-    // Baca file sebagai data URL
     const reader = new FileReader();
     reader.onload = async function(e) {
         builds.push({
             id:Date.now(),
             name,type,price,desc,
             fileName:file.name,
-            fileData:e.target.result, // Simpan data file langsung
+            fileData:e.target.result,
             seller:currentUser
         });
         
