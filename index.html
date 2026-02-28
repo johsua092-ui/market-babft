@@ -1,267 +1,161 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>OXYX Market - Supabase</title>
+    <title>OXYX Market</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { background: black; color: white; font-family: Arial; padding: 20px; }
-        .box { background: #1a1a2a; border: 2px solid purple; border-radius: 10px; padding: 15px; margin: 10px 0; }
-        input, button { padding: 10px; margin: 5px; background: #333; color: white; border: 1px solid purple; border-radius: 5px; }
-        button { background: purple; cursor: pointer; }
-        h1 { color: #c800ff; }
-        .build-card { border: 1px solid purple; margin: 10px 0; padding: 10px; border-radius: 8px; }
-        .chat-message { border-bottom: 1px solid #333; padding: 5px; }
-        a { color: #9f4dff; text-decoration: none; }
+        .box { background: #1a1a2a; border: 2px solid purple; border-radius: 10px; padding: 15px; margin: 10px; }
+        button { background: purple; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; }
+        input, textarea { width: 100%; padding: 8px; margin: 5px 0; background: #333; color: white; border: 1px solid purple; }
     </style>
 </head>
 <body>
-    <h1>OXYX MARKET - SUPABASE</h1>
+    <h1>OXYX MARKET</h1>
     
-    <!-- KEY SECTION -->
     <div class="box">
         <h3>🔐 MOD KEY</h3>
         <input type="text" id="keyInput" placeholder="owner / mod1 / mod2">
         <button onclick="checkKey()">ACTIVATE</button>
         <p id="keyStatus"></p>
     </div>
-    
-    <!-- MOD SERVER -->
+
     <div id="modPanel" style="display:none;" class="box">
-        <h3 style="color:gold;">💬 MOD SERVER</h3>
-        <div id="chatBox" style="height:200px; overflow-y:auto; background:#0a0a1a; padding:10px; margin:10px 0;"></div>
-        <input type="text" id="chatMsg" placeholder="Type message" style="width:70%;">
+        <h3>💬 MOD CHAT</h3>
+        <div id="chatBox" style="height:150px; overflow:auto; background:#0a0a1a; padding:10px;"></div>
+        <input type="text" id="chatMsg" placeholder="Message">
         <button onclick="sendChat()">SEND</button>
     </div>
-    
-    <!-- UPLOAD BUILD -->
+
     <div class="box">
         <h3>📤 UPLOAD BUILD</h3>
-        <input type="text" id="buildName" placeholder="Build name"><br>
-        <input type="text" id="buildType" placeholder="Type (Ship/Plane/etc)"><br>
-        <input type="number" id="buildPrice" placeholder="Price (min 100)" min="100" value="100"><br>
-        <textarea id="buildDesc" rows="2" placeholder="Description"></textarea><br>
-        <input type="file" id="buildFile" accept=".build"><br>
+        <input type="text" id="buildName" placeholder="Name">
+        <input type="text" id="buildType" placeholder="Type">
+        <input type="number" id="buildPrice" placeholder="Price" value="100">
+        <textarea id="buildDesc" placeholder="Description"></textarea>
+        <input type="file" id="buildFile" accept=".build">
         <button onclick="publishBuild()">PUBLISH</button>
     </div>
-    
-    <!-- MARKETPLACE -->
+
     <div class="box">
         <h3>🏪 MARKETPLACE</h3>
         <div id="marketGrid"></div>
     </div>
 
     <script>
-        // ============================================
-        // SUPABASE CONFIG - PASTE PUNYA TUANKU DI SINI!
-        // ============================================
         const SUPABASE_URL = 'https://crbbdjmzybqvkjauqyxzj.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyYmJkam16eWJxdmtqYXVxeXpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjI1MTAsImV4cCI6MjA4Nzc5ODUxMH0.qO0kfhyMYcXZkhDQJRWI7YOM35AqW1EEoRZG9GdKnws';
         
-        // Init Supabase
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
-        // Variables
         let isMod = false;
         let currentUser = '';
-        
-        // ============================================
-        // LOAD DATA SAAT PERTAMA KALI
-        // ============================================
-        async function loadData() {
-            await loadBuilds();
-            await loadChats();
-        }
-        
-        // ============================================
-        // BUILD FUNCTIONS
-        // ============================================
+
         async function loadBuilds() {
-            const { data, error } = await supabase
-                .from('builds')
-                .select('*')
-                .order('id', { ascending: false });
-                
-            if (error) {
-                console.error('Error loading builds:', error);
-                return;
-            }
-            
-            displayBuilds(data || []);
-        }
-        
-        function displayBuilds(builds) {
+            const { data } = await supabase.from('builds').select('*');
             let html = '';
-            if (builds.length === 0) {
-                html = '<p style="color:#666;">Belum ada build</p>';
-            } else {
-                builds.forEach(b => {
-                    html += `<div class="build-card">
+            if (data && data.length) {
+                data.forEach(b => {
+                    html += `<div style="border:1px solid purple; margin:10px; padding:10px;">
                         <b>${b.name}</b> (${b.type}) - ${b.price} Robux<br>
-                        <small>${b.description || '-'}</small><br>
-                        <small>File: ${b.file_name}</small><br>
-                        ${b.file_url ? `<a href="${b.file_url}" download="${b.file_name}">⬇️ DOWNLOAD</a>` : ''}
-                        <br><small>Seller: ${b.seller} | ${new Date(b.created_at).toLocaleString()}</small>
+                        ${b.description}<br>
+                        File: ${b.file_name}<br>
+                        ${b.file_url ? `<a href="${b.file_url}" download>DOWNLOAD</a>` : ''}
+                        <br><small>Seller: ${b.seller}</small>
                     </div>`;
                 });
+            } else {
+                html = '<p>Belum ada build</p>';
             }
             document.getElementById('marketGrid').innerHTML = html;
         }
-        
+
+        async function loadChats() {
+            const { data } = await supabase.from('chats').select('*');
+            let html = '';
+            if (data && data.length) {
+                data.forEach(c => {
+                    html += `<div><b>${c.user_name}:</b> ${c.message}</div>`;
+                });
+            }
+            document.getElementById('chatBox').innerHTML = html;
+        }
+
         async function publishBuild() {
             let name = document.getElementById('buildName').value;
             let type = document.getElementById('buildType').value;
             let price = document.getElementById('buildPrice').value;
             let desc = document.getElementById('buildDesc').value;
             let file = document.getElementById('buildFile').files[0];
-            
+
             if (!name || !type || !price || !desc || !file) {
-                alert('Semua harus diisi!');
+                alert('Isi semua!');
                 return;
             }
-            
-            if (!file.name.toLowerCase().endsWith('.build')) {
-                alert('File harus .build!');
+
+            const fileName = Date.now() + '_' + file.name;
+            const { error: uploadError } = await supabase.storage
+                .from('build-files')
+                .upload(fileName, file);
+
+            if (uploadError) {
+                alert('Gagal upload: ' + uploadError.message);
                 return;
             }
-            
-            if (price < 100) {
-                alert('Harga minimal 100 Robux!');
-                return;
-            }
-            
-            try {
-                // Upload file ke Storage
-                const fileName = `${Date.now()}_${file.name}`;
-                const { data: fileData, error: fileError } = await supabase.storage
-                    .from('build-files')
-                    .upload(fileName, file);
-                    
-                if (fileError) throw fileError;
-                
-                // Dapatkan URL publik
-                const { data: urlData } = supabase.storage
-                    .from('build-files')
-                    .getPublicUrl(fileName);
-                
-                // Simpan data build ke database
-                const { error: dbError } = await supabase
-                    .from('builds')
-                    .insert([{
-                        id: Date.now(),
-                        name: name,
-                        type: type,
-                        price: parseInt(price),
-                        description: desc,
-                        file_name: file.name,
-                        file_url: urlData.publicUrl,
-                        seller: isMod ? currentUser : 'Guest',
-                        created_at: new Date()
-                    }]);
-                    
-                if (dbError) throw dbError;
-                
-                alert('✅ Build dipublish!');
-                document.getElementById('buildName').value = '';
-                document.getElementById('buildType').value = '';
-                document.getElementById('buildPrice').value = '100';
-                document.getElementById('buildDesc').value = '';
-                document.getElementById('buildFile').value = '';
-                
-                await loadBuilds();
-                
-            } catch (error) {
-                console.error('Error:', error);
-                alert('❌ Gagal publish: ' + error.message);
-            }
-        }
-        
-        // ============================================
-        // CHAT FUNCTIONS
-        // ============================================
-        async function loadChats() {
-            const { data, error } = await supabase
-                .from('chats')
-                .select('*')
-                .order('id', { ascending: true });
-                
-            if (error) {
-                console.error('Error loading chats:', error);
-                return;
-            }
-            
-            displayChats(data || []);
-        }
-        
-        function displayChats(chats) {
-            let html = '';
-            if (chats.length === 0) {
-                html = '<p style="color:#666;">Belum ada chat</p>';
+
+            const { data: urlData } = supabase.storage
+                .from('build-files')
+                .getPublicUrl(fileName);
+
+            const { error: dbError } = await supabase
+                .from('builds')
+                .insert([{
+                    id: Date.now(),
+                    name, type,
+                    price: parseInt(price),
+                    description: desc,
+                    file_name: file.name,
+                    file_url: urlData.publicUrl,
+                    seller: isMod ? currentUser : 'Guest'
+                }]);
+
+            if (dbError) {
+                alert('Gagal simpan: ' + dbError.message);
             } else {
-                chats.forEach(c => {
-                    html += `<div class="chat-message">
-                        <b>${c.user_name}:</b> ${c.message}
-                        <small style="float:right;">${new Date(c.created_at).toLocaleTimeString()}</small>
-                    </div>`;
-                });
+                alert('Berhasil publish!');
+                loadBuilds();
             }
-            document.getElementById('chatBox').innerHTML = html;
-            document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
         }
-        
+
         async function sendChat() {
-            if (!isMod) {
-                alert('Aktivasi dulu!');
-                return;
-            }
-            
+            if (!isMod) return alert('Aktivasi dulu!');
             let msg = document.getElementById('chatMsg').value;
             if (!msg) return;
             
-            try {
-                const { error } = await supabase
-                    .from('chats')
-                    .insert([{
-                        user_name: currentUser,
-                        message: msg,
-                        created_at: new Date()
-                    }]);
-                    
-                if (error) throw error;
-                
-                document.getElementById('chatMsg').value = '';
-                await loadChats();
-                
-            } catch (error) {
-                console.error('Error:', error);
-                alert('❌ Gagal kirim chat');
-            }
+            await supabase.from('chats').insert([{
+                user_name: currentUser,
+                message: msg
+            }]);
+            
+            document.getElementById('chatMsg').value = '';
+            loadChats();
         }
-        
-        // ============================================
-        // KEY SYSTEM
-        // ============================================
+
         function checkKey() {
             let key = document.getElementById('keyInput').value;
-            
             if (key === 'owner' || key === 'mod1' || key === 'mod2') {
                 isMod = true;
                 currentUser = key;
                 document.getElementById('modPanel').style.display = 'block';
-                document.getElementById('keyStatus').innerHTML = '✅ Activated as ' + key;
+                document.getElementById('keyStatus').innerHTML = '✅ Activated';
             } else {
-                alert('Key salah! Coba: owner, mod1, mod2');
+                alert('Key salah!');
             }
         }
-        
-        // ============================================
-        // AUTO REFRESH (biar chat realtime)
-        // ============================================
-        setInterval(loadChats, 3000);  // refresh chat tiap 3 detik
-        setInterval(loadBuilds, 5000); // refresh builds tiap 5 detik
-        
-        // Start
-        loadData();
+
+        loadBuilds();
+        loadChats();
+        setInterval(loadChats, 3000);
     </script>
 </body>
 </html>
-Add Supabase integration
