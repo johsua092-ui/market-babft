@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OXYX MARKET - FIXED</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>OXYX MARKET - MOD SERVER</title>
     <style>
         * {
             margin: 0;
@@ -15,35 +15,37 @@
         body {
             background: #0a0a0a;
             color: white;
-            padding: 20px;
+            padding: 15px;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
         
+        /* HEADER */
         .header {
             background: #1a0a2a;
             border: 3px solid #9f4dff;
             border-radius: 20px;
-            padding: 30px;
+            padding: 25px;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
         
         h1 {
             color: #c800ff;
-            font-size: 3em;
+            font-size: 2.5em;
             margin-bottom: 10px;
             text-shadow: 2px 2px 0 #b300ff;
         }
         
         .subtitle {
             color: #b07cff;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
+        /* DISCORD */
         .discord-container {
             display: flex;
             gap: 10px;
@@ -54,165 +56,236 @@
         .discord-btn {
             background: #5865F2;
             color: white;
-            padding: 12px 25px;
+            padding: 10px 20px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: bold;
+            font-size: 0.9em;
         }
         
-        .hwid-box {
-            background: #1a1a2a;
+        /* KEY SECTION */
+        .key-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .key-card {
+            background: #1a0a2a;
             border: 2px solid #9f4dff;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 20px auto;
-            max-width: 500px;
+            border-radius: 15px;
+            padding: 20px;
             text-align: center;
         }
         
-        .hwid-value {
-            color: #00ffaa;
-            font-family: monospace;
+        .key-card.owner {
+            border-color: gold;
+        }
+        
+        .key-title {
+            color: #c800ff;
             font-size: 1.2em;
-            background: #0a0a1a;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .key-input {
+            width: 100%;
             padding: 10px;
+            background: #0a0a1a;
+            border: 2px solid #9f4dff;
+            color: white;
             border-radius: 8px;
+            margin: 10px 0;
+        }
+        
+        .key-btn {
+            width: 100%;
+            padding: 10px;
+            background: #9f4dff;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .key-btn:disabled {
+            background: #444;
+            cursor: not-allowed;
+        }
+        
+        .hwid-status {
+            font-size: 0.8em;
             margin-top: 10px;
+            color: #888;
             word-break: break-all;
         }
         
-        .key-section {
-            background: #1a0a2a;
-            border: 2px solid #9f4dff;
-            border-radius: 50px;
-            padding: 10px;
-            display: flex;
-            gap: 10px;
-            max-width: 500px;
-            margin: 20px auto;
-        }
-        
-        .key-section input {
-            flex: 1;
-            padding: 12px;
-            background: #0a0a1a;
-            border: none;
-            color: white;
-            border-radius: 50px;
-        }
-        
-        .key-section button {
-            background: #9f4dff;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        .title {
-            color: #c800ff;
-            font-size: 2em;
-            text-align: center;
-            margin: 30px 0 20px;
-        }
-        
-        .mod-grid {
+        /* MAIN LAYOUT */
+        .main-layout {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: 1fr 2fr;
             gap: 20px;
             margin: 20px 0;
         }
         
-        .mod-card {
+        /* MOD SERVER (CHAT) */
+        .mod-server {
             background: #1a0a2a;
             border: 2px solid #9f4dff;
-            border-radius: 20px;
-            padding: 25px;
-            text-align: center;
-        }
-        
-        .mod-card.owner {
-            border-color: gold;
-        }
-        
-        .avatar {
-            font-size: 4em;
-            margin-bottom: 10px;
-        }
-        
-        .name {
-            color: #c800ff;
-            font-size: 1.5em;
-            font-weight: bold;
-        }
-        
-        .role {
-            color: #b07cff;
-            margin: 10px 0;
-        }
-        
-        .badge {
-            background: #9f4dff;
-            color: white;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            display: inline-block;
-        }
-        
-        .edit-panel {
-            background: #1a0a2a;
-            border: 2px solid #b300ff;
-            border-radius: 20px;
+            border-radius: 15px;
             padding: 20px;
-            margin: 20px 0;
         }
         
-        .edit-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+        .server-title {
+            color: #c800ff;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .edit-item {
-            margin-bottom: 10px;
+        .online-status {
+            color: #00ff00;
+            font-size: 0.7em;
         }
         
-        .edit-item label {
-            display: block;
-            color: #b07cff;
+        .chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            background: #0a0a1a;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #9f4dff;
+        }
+        
+        .chat-message {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #1a1a2a;
+            border-radius: 8px;
+            border-left: 3px solid #9f4dff;
+        }
+        
+        .chat-sender {
+            color: #c800ff;
+            font-weight: bold;
             margin-bottom: 5px;
         }
         
-        .edit-item input {
-            width: 100%;
-            padding: 10px;
+        .chat-time {
+            color: #666;
+            font-size: 0.7em;
+            float: right;
+        }
+        
+        .chat-text {
+            color: #b07cff;
+        }
+        
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 12px;
             background: #0a0a1a;
             border: 2px solid #9f4dff;
             color: white;
             border-radius: 8px;
         }
         
-        .save-btn {
-            width: 100%;
-            padding: 15px;
+        .chat-send {
+            padding: 12px 20px;
             background: #9f4dff;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             color: white;
-            font-size: 1.1em;
             font-weight: bold;
             cursor: pointer;
+        }
+        
+        /* MOD TRANSACTIONS */
+        .mod-transactions {
+            margin-top: 20px;
+        }
+        
+        .transaction-card {
+            background: #1a1a2a;
+            border: 2px solid #9f4dff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .transaction-header {
+            display: flex;
+            justify-content: space-between;
+            color: #c800ff;
+            margin-bottom: 5px;
+        }
+        
+        .transaction-detail {
+            color: #b07cff;
+            font-size: 0.9em;
+        }
+        
+        /* MARKETPLACE */
+        .marketplace {
+            background: #1a0a2a;
+            border: 2px solid #9f4dff;
+            border-radius: 15px;
+            padding: 20px;
+        }
+        
+        .build-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
             margin-top: 15px;
         }
         
+        .build-card {
+            background: #0a0a1a;
+            border: 2px solid #9f4dff;
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .build-name {
+            color: #c800ff;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .build-price {
+            color: #ffaa00;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .build-file {
+            background: #1a1a2a;
+            padding: 5px;
+            border-radius: 5px;
+            color: #b07cff;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+        
+        /* UPLOAD SECTION */
         .upload-section {
             background: #1a0a2a;
             border: 2px solid #9f4dff;
-            border-radius: 20px;
-            padding: 25px;
+            border-radius: 15px;
+            padding: 20px;
             margin: 20px 0;
         }
         
@@ -242,105 +315,25 @@
             padding: 10px;
         }
         
-        .file-name {
-            background: #0a0a1a;
-            border: 1px solid #9f4dff;
-            border-radius: 5px;
-            padding: 8px;
-            margin-top: 5px;
-            color: #b07cff;
-        }
-        
-        .price-note {
-            color: #ffaa00;
-            font-size: 0.8em;
-            margin-top: 5px;
-        }
-        
         .publish-btn {
             width: 100%;
-            padding: 18px;
+            padding: 15px;
             background: #9f4dff;
             border: none;
             border-radius: 10px;
             color: white;
-            font-size: 1.3em;
+            font-size: 1.2em;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 15px;
         }
         
-        .build-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-        
-        .build-card {
-            background: #1a0a2a;
-            border: 2px solid #9f4dff;
-            border-radius: 15px;
-            padding: 15px;
-        }
-        
-        .build-name {
-            color: #c800ff;
-            font-size: 1.3em;
-            font-weight: bold;
-        }
-        
-        .build-price {
-            color: #ffaa00;
-            font-weight: bold;
-            font-size: 1.2em;
-            margin: 5px 0;
-        }
-        
-        .build-file {
-            background: #0a0a1a;
-            border-left: 3px solid #9f4dff;
-            padding: 8px;
-            margin: 10px 0;
-            color: #b07cff;
-            word-break: break-all;
-        }
-        
+        /* FOOTER */
         .footer {
             text-align: center;
             padding: 20px;
             margin-top: 30px;
             border-top: 2px solid #9f4dff;
             color: #b07cff;
-        }
-        
-        .action-buttons {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .action-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 0 20px currentColor;
-        }
-        
-        .sound-btn {
-            background: #9f4dff;
-            color: white;
-        }
-        
-        .support-btn {
-            background: #ff4444;
-            color: white;
         }
         
         .notif {
@@ -357,24 +350,22 @@
         
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(0%); opacity: 1; }
         }
         
         @media (max-width: 768px) {
-            .mod-grid {
+            .key-section {
                 grid-template-columns: 1fr;
             }
-            .edit-grid {
+            .main-layout {
                 grid-template-columns: 1fr;
-            }
-            h1 {
-                font-size: 2em;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- HEADER -->
         <div class="header">
             <h1>OXYX MARKET</h1>
             <div class="subtitle">Build A Boat For Treasure • Premium Marketplace</div>
@@ -385,150 +376,155 @@
             </div>
         </div>
 
-        <!-- HWID SECTION -->
-        <div class="hwid-box">
-            <div style="color:#b07cff;">🔐 YOUR UNIQUE HWID</div>
-            <div class="hwid-value" id="hwidDisplay">GENERATING...</div>
-            <div style="color:#00ffaa; font-size:0.8em; margin-top:10px;">✅ Permanen • Tidak akan berubah</div>
-        </div>
-
-        <!-- MOD ACCESS SECTION -->
+        <!-- KEY SECTION (3 ORANG) -->
         <div class="key-section">
-            <input type="text" id="modKey" placeholder="Enter access key" autocomplete="off">
-            <button onclick="checkModKey()">UNLOCK MOD</button>
-        </div>
-        <div style="text-align:center; color:#888; margin-top:-10px;">💡 Ketik "jawa" atau masukkan key</div>
-
-        <!-- MODERATOR SECTION -->
-        <div class="title">🔰 MARKET MODERATOR 🔰</div>
-
-        <div class="mod-grid">
-            <div class="mod-card owner">
-                <div class="avatar">👑</div>
-                <div class="name">OXYX</div>
-                <div class="role">OWNER/CREATOR</div>
-                <span class="badge">🔒 FIXED</span>
+            <!-- OWNER KEY -->
+            <div class="key-card owner">
+                <div class="key-title">👑 OWNER</div>
+                <input type="password" class="key-input" id="ownerKey" placeholder="Enter owner key">
+                <button class="key-btn" onclick="activateKey('owner')" id="ownerBtn">ACTIVATE</button>
+                <div class="hwid-status" id="ownerStatus">🔒 Not activated</div>
             </div>
-            <div class="mod-card" id="mod2">
-                <div class="avatar" id="mod2Avatar">🛡️</div>
-                <div class="name" id="mod2Name">MODERATOR 1</div>
-                <div class="role" id="mod2Role">MODERATOR</div>
-                <span class="badge">✨ ACTIVE</span>
+            
+            <!-- MOD 1 KEY -->
+            <div class="key-card">
+                <div class="key-title">🛡️ MODERATOR 1</div>
+                <input type="password" class="key-input" id="mod1Key" placeholder="Enter mod 1 key">
+                <button class="key-btn" onclick="activateKey('mod1')" id="mod1Btn">ACTIVATE</button>
+                <div class="hwid-status" id="mod1Status">🔒 Not activated</div>
             </div>
-            <div class="mod-card" id="mod3">
-                <div class="avatar" id="mod3Avatar">⚔️</div>
-                <div class="name" id="mod3Name">MODERATOR 2</div>
-                <div class="role" id="mod3Role">MODERATOR</div>
-                <span class="badge">✨ ACTIVE</span>
+            
+            <!-- MOD 2 KEY -->
+            <div class="key-card">
+                <div class="key-title">⚔️ MODERATOR 2</div>
+                <input type="password" class="key-input" id="mod2Key" placeholder="Enter mod 2 key">
+                <button class="key-btn" onclick="activateKey('mod2')" id="mod2Btn">ACTIVATE</button>
+                <div class="hwid-status" id="mod2Status">🔒 Not activated</div>
             </div>
         </div>
 
-        <!-- EDIT PANEL (HIDDEN) -->
-        <div id="editPanel" style="display: none;" class="edit-panel">
-            <h3 style="color:#c800ff; text-align:center;">⚙️ EDIT MODERATOR</h3>
-            <div class="edit-grid">
-                <div class="edit-item">
-                    <label>Mod 1 Name:</label>
-                    <input type="text" id="editName2" value="MODERATOR 1">
+        <!-- MAIN LAYOUT: MOD SERVER + MARKETPLACE -->
+        <div class="main-layout">
+            <!-- LEFT: MOD SERVER (CHAT & TRANSACTIONS) -->
+            <div class="mod-server">
+                <div class="server-title">
+                    💬 MOD SERVER
+                    <span class="online-status" id="onlineStatus">🔴 OFFLINE</span>
                 </div>
-                <div class="edit-item">
-                    <label>Mod 1 Role:</label>
-                    <input type="text" id="editRole2" value="MODERATOR">
+                
+                <!-- CHAT MESSAGES -->
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-message">
+                        <div class="chat-sender">SYSTEM</div>
+                        <div class="chat-text">Welcome to MOD SERVER. Activate your key to chat.</div>
+                    </div>
                 </div>
-                <div class="edit-item">
-                    <label>Mod 1 Avatar:</label>
-                    <input type="text" id="editAvatar2" value="🛡️">
+                
+                <!-- CHAT INPUT -->
+                <div class="chat-input-area">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="Type message..." disabled>
+                    <button class="chat-send" onclick="sendChat()" id="chatSend" disabled>SEND</button>
                 </div>
-                <div class="edit-item">
-                    <label>Mod 2 Name:</label>
-                    <input type="text" id="editName3" value="MODERATOR 2">
-                </div>
-                <div class="edit-item">
-                    <label>Mod 2 Role:</label>
-                    <input type="text" id="editRole3" value="MODERATOR">
-                </div>
-                <div class="edit-item">
-                    <label>Mod 2 Avatar:</label>
-                    <input type="text" id="editAvatar3" value="⚔️">
+                
+                <!-- MOD TRANSACTIONS -->
+                <div class="mod-transactions">
+                    <h3 style="color:#c800ff; margin:20px 0 10px;">📦 MOD TRANSACTIONS</h3>
+                    <div id="transactionList"></div>
                 </div>
             </div>
-            <button class="save-btn" onclick="saveModChanges()">💾 SAVE CHANGES</button>
+            
+            <!-- RIGHT: MARKETPLACE -->
+            <div class="marketplace">
+                <h2 style="color:#c800ff;">🏪 MARKETPLACE</h2>
+                <div class="build-grid" id="buildGrid">
+                    <div style="grid-column:1/-1; text-align:center; padding:30px; color:#666;">📦 No builds yet</div>
+                </div>
+            </div>
         </div>
 
         <!-- UPLOAD SECTION -->
-        <div class="title">📤 UPLOAD BUILD 📤</div>
-
         <div class="upload-section">
+            <h2 style="color:#c800ff; margin-bottom:20px;">📤 UPLOAD BUILD</h2>
+            
             <div class="field">
-                <label>Build Name <span style="color:#ff4444;">*</span></label>
+                <label>Build Name *</label>
                 <input type="text" id="buildName" placeholder="e.g., Flying Dragon">
             </div>
             
             <div class="field">
-                <label>Type <span style="color:#ff4444;">*</span></label>
+                <label>Type *</label>
                 <select id="buildType">
-                    <option value="">-- Pilih Type Build --</option>
+                    <option value="">-- Select Type --</option>
                     <option value="Ship">🚢 Ship</option>
                     <option value="Plane">✈️ Plane</option>
                     <option value="Mech">🤖 Mech</option>
                     <option value="Vehicle">🚗 Vehicle</option>
-                    <option value="Other">🎲 Other</option>
                 </select>
             </div>
             
             <div class="field">
-                <label>Price (Robux) <span style="color:#ff4444;">*</span></label>
+                <label>Price (Robux) *</label>
                 <input type="number" id="price" min="100" value="100">
-                <div class="price-note">⚠️ Minimal harga 100 Robux</div>
             </div>
             
             <div class="field">
-                <label>Description <span style="color:#ff4444;">*</span></label>
+                <label>Description *</label>
                 <textarea id="buildDesc" rows="3" placeholder="Describe your build..."></textarea>
             </div>
             
             <div class="field">
-                <label>Build File (.build only) <span style="color:#ff4444;">*</span></label>
-                <input type="file" id="buildFile" accept=".build" onchange="updateFileName()">
-                <div id="fileNameDisplay" class="file-name">📎 No file selected</div>
-                <small style="color:#ff4444;">⚠️ Only .build files allowed</small>
+                <label>Build File (.build only) *</label>
+                <input type="file" id="buildFile" accept=".build">
             </div>
             
-            <div class="field">
-                <label>Download Link (Optional)</label>
-                <input type="url" id="downloadLink" placeholder="https://...">
-            </div>
-            
-            <button class="publish-btn" onclick="validateAndSubmit()" id="publishBtn">🚀 PUBLISH BUILD</button>
-        </div>
-
-        <!-- MARKETPLACE -->
-        <div class="title">🏪 MARKETPLACE 🏪</div>
-        <div id="buildGrid" class="build-grid">
-            <div style="grid-column:1/-1; text-align:center; padding:50px; color:#666;">📦 No builds yet</div>
+            <button class="publish-btn" onclick="publishBuild()">🚀 PUBLISH BUILD</button>
         </div>
 
         <!-- FOOTER -->
         <div class="footer">
-            <div style="color:#c800ff; font-size:1.2em;">OXYX MARKET v8.0 - KEY: jawa</div>
-            <div>Powered by GitHub • For ROBLOX BABFT</div>
+            <div style="color:#c800ff;">OXYX MARKET v9.0 - MOD SERVER</div>
+            <div>3 Keys • HWID Locked • Mod Chat</div>
         </div>
-    </div>
-
-    <!-- ACTION BUTTONS -->
-    <div class="action-buttons">
-        <button class="action-btn sound-btn" onclick="playSound()">⚛️</button>
-        <button class="action-btn support-btn" onclick="reportBug()">🐞</button>
     </div>
 
     <script>
         // ============================================
-        // OXYX MARKET - KEY: jawa
+        // OXYX MARKET - MOD SERVER SYSTEM
+        // 3 KEYS: OWNER, MOD1, MOD2
+        // HWID LOCKED
         // ============================================
         
-        let isModUnlocked = false;
+        // KEYS
+        const KEYS = {
+            owner: "owner_oxyx_2026",
+            mod1: "mod1_jawa_2026",
+            mod2: "mod2_jawa_2026"
+        };
         
-        // Generate HWID
+        // ROLES
+        const ROLES = {
+            owner: { name: "OXYX", avatar: "👑", color: "gold" },
+            mod1: { name: "MODERATOR 1", avatar: "🛡️", color: "#9f4dff" },
+            mod2: { name: "MODERATOR 2", avatar: "⚔️", color: "#9f4dff" }
+        };
+        
+        // ACTIVE USERS (HWID -> ROLE)
+        let activeUsers = JSON.parse(localStorage.getItem('oxyxActiveUsers')) || {};
+        
+        // CURRENT USER
+        let currentUser = null;
+        let currentRole = null;
+        
+        // CHAT MESSAGES
+        let chatMessages = JSON.parse(localStorage.getItem('oxyxChatMessages')) || [];
+        
+        // TRANSACTIONS
+        let transactions = JSON.parse(localStorage.getItem('oxyxModTransactions')) || [];
+        
+        // BUILDS
+        let builds = JSON.parse(localStorage.getItem('oxyxBuilds')) || [];
+        
+        // GENERATE HWID
         function generateHWID() {
             const components = [
                 navigator.userAgent,
@@ -537,10 +533,8 @@
                 screen.height,
                 screen.colorDepth,
                 navigator.hardwareConcurrency,
-                navigator.platform,
-                new Date().getTimezoneOffset()
+                navigator.platform
             ];
-            
             let hwid = '';
             const str = components.join('|');
             for (let i = 0; i < str.length; i++) {
@@ -548,84 +542,107 @@
             }
             return hwid.substring(0, 32).toUpperCase();
         }
-
-        // Tampilkan HWID
-        document.getElementById('hwidDisplay').textContent = generateHWID();
-
-        // Data moderator
-        let moderators = {
-            2: { name: "MODERATOR 1", role: "MODERATOR", avatar: "🛡️" },
-            3: { name: "MODERATOR 2", role: "MODERATOR", avatar: "⚔️" }
-        };
-
-        // Data builds
-        let builds = JSON.parse(localStorage.getItem('oxyxBuilds')) || [];
-
-        // Tampilkan builds
-        displayBuilds();
-        updateModDisplay();
-
-        // Update mod display
-        function updateModDisplay() {
-            document.getElementById('mod2Name').textContent = moderators[2].name;
-            document.getElementById('mod2Role').textContent = moderators[2].role;
-            document.getElementById('mod2Avatar').textContent = moderators[2].avatar;
-            document.getElementById('mod3Name').textContent = moderators[3].name;
-            document.getElementById('mod3Role').textContent = moderators[3].role;
-            document.getElementById('mod3Avatar').textContent = moderators[3].avatar;
+        
+        const currentHWID = generateHWID();
+        
+        // CHECK CURRENT USER
+        if (activeUsers[currentHWID]) {
+            currentRole = activeUsers[currentHWID];
+            currentUser = ROLES[currentRole];
+            updateUIForLogin();
         }
-
-        // Cek key
-        function checkModKey() {
-            const key = document.getElementById('modKey').value.toLowerCase();
-            if (key === 'jawa') {
-                isModUnlocked = true;
-                document.getElementById('editPanel').style.display = 'block';
-                document.getElementById('editName2').value = moderators[2].name;
-                document.getElementById('editRole2').value = moderators[2].role;
-                document.getElementById('editAvatar2').value = moderators[2].avatar;
-                document.getElementById('editName3').value = moderators[3].name;
-                document.getElementById('editRole3').value = moderators[3].role;
-                document.getElementById('editAvatar3').value = moderators[3].avatar;
-                showNotif('✅ Mod panel unlocked!', '#00aa00');
-            } else {
+        
+        // UPDATE UI FOR LOGIN
+        function updateUIForLogin() {
+            document.getElementById('onlineStatus').innerHTML = '🟢 ONLINE';
+            document.getElementById('onlineStatus').style.color = '#00ff00';
+            document.getElementById('chatInput').disabled = false;
+            document.getElementById('chatSend').disabled = false;
+            displayChatMessages();
+            displayTransactions();
+        }
+        
+        // ACTIVATE KEY
+        function activateKey(role) {
+            const keyInput = document.getElementById(`${role}Key`).value;
+            
+            if (keyInput !== KEYS[role]) {
                 showNotif('❌ Wrong key!', '#aa0000');
+                return;
             }
-        }
-
-        // Save mod changes
-        function saveModChanges() {
-            moderators[2] = {
-                name: document.getElementById('editName2').value || "MODERATOR 1",
-                role: document.getElementById('editRole2').value || "MODERATOR",
-                avatar: document.getElementById('editAvatar2').value || "🛡️"
-            };
-            moderators[3] = {
-                name: document.getElementById('editName3').value || "MODERATOR 2",
-                role: document.getElementById('editRole3').value || "MODERATOR",
-                avatar: document.getElementById('editAvatar3').value || "⚔️"
-            };
-            updateModDisplay();
-            showNotif('✅ Moderators updated!', '#00aa00');
-        }
-
-        // Update file name
-        function updateFileName() {
-            const fileInput = document.getElementById('buildFile');
-            const display = document.getElementById('fileNameDisplay');
-            if (fileInput.files.length > 0) {
-                display.textContent = `📎 ${fileInput.files[0].name}`;
-            } else {
-                display.textContent = '📎 No file selected';
+            
+            // Cek apakah HWID ini sudah punya role lain
+            if (activeUsers[currentHWID] && activeUsers[currentHWID] !== role) {
+                showNotif('❌ This device already has a different role!', '#aa0000');
+                return;
             }
+            
+            // Cek apakah key ini sudah dipakai HWID lain
+            let keyUsed = false;
+            for (let hwid in activeUsers) {
+                if (activeUsers[hwid] === role && hwid !== currentHWID) {
+                    keyUsed = true;
+                    break;
+                }
+            }
+            
+            if (keyUsed) {
+                showNotif('❌ This key is already used on another device!', '#aa0000');
+                return;
+            }
+            
+            // Activate
+            activeUsers[currentHWID] = role;
+            localStorage.setItem('oxyxActiveUsers', JSON.stringify(activeUsers));
+            
+            // Update UI
+            document.getElementById(`${role}Status`).innerHTML = `✅ Activated<br><small>${currentHWID.substring(0, 16)}...</small>`;
+            document.getElementById(`${role}Btn`).disabled = true;
+            
+            currentRole = role;
+            currentUser = ROLES[role];
+            
+            // Welcome message
+            addChatMessage('SYSTEM', `👑 ${currentUser.name} has joined the MOD SERVER`);
+            updateUIForLogin();
+            showNotif(`✅ Activated as ${currentUser.name}!`, '#00aa00');
         }
-
-        // Validasi dan submit
-        function validateAndSubmit() {
-            const btn = document.getElementById('publishBtn');
-            btn.disabled = true;
-            btn.textContent = '⏳ PROCESSING...';
-
-            setTimeout(() => {
-                const name = document.getElementById('buildName').value.trim();
-                const type = document.getElementById(
+        
+        // SEND CHAT
+        function sendChat() {
+            if (!currentUser) {
+                showNotif('❌ Activate your key first!', '#aa0000');
+                return;
+            }
+            
+            const message = document.getElementById('chatInput').value.trim();
+            if (!message) return;
+            
+            addChatMessage(currentUser.name, message, currentUser.avatar);
+            document.getElementById('chatInput').value = '';
+        }
+        
+        // ADD CHAT MESSAGE
+        function addChatMessage(sender, message, avatar = '') {
+            const msg = {
+                id: Date.now(),
+                sender: sender,
+                avatar: avatar,
+                message: message,
+                time: new Date().toLocaleTimeString()
+            };
+            
+            chatMessages.push(msg);
+            localStorage.setItem('oxyxChatMessages', JSON.stringify(chatMessages));
+            displayChatMessages();
+        }
+        
+        // DISPLAY CHAT
+        function displayChatMessages() {
+            const container = document.getElementById('chatMessages');
+            container.innerHTML = chatMessages.map(msg => `
+                <div class="chat-message">
+                    <div class="chat-sender">
+                        ${msg.avatar} ${msg.sender}
+                        <span class="chat-time">${msg.time}</span>
+                    <
