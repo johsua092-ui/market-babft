@@ -1,27 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>OXYX Market</title>
+    <title>OXYX Market - Supabase</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { background: black; color: white; font-family: Arial; padding: 20px; }
         .box { background: #1a1a2a; border: 2px solid purple; border-radius: 10px; padding: 15px; margin: 10px 0; }
         input, button { padding: 10px; margin: 5px; background: #333; color: white; border: 1px solid purple; border-radius: 5px; }
         button { background: purple; cursor: pointer; }
         h1 { color: #c800ff; }
+        .build-card { border: 1px solid purple; margin: 10px 0; padding: 10px; border-radius: 8px; }
+        .chat-message { border-bottom: 1px solid #333; padding: 5px; }
+        a { color: #9f4dff; text-decoration: none; }
     </style>
 </head>
 <body>
-    <h1>OXYX MARKET</h1>
+    <h1>OXYX MARKET - SUPABASE</h1>
     
     <!-- KEY SECTION -->
     <div class="box">
         <h3>🔐 MOD KEY</h3>
-        <input type="text" id="keyInput" placeholder="Enter key (owner/mod1/mod2)">
+        <input type="text" id="keyInput" placeholder="owner / mod1 / mod2">
         <button onclick="checkKey()">ACTIVATE</button>
         <p id="keyStatus"></p>
     </div>
     
-    <!-- MOD SERVER (HIDDEN) -->
+    <!-- MOD SERVER -->
     <div id="modPanel" style="display:none;" class="box">
         <h3 style="color:gold;">💬 MOD SERVER</h3>
         <div id="chatBox" style="height:200px; overflow-y:auto; background:#0a0a1a; padding:10px; margin:10px 0;"></div>
@@ -33,7 +37,9 @@
     <div class="box">
         <h3>📤 UPLOAD BUILD</h3>
         <input type="text" id="buildName" placeholder="Build name"><br>
+        <input type="text" id="buildType" placeholder="Type (Ship/Plane/etc)"><br>
         <input type="number" id="buildPrice" placeholder="Price (min 100)" min="100" value="100"><br>
+        <textarea id="buildDesc" rows="2" placeholder="Description"></textarea><br>
         <input type="file" id="buildFile" accept=".build"><br>
         <button onclick="publishBuild()">PUBLISH</button>
     </div>
@@ -45,87 +51,70 @@
     </div>
 
     <script>
-        // DATA
-        let builds = JSON.parse(localStorage.getItem('builds')) || [];
-        let messages = JSON.parse(localStorage.getItem('messages')) || [];
+        // ============================================
+        // SUPABASE CONFIG - PASTE PUNYA TUANKU DI SINI!
+        // ============================================
+        const SUPABASE_URL = 'https://crbbdjmzybqvkjauqyxzj.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyYmJkam16eWJxdmtqYXVxeXpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjI1MTAsImV4cCI6MjA4Nzc5ODUxMH0.qO0kfhyMYcXZkhDQJRWI7YOM35AqW1EEoRZG9GdKnws';
+        
+        // Init Supabase
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        // Variables
         let isMod = false;
         let currentUser = '';
         
-        // TAMPILKAN BUILD
-        function showBuilds() {
+        // ============================================
+        // LOAD DATA SAAT PERTAMA KALI
+        // ============================================
+        async function loadData() {
+            await loadBuilds();
+            await loadChats();
+        }
+        
+        // ============================================
+        // BUILD FUNCTIONS
+        // ============================================
+        async function loadBuilds() {
+            const { data, error } = await supabase
+                .from('builds')
+                .select('*')
+                .order('id', { ascending: false });
+                
+            if (error) {
+                console.error('Error loading builds:', error);
+                return;
+            }
+            
+            displayBuilds(data || []);
+        }
+        
+        function displayBuilds(builds) {
             let html = '';
             if (builds.length === 0) {
                 html = '<p style="color:#666;">Belum ada build</p>';
             } else {
                 builds.forEach(b => {
-                    html += `<div style="border:1px solid purple; margin:10px; padding:10px;">
-                        <b>${b.name}</b> - ${b.price} Robux<br>
-                        <small>File: ${b.file} | Seller: ${b.seller}</small>
+                    html += `<div class="build-card">
+                        <b>${b.name}</b> (${b.type}) - ${b.price} Robux<br>
+                        <small>${b.description || '-'}</small><br>
+                        <small>File: ${b.file_name}</small><br>
+                        ${b.file_url ? `<a href="${b.file_url}" download="${b.file_name}">⬇️ DOWNLOAD</a>` : ''}
+                        <br><small>Seller: ${b.seller} | ${new Date(b.created_at).toLocaleString()}</small>
                     </div>`;
                 });
             }
             document.getElementById('marketGrid').innerHTML = html;
         }
-        showBuilds();
         
-        // CEK KEY
-        function checkKey() {
-            let key = document.getElementById('keyInput').value;
-            
-            if (key === 'owner' || key === 'mod1' || key === 'mod2') {
-                isMod = true;
-                currentUser = key;
-                document.getElementById('modPanel').style.display = 'block';
-                document.getElementById('keyStatus').innerHTML = '✅ Activated as ' + key;
-                showChat();
-            } else {
-                alert('Key salah! Coba: owner, mod1, atau mod2');
-            }
-        }
-        
-        // CHAT
-        function sendChat() {
-            if (!isMod) {
-                alert('Aktivasi dulu!');
-                return;
-            }
-            
-            let msg = document.getElementById('chatMsg').value;
-            if (!msg) return;
-            
-            messages.push({
-                user: currentUser,
-                msg: msg,
-                time: new Date().toLocaleTimeString()
-            });
-            
-            localStorage.setItem('messages', JSON.stringify(messages));
-            document.getElementById('chatMsg').value = '';
-            showChat();
-        }
-        
-        function showChat() {
-            let html = '';
-            if (messages.length === 0) {
-                html = '<p style="color:#666;">Belum ada chat</p>';
-            } else {
-                messages.forEach(m => {
-                    html += `<div style="border-bottom:1px solid #333; padding:5px;">
-                        <b>${m.user}:</b> ${m.msg} 
-                        <small style="color:#666; float:right;">${m.time}</small>
-                    </div>`;
-                });
-            }
-            document.getElementById('chatBox').innerHTML = html;
-        }
-        
-        // PUBLISH BUILD
-        function publishBuild() {
+        async function publishBuild() {
             let name = document.getElementById('buildName').value;
+            let type = document.getElementById('buildType').value;
             let price = document.getElementById('buildPrice').value;
+            let desc = document.getElementById('buildDesc').value;
             let file = document.getElementById('buildFile').files[0];
             
-            if (!name || !price || !file) {
+            if (!name || !type || !price || !desc || !file) {
                 alert('Semua harus diisi!');
                 return;
             }
@@ -140,23 +129,138 @@
                 return;
             }
             
-            builds.push({
-                name: name,
-                price: price,
-                file: file.name,
-                seller: isMod ? currentUser : 'Guest',
-                date: new Date().toLocaleString()
-            });
-            
-            localStorage.setItem('builds', JSON.stringify(builds));
-            showBuilds();
-            
-            document.getElementById('buildName').value = '';
-            document.getElementById('buildPrice').value = '100';
-            document.getElementById('buildFile').value = '';
-            
-            alert('✅ Build berhasil dipublish!');
+            try {
+                // Upload file ke Storage
+                const fileName = `${Date.now()}_${file.name}`;
+                const { data: fileData, error: fileError } = await supabase.storage
+                    .from('build-files')
+                    .upload(fileName, file);
+                    
+                if (fileError) throw fileError;
+                
+                // Dapatkan URL publik
+                const { data: urlData } = supabase.storage
+                    .from('build-files')
+                    .getPublicUrl(fileName);
+                
+                // Simpan data build ke database
+                const { error: dbError } = await supabase
+                    .from('builds')
+                    .insert([{
+                        id: Date.now(),
+                        name: name,
+                        type: type,
+                        price: parseInt(price),
+                        description: desc,
+                        file_name: file.name,
+                        file_url: urlData.publicUrl,
+                        seller: isMod ? currentUser : 'Guest',
+                        created_at: new Date()
+                    }]);
+                    
+                if (dbError) throw dbError;
+                
+                alert('✅ Build dipublish!');
+                document.getElementById('buildName').value = '';
+                document.getElementById('buildType').value = '';
+                document.getElementById('buildPrice').value = '100';
+                document.getElementById('buildDesc').value = '';
+                document.getElementById('buildFile').value = '';
+                
+                await loadBuilds();
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Gagal publish: ' + error.message);
+            }
         }
+        
+        // ============================================
+        // CHAT FUNCTIONS
+        // ============================================
+        async function loadChats() {
+            const { data, error } = await supabase
+                .from('chats')
+                .select('*')
+                .order('id', { ascending: true });
+                
+            if (error) {
+                console.error('Error loading chats:', error);
+                return;
+            }
+            
+            displayChats(data || []);
+        }
+        
+        function displayChats(chats) {
+            let html = '';
+            if (chats.length === 0) {
+                html = '<p style="color:#666;">Belum ada chat</p>';
+            } else {
+                chats.forEach(c => {
+                    html += `<div class="chat-message">
+                        <b>${c.user_name}:</b> ${c.message}
+                        <small style="float:right;">${new Date(c.created_at).toLocaleTimeString()}</small>
+                    </div>`;
+                });
+            }
+            document.getElementById('chatBox').innerHTML = html;
+            document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
+        }
+        
+        async function sendChat() {
+            if (!isMod) {
+                alert('Aktivasi dulu!');
+                return;
+            }
+            
+            let msg = document.getElementById('chatMsg').value;
+            if (!msg) return;
+            
+            try {
+                const { error } = await supabase
+                    .from('chats')
+                    .insert([{
+                        user_name: currentUser,
+                        message: msg,
+                        created_at: new Date()
+                    }]);
+                    
+                if (error) throw error;
+                
+                document.getElementById('chatMsg').value = '';
+                await loadChats();
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Gagal kirim chat');
+            }
+        }
+        
+        // ============================================
+        // KEY SYSTEM
+        // ============================================
+        function checkKey() {
+            let key = document.getElementById('keyInput').value;
+            
+            if (key === 'owner' || key === 'mod1' || key === 'mod2') {
+                isMod = true;
+                currentUser = key;
+                document.getElementById('modPanel').style.display = 'block';
+                document.getElementById('keyStatus').innerHTML = '✅ Activated as ' + key;
+            } else {
+                alert('Key salah! Coba: owner, mod1, mod2');
+            }
+        }
+        
+        // ============================================
+        // AUTO REFRESH (biar chat realtime)
+        // ============================================
+        setInterval(loadChats, 3000);  // refresh chat tiap 3 detik
+        setInterval(loadBuilds, 5000); // refresh builds tiap 5 detik
+        
+        // Start
+        loadData();
     </script>
 </body>
 </html>
