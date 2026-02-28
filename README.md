@@ -66,12 +66,8 @@
 ## 📦 **HOW TO USE (FR):**
 
 1. Open website: `https://johnsua092-ui.github.io/market-babft/`
-2. If u wanna be mod:
-   - Enter key: `owner_oxyx_2026` / `mod1_builder_2026` / `mod2_helper_2026`
-   - Click **ACTIVATE**
-3. Chat with other mods in **MOD CHAT**
-4. Upload builds (mods only)
-5. Everyone can download free builds
+2. Upload builds (mods only)
+3. Everyone can download free builds
 
 ---
 
@@ -163,12 +159,8 @@
 ## 📦 **CARA PAKAI:**
 
 1. Buka website: `https://johnsua092-ui.github.io/market-babft/`
-2. Kalau mau jadi moderator:
-   - Masukin key: `owner_oxyx_2026` / `mod1_builder_2026` / `mod2_helper_2026`
-   - Klik **ACTIVATE**
-3. Chat sama moderator lain di **MOD CHAT**
-4. Upload build (khusus moderator)
-5. Semua orang bisa download build gratis
+2. Upload build (khusus moderator)
+3. Semua orang bisa download build gratis
 
 ---
 
