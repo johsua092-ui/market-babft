@@ -1,651 +1,242 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>OXYX MARKET - MOD SERVER</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Arial, sans-serif;
-        }
-        
-        body {
-            background: #0a0a0a;
-            color: white;
-            padding: 15px;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        /* HEADER */
-        .header {
-            background: #1a0a2a;
-            border: 3px solid #9f4dff;
-            border-radius: 20px;
-            padding: 25px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        h1 {
-            color: #c800ff;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 0 #b300ff;
-        }
-        
-        .subtitle {
-            color: #b07cff;
-            margin-bottom: 15px;
-        }
-        
-        /* DISCORD CONTAINER - FIXED */
-        .discord-container {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin: 20px 0;
-        }
-        
-        .discord-btn {
-            background: #5865F2;
-            color: white;
-            padding: 12px 30px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1em;
-            border: 2px solid white;
-            transition: 0.3s;
-            display: inline-block;
-            cursor: pointer;
-        }
-        
-        .discord-btn:hover {
-            transform: scale(1.05);
-            background: #4752c4;
-            box-shadow: 0 0 20px #5865F2;
-        }
-        
-        /* KEY SECTION */
-        .key-section {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin: 20px 0;
-        }
-        
-        .key-card {
-            background: #1a0a2a;
-            border: 2px solid #9f4dff;
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-        }
-        
-        .key-card.owner {
-            border-color: gold;
-        }
-        
-        .key-title {
-            color: #c800ff;
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        
-        .key-input {
-            width: 100%;
-            padding: 10px;
-            background: #0a0a1a;
-            border: 2px solid #9f4dff;
-            color: white;
-            border-radius: 8px;
-            margin: 10px 0;
-        }
-        
-        .key-btn {
-            width: 100%;
-            padding: 10px;
-            background: #9f4dff;
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        
-        .key-btn:hover {
-            background: #b300ff;
-        }
-        
-        .key-btn:disabled {
-            background: #444;
-            cursor: not-allowed;
-        }
-        
-        .hwid-status {
-            font-size: 0.8em;
-            margin-top: 10px;
-            color: #888;
-            word-break: break-all;
-        }
-        
-        /* SECTION TITLE */
-        .section-title {
-            color: #c800ff;
-            font-size: 1.8em;
-            text-align: center;
-            margin: 30px 0 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #9f4dff;
-        }
-        
-        /* MOD SERVER (HANYA UNTUK YANG SUDAH LOGIN) */
-        .mod-server {
-            background: #1a0a2a;
-            border: 3px solid gold;
-            border-radius: 20px;
-            padding: 25px;
-            margin: 20px 0;
-            display: none;
-        }
-        
-        .mod-server.active {
-            display: block;
-        }
-        
-        .server-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .server-title {
-            color: gold;
-            font-size: 1.5em;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .online-status {
-            background: #00aa00;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8em;
-        }
-        
-        /* MOD LAYOUT */
-        .mod-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        
-        /* CHAT SECTION */
-        .chat-section {
-            background: #0a0a1a;
-            border: 2px solid gold;
-            border-radius: 15px;
-            padding: 15px;
-        }
-        
-        .chat-messages {
-            height: 300px;
-            overflow-y: auto;
-            background: #1a1a2a;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-        
-        .chat-message {
-            margin-bottom: 15px;
-            padding: 10px;
-            background: #2a2a3a;
-            border-radius: 8px;
-            border-left: 3px solid gold;
-        }
-        
-        .chat-sender {
-            color: gold;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .chat-time {
-            color: #666;
-            font-size: 0.7em;
-            float: right;
-        }
-        
-        .chat-input-area {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .chat-input {
-            flex: 1;
-            padding: 12px;
-            background: #1a1a2a;
-            border: 2px solid gold;
-            color: white;
-            border-radius: 8px;
-        }
-        
-        .chat-send {
-            padding: 12px 20px;
-            background: gold;
-            border: none;
-            border-radius: 8px;
-            color: black;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
-        /* TRANSACTION SECTION */
-        .transaction-section {
-            background: #0a0a1a;
-            border: 2px solid gold;
-            border-radius: 15px;
-            padding: 15px;
-        }
-        
-        .transaction-list {
-            max-height: 350px;
-            overflow-y: auto;
-        }
-        
-        .transaction-card {
-            background: #1a1a2a;
-            border: 2px solid gold;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 10px;
-        }
-        
-        .transaction-header {
-            display: flex;
-            justify-content: space-between;
-            color: gold;
-            margin-bottom: 5px;
-        }
-        
-        /* MEMBER AREA (UNTUK SEMUA) */
-        .member-area {
-            background: #1a0a2a;
-            border: 2px solid #9f4dff;
-            border-radius: 20px;
-            padding: 25px;
-            margin: 20px 0;
-        }
-        
-        .member-title {
-            color: #c800ff;
-            font-size: 1.3em;
-            margin-bottom: 15px;
-        }
-        
-        /* UPLOAD SECTION */
-        .upload-section {
-            background: #1a0a2a;
-            border: 2px solid #9f4dff;
-            border-radius: 15px;
-            padding: 20px;
-        }
-        
-        .field {
-            margin-bottom: 15px;
-        }
-        
-        .field label {
-            display: block;
-            color: #b07cff;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        
-        .field input,
-        .field select,
-        .field textarea {
-            width: 100%;
-            padding: 12px;
-            background: #0a0a1a;
-            border: 2px solid #9f4dff;
-            color: white;
-            border-radius: 8px;
-        }
-        
-        .field input[type="file"] {
-            padding: 10px;
-        }
-        
-        .publish-btn {
-            width: 100%;
-            padding: 15px;
-            background: #9f4dff;
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-size: 1.2em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        
-        .publish-btn:hover {
-            background: #b300ff;
-        }
-        
-        /* MARKETPLACE GRID */
-        .marketplace-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .build-card {
-            background: #0a0a1a;
-            border: 2px solid #9f4dff;
-            border-radius: 10px;
-            padding: 15px;
-        }
-        
-        .build-name {
-            color: #c800ff;
-            font-size: 1.2em;
-            font-weight: bold;
-        }
-        
-        .build-price {
-            color: #ffaa00;
-            font-weight: bold;
-            margin: 5px 0;
-        }
-        
-        .build-seller {
-            color: #888;
-            font-size: 0.8em;
-            margin-top: 10px;
-        }
-        
-        /* FOOTER */
-        .footer {
-            text-align: center;
-            padding: 20px;
-            margin-top: 30px;
-            border-top: 2px solid #9f4dff;
-            color: #b07cff;
-        }
-        
-        /* NOTIFICATION */
-        .notif {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 10px;
-            color: white;
-            font-weight: bold;
-            z-index: 9999;
-            animation: slideIn 0.3s;
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .key-section {
-                grid-template-columns: 1fr;
-            }
-            .mod-layout {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <!-- HEADER -->
-        <div class="header">
-            <h1>OXYX MARKET</h1>
-            <div class="subtitle">Build A Boat For Treasure • Premium Marketplace</div>
-            
-            <!-- DISCORD LINKS - FIXED -->
-            <div class="discord-container">
-                <a href="https://discord.gg/autobuild" target="_blank" class="discord-btn">🔮 MAIN SERVER</a>
-                <a href="https://discord.gg/oxytrade" target="_blank" class="discord-btn">⚡ TRADE SERVER</a>
-                <a href="https://discord.gg/oxybuilder" target="_blank" class="discord-btn">🎮 BUILDER SERVER</a>
-            </div>
-        </div>
+// ============================================
+// OXYX MARKET - FIXED VERSION
+// ============================================
 
-        <!-- KEY SECTION (3 ORANG) -->
-        <div class="section-title">🔐 MODERATOR ACCESS</div>
-        
-        <div class="key-section">
-            <!-- OWNER KEY -->
-            <div class="key-card owner">
-                <div class="key-title">👑 OWNER</div>
-                <input type="password" class="key-input" id="ownerKey" placeholder="Enter owner key">
-                <button class="key-btn" onclick="activateKey('owner')" id="ownerBtn">ACTIVATE</button>
-                <div class="hwid-status" id="ownerStatus">🔒 Not activated</div>
-            </div>
-            
-            <!-- MOD 1 KEY -->
-            <div class="key-card">
-                <div class="key-title">🛡️ MODERATOR 1</div>
-                <input type="password" class="key-input" id="mod1Key" placeholder="Enter mod 1 key">
-                <button class="key-btn" onclick="activateKey('mod1')" id="mod1Btn">ACTIVATE</button>
-                <div class="hwid-status" id="mod1Status">🔒 Not activated</div>
-            </div>
-            
-            <!-- MOD 2 KEY -->
-            <div class="key-card">
-                <div class="key-title">⚔️ MODERATOR 2</div>
-                <input type="password" class="key-input" id="mod2Key" placeholder="Enter mod 2 key">
-                <button class="key-btn" onclick="activateKey('mod2')" id="mod2Btn">ACTIVATE</button>
-                <div class="hwid-status" id="mod2Status">🔒 Not activated</div>
-            </div>
-        </div>
+// Key & Roles
+const KEYS = {
+    owner: "owner_oxyx_2026",
+    mod1: "mod1_jawa_2026",
+    mod2: "mod2_jawa_2026"
+};
 
-        <!-- MOD SERVER (KHUSUS OWNER & MODERATOR) -->
-        <div id="modServer" class="mod-server">
-            <div class="server-header">
-                <div class="server-title">
-                    💬 MODERATOR SERVER
-                    <span style="font-size:0.8em; color:#b07cff;">(Private)</span>
-                </div>
-                <div class="online-status" id="onlineStatus">🔴 OFFLINE</div>
-            </div>
-            
-            <div class="mod-layout">
-                <!-- CHAT SECTION -->
-                <div class="chat-section">
-                    <h3 style="color:gold; margin-bottom:15px;">💬 MOD CHAT</h3>
-                    <div class="chat-messages" id="chatMessages">
-                        <div class="chat-message">
-                            <div class="chat-sender">SYSTEM</div>
-                            <div class="chat-text">Welcome to MOD SERVER. Activate your key to chat.</div>
-                        </div>
-                    </div>
-                    
-                    <div class="chat-input-area">
-                        <input type="text" class="chat-input" id="chatInput" placeholder="Type message..." disabled>
-                        <button class="chat-send" onclick="sendChat()" id="chatSend" disabled>SEND</button>
-                    </div>
-                </div>
-                
-                <!-- TRANSACTION SECTION -->
-                <div class="transaction-section">
-                    <h3 style="color:gold; margin-bottom:15px;">📦 MOD TRANSACTIONS</h3>
-                    <div class="transaction-list" id="transactionList"></div>
-                </div>
-            </div>
-        </div>
+const ROLES = {
+    owner: { name: "OXYX", avatar: "👑", color: "gold" },
+    mod1: { name: "MODERATOR 1", avatar: "🛡️", color: "#9f4dff" },
+    mod2: { name: "MODERATOR 2", avatar: "⚔️", color: "#9f4dff" }
+};
 
-        <!-- MEMBER AREA (UNTUK SEMUA) -->
-        <div class="section-title">🛒 MEMBER AREA</div>
-        
-        <div class="member-area">
-            <div class="member-title">📤 UPLOAD BUILD</div>
-            
-            <div class="upload-section">
-                <div class="field">
-                    <label>Build Name *</label>
-                    <input type="text" id="buildName" placeholder="e.g., Flying Dragon">
-                </div>
-                
-                <div class="field">
-                    <label>Type *</label>
-                    <select id="buildType">
-                        <option value="">-- Select Type --</option>
-                        <option value="Ship">🚢 Ship</option>
-                        <option value="Plane">✈️ Plane</option>
-                        <option value="Mech">🤖 Mech</option>
-                        <option value="Vehicle">🚗 Vehicle</option>
-                        <option value="Other">🎲 Other</option>
-                    </select>
-                </div>
-                
-                <div class="field">
-                    <label>Price (Robux) *</label>
-                    <input type="number" id="price" min="100" value="100">
-                </div>
-                
-                <div class="field">
-                    <label>Description *</label>
-                    <textarea id="buildDesc" rows="3" placeholder="Describe your build..."></textarea>
-                </div>
-                
-                <div class="field">
-                    <label>Build File (.build only) *</label>
-                    <input type="file" id="buildFile" accept=".build">
-                </div>
-                
-                <button class="publish-btn" onclick="publishBuild()">🚀 PUBLISH BUILD</button>
-            </div>
-            
-            <div class="member-title" style="margin-top:30px;">🏪 MARKETPLACE</div>
-            <div class="marketplace-grid" id="buildGrid">
-                <div style="grid-column:1/-1; text-align:center; padding:30px; color:#666;">📦 No builds yet</div>
-            </div>
-        </div>
+// Data Storage
+let activeUsers = JSON.parse(localStorage.getItem('oxyxActiveUsers')) || {};
+let chatMessages = JSON.parse(localStorage.getItem('oxyxChatMessages')) || [];
+let transactions = JSON.parse(localStorage.getItem('oxyxModTransactions')) || [];
+let builds = JSON.parse(localStorage.getItem('oxyxBuilds')) || [];
 
-        <!-- FOOTER -->
-        <div class="footer">
-            <div style="color:#c800ff; font-size:1.2em;">OXYX MARKET v10.0 - MOD SERVER</div>
-            <div>3 Keys • HWID Locked • Private Mod Server</div>
-        </div>
-    </div>
+let currentUser = null;
+let currentRole = null;
 
-    <script>
-        // ============================================
-        // OXYX MARKET - MOD SERVER PRIVATE
-        // 3 KEYS: OWNER, MOD1, MOD2
-        // HWID LOCKED - MOD SERVER TERPISAH
-        // ============================================
-        
-        // KEYS (3 ORANG)
-        const KEYS = {
-            owner: "owner_oxyx_2026",
-            mod1: "mod1_jawa_2026",
-            mod2: "mod2_jawa_2026"
-        };
-        
-        // ROLES
-        const ROLES = {
-            owner: { name: "OXYX", avatar: "👑", color: "gold" },
-            mod1: { name: "MODERATOR 1", avatar: "🛡️", color: "#9f4dff" },
-            mod2: { name: "MODERATOR 2", avatar: "⚔️", color: "#9f4dff" }
-        };
-        
-        // ACTIVE USERS (HWID -> ROLE)
-        let activeUsers = JSON.parse(localStorage.getItem('oxyxActiveUsers')) || {};
-        
-        // CURRENT USER
-        let currentUser = null;
-        let currentRole = null;
-        
-        // CHAT MESSAGES
-        let chatMessages = JSON.parse(localStorage.getItem('oxyxChatMessages')) || [];
-        
-        // TRANSACTIONS
-        let transactions = JSON.parse(localStorage.getItem('oxyxModTransactions')) || [];
-        
-        // BUILDS
-        let builds = JSON.parse(localStorage.getItem('oxyxBuilds')) || [];
-        
-        // GENERATE HWID
-        function generateHWID() {
-            const components = [
-                navigator.userAgent,
-                navigator.language,
-                screen.width,
-                screen.height,
-                screen.colorDepth,
-                navigator.hardwareConcurrency,
-                navigator.platform
-            ];
-            let hwid = '';
-            const str = components.join('|');
-            for (let i = 0; i < str.length; i++) {
-                hwid += str.charCodeAt(i).toString(16);
-            }
-            return hwid.substring(0, 32).toUpperCase();
+// ======= HWID =======
+function generateHWID() {
+    const components = [
+        navigator.userAgent,
+        navigator.language,
+        screen.width,
+        screen.height,
+        screen.colorDepth,
+        navigator.hardwareConcurrency,
+        navigator.platform
+    ].join('|');
+
+    let hash = 0;
+    for (let i = 0; i < components.length; i++) {
+        const chr = components.charCodeAt(i);
+        hash = ((hash << 5) - hash) + chr;
+        hash |= 0;
+    }
+    return 'HWID-' + Math.abs(hash);
+}
+
+const currentHWID = generateHWID();
+
+// ======= Check if already logged in =======
+if (activeUsers[currentHWID]) {
+    currentRole = activeUsers[currentHWID];
+    currentUser = ROLES[currentRole];
+    updateUIForLogin();
+}
+
+// ======= Activate Key =======
+function activateKey(role) {
+    const keyInput = document.getElementById(`${role}Key`).value;
+
+    if (keyInput !== KEYS[role]) {
+        showNotif('❌ Wrong key!', '#aa0000');
+        return;
+    }
+
+    if (activeUsers[currentHWID] && activeUsers[currentHWID] !== role) {
+        showNotif('❌ This device already has a different role!', '#aa0000');
+        return;
+    }
+
+    // Check if role is used on other device
+    let keyUsed = false;
+    for (let hwid in activeUsers) {
+        if (activeUsers[hwid] === role && hwid !== currentHWID) {
+            keyUsed = true;
+            break;
         }
-        
-        const currentHWID = generateHWID();
-        
-        // CHECK CURRENT USER
-        if (activeUsers[currentHWID]) {
-            currentRole = activeUsers[currentHWID];
-            currentUser = ROLES[currentRole];
-            updateUIForLogin();
-        }
-        
-        // UPDATE UI FOR LOGIN
-        function updateUIForLogin() {
-            document.getElementById('modServer').classList.add('active');
-            document.getElementById('onlineStatus').innerHTML = '🟢 ONLINE';
-            document.getElementById('onlineStatus').style.background = '#00aa00';
-            document.getElementById('chatInput').disabled = false;
-            document.getElementById('chatSend').disabled = false;
-            displayChatMessages();
-            displayTransactions();
-            
-            // Welcome message
-            addChatMessage('SYSTEM', `${currentUser.avatar} ${currentUser.name} has joined the MOD SERVER`);
-        }
-        
-        // ACTIVATE KEY
-        function activateKey(role) {
-            const keyInput = document.getElementById(`${role}Key`).value;
-            
-            if (keyInput !== KEYS[role]) {
-                showNotif('❌ Wrong key!', '#aa0000');
-                return;
-            }
-            
-            // Cek apakah HWID ini sudah punya role lain
-            if (activeUsers[currentHWID] && activeUsers[currentHWID] !== role) {
-                showNotif('❌ This device already has a different role!', '#aa0000');
-                return;
-            }
-            
-            // Cek apakah key ini sudah dipakai HWID lain
-            let keyUsed = false;
+    }
+
+    if (keyUsed) {
+        showNotif('❌ This key is already used on another device!', '#aa0000');
+        return;
+    }
+
+    activeUsers[currentHWID] = role;
+    localStorage.setItem('oxyxActiveUsers', JSON.stringify(activeUsers));
+
+    document.getElementById(`${role}Status`).innerHTML = `✅ Activated<br><small>${currentHWID.substring(0,16)}...</small>`;
+    document.getElementById(`${role}Btn`).disabled = true;
+
+    currentRole = role;
+    currentUser = ROLES[role];
+
+    updateUIForLogin();
+    showNotif(`✅ Activated as ${currentUser.name}!`, '#00aa00');
+}
+
+// ======= Update UI for logged-in mod =======
+function updateUIForLogin() {
+    document.getElementById('modServer').classList.add('active');
+    document.getElementById('onlineStatus').innerHTML = '🟢 ONLINE';
+    document.getElementById('onlineStatus').style.background = '#00aa00';
+    document.getElementById('chatInput').disabled = false;
+    document.getElementById('chatSend').disabled = false;
+
+    displayChatMessages();
+    displayTransactions();
+
+    addChatMessage('SYSTEM', `${currentUser.avatar} ${currentUser.name} has joined the MOD SERVER`);
+}
+
+// ======= Chat =======
+function addChatMessage(sender, text) {
+    const timestamp = new Date().toLocaleTimeString();
+    const message = { sender, text, time: timestamp };
+    chatMessages.push(message);
+    localStorage.setItem('oxyxChatMessages', JSON.stringify(chatMessages));
+    displayChatMessages();
+}
+
+function displayChatMessages() {
+    const container = document.getElementById('chatMessages');
+    container.innerHTML = '';
+    chatMessages.forEach(msg => {
+        const div = document.createElement('div');
+        div.className = 'chat-message';
+        div.innerHTML = `
+            <div class="chat-sender">${msg.sender}</div>
+            <div class="chat-text">${msg.text}</div>
+            <div class="chat-time">${msg.time}</div>
+        `;
+        container.appendChild(div);
+    });
+    container.scrollTop = container.scrollHeight;
+}
+
+function sendChat() {
+    if (!currentUser) {
+        showNotif('❌ Activate your key first!', '#aa0000');
+        return;
+    }
+    const input = document.getElementById('chatInput');
+    const msg = input.value.trim();
+    if (!msg) return;
+    addChatMessage(currentUser.name, msg);
+    input.value = '';
+}
+
+// ======= Transactions =======
+function displayTransactions() {
+    const container = document.getElementById('transactionList');
+    container.innerHTML = '';
+    if (transactions.length === 0) {
+        container.innerHTML = '<div style="color:#666; text-align:center; padding:20px;">No transactions yet</div>';
+        return;
+    }
+    transactions.forEach(tr => {
+        const card = document.createElement('div');
+        card.className = 'transaction-card';
+        card.innerHTML = `
+            <div class="transaction-header">
+                <span>${tr.item}</span>
+                <span>${tr.price} Robux</span>
+            </div>
+            <div>Buyer: ${tr.buyer}</div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+// ======= Marketplace / Publish Build =======
+function publishBuild() {
+    if (!currentUser) {
+        showNotif('❌ Activate your key first!', '#aa0000');
+        return;
+    }
+
+    const name = document.getElementById('buildName').value.trim();
+    const type = document.getElementById('buildType').value;
+    const price = document.getElementById('price').value;
+    const desc = document.getElementById('buildDesc').value.trim();
+    const file = document.getElementById('buildFile').files[0];
+
+    if (!name || !type || !price || !desc || !file) {
+        showNotif('❌ Please fill all fields!', '#aa0000');
+        return;
+    }
+
+    const newBuild = {
+        name, type, price, desc, fileName: file.name, seller: currentUser.name
+    };
+
+    builds.push(newBuild);
+    localStorage.setItem('oxyxBuilds', JSON.stringify(builds));
+    displayBuilds();
+    showNotif('✅ Build published!', '#00aa00');
+
+    // Reset form
+    document.getElementById('buildName').value = '';
+    document.getElementById('buildType').value = '';
+    document.getElementById('price').value = '100';
+    document.getElementById('buildDesc').value = '';
+    document.getElementById('buildFile').value = '';
+}
+
+function displayBuilds() {
+    const grid = document.getElementById('buildGrid');
+    grid.innerHTML = '';
+
+    if (builds.length === 0) {
+        grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:30px; color:#666;">📦 No builds yet</div>';
+        return;
+    }
+
+    builds.forEach(b => {
+        const card = document.createElement('div');
+        card.className = 'build-card';
+        card.innerHTML = `
+            <div class="build-name">${b.name}</div>
+            <div class="build-price">💰 ${b.price} Robux</div>
+            <div class="build-seller">Seller: ${b.seller}</div>
+            <div class="build-type">Type: ${b.type}</div>
+            <div class="build-desc">${b.desc}</div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+// ======= Notifications =======
+function showNotif(text, color) {
+    const notif = document.createElement('div');
+    notif.className = 'notif';
+    notif.style.background = color;
+    notif.textContent = text;
+    document.body.appendChild(notif);
+    setTimeout(() => notif.remove(), 3000);
+}
+
+// ======= Init Display =======
+displayBuilds();
+displayChatMessages();
+displayTransactions();
