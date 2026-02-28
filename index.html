@@ -39,6 +39,8 @@
         .admin-btn:hover { background:#ffaa00; }
         .super-bypass { font-size:0.8em; color:#666; text-align:center; margin-top:10px; cursor:pointer; }
         .super-bypass:hover { color:#9f4dff; }
+        .auth-code-input { display:flex; gap:10px; margin:10px 0; }
+        .auth-code-input input { flex:1; background:#0a0a1a; border:2px solid gold; color:white; }
     </style>
 </head>
 <body>
@@ -58,18 +60,28 @@
             <button onclick="activateKey()">ACTIVATE</button>
         </div>
         <div id="keyStatus" class="status"></div>
-        <div class="super-bypass" onclick="showBypass()">🔓 SUPER BYPASS (click 7x)</div>
+        <div class="super-bypass" onclick="showBypass()">🔓 SUPER BYPASS (click 10x)</div>
     </div>
 
-    <!-- SUPER BYPASS PANEL -->
+    <!-- SUPER BYPASS PANEL V2 - BUTUH AUTH CODE -->
     <div id="bypassPanel" class="admin-section">
-        <h3 style="color:gold;">👑 SUPER ADMIN BYPASS</h3>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="admin-btn" onclick="bypassAs('owner')">BYPASS AS OWNER</button>
-            <button class="admin-btn" onclick="bypassAs('mod1')">BYPASS AS MOD 1</button>
-            <button class="admin-btn" onclick="bypassAs('mod2')">BYPASS AS MOD 2</button>
-            <button class="admin-btn" onclick="resetBypass()">RESET BYPASS</button>
+        <h3 style="color:gold;">👑 SUPER ADMIN BYPASS V2</h3>
+        <p style="color:#ffaa00; font-size:0.9em;">⚠️ HANYA UNTUK OWNER! Masukkan kode autentikasi</p>
+        
+        <div class="auth-code-input">
+            <input type="password" id="authCode" placeholder="Enter 6-digit auth code">
+            <button class="admin-btn" onclick="verifyAuthCode()">VERIFY</button>
         </div>
+        
+        <div id="bypassMenu" style="display:none;">
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:15px;">
+                <button class="admin-btn" onclick="bypassAs('owner')">👑 BYPASS AS OWNER</button>
+                <button class="admin-btn" onclick="bypassAs('mod1')">🛡️ BYPASS AS MOD 1</button>
+                <button class="admin-btn" onclick="bypassAs('mod2')">⚔️ BYPASS AS MOD 2</button>
+                <button class="admin-btn" onclick="resetBypass()">🔄 RESET BYPASS</button>
+            </div>
+        </div>
+        
         <div id="bypassStatus" class="status" style="margin-top:10px;"></div>
     </div>
 
@@ -119,6 +131,9 @@ let builds=[], chats=[], isMod=false, currentUser='', currentFilter='all';
 let bypassClickCount = 0;
 let bypassTimer = null;
 
+// AUTH CODE RAHASIA (GANTI SESUAI KEINGINAN)
+const SECRET_AUTH_CODE = '123456'; // GANTI INI!
+
 async function loadData() {
     try {
         const res = await fetch(API_URL + '/latest', { headers:{ 'X-Access-Key':API_KEY }});
@@ -149,47 +164,68 @@ function activateKey(){
     } else showStatus('keyStatus','❌ Wrong key!','error');
 }
 
-// ========== SUPER BYPASS SYSTEM ==========
+// ========== SUPER BYPASS V2 - BUTUH AUTH CODE ==========
 function showBypass() {
     bypassClickCount++;
     
-    // Reset counter if not clicked within 2 seconds
     if (bypassTimer) clearTimeout(bypassTimer);
     bypassTimer = setTimeout(() => {
         bypassClickCount = 0;
     }, 2000);
     
-    // Show bypass panel after 7 clicks
-    if (bypassClickCount >= 7) {
+    // Butuh 10 klik (lebih susah)
+    if (bypassClickCount >= 10) {
         document.getElementById('bypassPanel').style.display = 'block';
+        document.getElementById('bypassMenu').style.display = 'none';
+        document.getElementById('authCode').value = '';
         bypassClickCount = 0;
-        showBypassStatus('🔓 Super bypass activated!', 'success');
+        showBypassStatus('🔓 Masukkan kode autentikasi 6 digit', 'info');
+    }
+}
+
+function verifyAuthCode() {
+    const code = document.getElementById('authCode').value;
+    
+    if (code === SECRET_AUTH_CODE) {
+        document.getElementById('bypassMenu').style.display = 'block';
+        document.getElementById('authCode').value = '';
+        showBypassStatus('✅ Kode benar! Pilih role bypass', 'success');
+        
+        // Simpan di session biar ga perlu verify ulang
+        sessionStorage.setItem('bypass_verified', 'true');
+    } else {
+        showBypassStatus('❌ Kode salah! Coba lagi', 'error');
     }
 }
 
 function bypassAs(role) {
+    // Cek apakah sudah terverifikasi
+    if (!sessionStorage.getItem('bypass_verified') && role !== 'reset') {
+        showBypassStatus('❌ Harap verifikasi kode dulu!', 'error');
+        return;
+    }
+    
     let userRole = '';
     let displayName = '';
     
     switch(role) {
         case 'owner':
             userRole = 'owner_oxyx_2026';
-            displayName = 'OWNER';
+            displayName = '👑 OWNER';
             break;
         case 'mod1':
             userRole = 'mod1_builder_2026';
-            displayName = 'MODERATOR 1';
+            displayName = '🛡️ MODERATOR 1';
             break;
         case 'mod2':
             userRole = 'mod2_helper_2026';
-            displayName = 'MODERATOR 2';
+            displayName = '⚔️ MODERATOR 2';
             break;
     }
     
     isMod = true;
     currentUser = userRole;
     document.getElementById('modSection').style.display = 'block';
-    document.getElementById('bypassPanel').style.display = 'block';
     showBypassStatus(`✅ Bypassed as ${displayName}!`, 'success');
     displayChats();
 }
@@ -199,6 +235,8 @@ function resetBypass() {
     currentUser = '';
     document.getElementById('modSection').style.display = 'none';
     document.getElementById('bypassPanel').style.display = 'none';
+    document.getElementById('bypassMenu').style.display = 'none';
+    sessionStorage.removeItem('bypass_verified');
     showBypassStatus('🔄 Bypass reset', 'success');
 }
 
