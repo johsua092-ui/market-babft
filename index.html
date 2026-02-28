@@ -47,11 +47,11 @@
             <a href="https://discord.gg/boatbuilderhub" target="_blank">SUPPORT 2</a>
         </div>
 
-        <!-- KEY SECTION -->
+        <!-- KEY SECTION - UBAH JUDUL -->
         <div class="card">
-            <h3>🔐 MOD KEY</h3>
+            <h3>🔐 MODERATOR/OWNER ONLY</h3>
             <div class="key-section">
-                <input type="password" id="keyInput" placeholder="Enter key">
+                <input type="password" id="keyInput" placeholder="Enter moderator key">
                 <button onclick="activateKey()">ACTIVATE</button>
             </div>
             <div id="keyStatus" class="status"></div>
@@ -107,7 +107,7 @@
         let currentUser = '';
         let currentFilter = 'all';
 
-        // ========== KEY SYSTEM ==========
+        // ========== KEY SYSTEM - UBAH JUDUL ==========
         function activateKey() {
             const key = document.getElementById('keyInput').value;
             const status = document.getElementById('keyStatus');
@@ -206,23 +206,40 @@
             reader.readAsDataURL(file);
         }
 
-        // ========== DOWNLOAD BUILD (EVERYONE CAN DOWNLOAD) ==========
+        // ========== DOWNLOAD BUILD - FIXED VERSION ==========
         function downloadBuild(fileData, fileName) {
             if (!fileData) {
-                alert('File not available!');
+                alert('❌ File not available!');
                 return;
             }
             
             try {
+                // Create download link
                 const link = document.createElement('a');
                 link.href = fileData;
                 link.download = fileName;
+                link.style.display = 'none';
+                
+                // Add to body, click, remove
                 document.body.appendChild(link);
                 link.click();
-                document.body.removeChild(link);
-                showStatus('uploadStatus', '✅ Download started!', 'success');
+                
+                // Wait a bit then remove
+                setTimeout(() => {
+                    document.body.removeChild(link);
+                }, 1000);
+                
+                showStatus('uploadStatus', '✅ Download started: ' + fileName, 'success');
             } catch (error) {
-                alert('Download failed: ' + error.message);
+                console.error('Download error:', error);
+                alert('❌ Download failed: ' + error.message);
+                
+                // Alternative method
+                const newWindow = window.open();
+                if (newWindow) {
+                    newWindow.document.write('<iframe src="' + fileData + '" frameborder="0" style="width:0; height:0;"></iframe>');
+                    newWindow.document.title = fileName;
+                }
             }
         }
 
@@ -270,9 +287,30 @@
             grid.innerHTML = html;
         }
 
+        // ========== TEST DOWNLOAD FUNCTION ==========
+        function testDownload() {
+            // Create test file
+            const testContent = "Test build file";
+            const testFile = new Blob([testContent], { type: 'text/plain' });
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                downloadBuild(e.target.result, 'test.build');
+            };
+            reader.readAsDataURL(testFile);
+        }
+
         // ========== INIT ==========
         displayBuilds();
         displayChats();
+        
+        // Auto-refresh every 5 seconds
+        setInterval(() => {
+            const saved = JSON.parse(localStorage.getItem('builds')) || [];
+            if (JSON.stringify(saved) !== JSON.stringify(builds)) {
+                builds = saved;
+                displayBuilds();
+            }
+        }, 5000);
     </script>
 </body>
 </html>
