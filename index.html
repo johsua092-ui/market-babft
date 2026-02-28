@@ -47,7 +47,7 @@
             <a href="https://discord.gg/boatbuilderhub" target="_blank">SUPPORT 2</a>
         </div>
 
-        <!-- KEY SECTION - UBAH JUDUL -->
+        <!-- KEY SECTION -->
         <div class="card">
             <h3>🔐 MODERATOR/OWNER ONLY</h3>
             <div class="key-section">
@@ -100,14 +100,53 @@
     </div>
 
     <script>
+        // ========== KONFIGURASI JSONBIN ==========
+        const API_KEY = '$2a$10$RYz0R2fKkR23Gf1qGguLi.5Tlr.5UlfHymp1bYXB5Zhp352m4fdua';
+        const BIN_ID = '69a24d2a43b1c97be9a53651';
+        const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
         // ========== DATA ==========
-        let builds = JSON.parse(localStorage.getItem('builds')) || [];
-        let chats = JSON.parse(localStorage.getItem('chats')) || [];
+        let builds = [];
+        let chats = [];
         let isMod = false;
         let currentUser = '';
         let currentFilter = 'all';
 
-        // ========== KEY SYSTEM - UBAH JUDUL ==========
+        // ========== LOAD DATA DARI JSONBIN ==========
+        async function loadData() {
+            try {
+                const response = await fetch(API_URL + '/latest', {
+                    headers: { 'X-Access-Key': API_KEY }
+                });
+                const data = await response.json();
+                builds = data.record.builds || [];
+                chats = data.record.chats || [];
+                displayBuilds();
+                displayChats();
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        // ========== SAVE DATA KE JSONBIN ==========
+        async function saveData() {
+            try {
+                await fetch(API_URL, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Access-Key': API_KEY
+                    },
+                    body: JSON.stringify({ builds, chats })
+                });
+                return true;
+            } catch (error) {
+                console.error('Error saving data:', error);
+                return false;
+            }
+        }
+
+        // ========== KEY SYSTEM ==========
         function activateKey() {
             const key = document.getElementById('keyInput').value;
             const status = document.getElementById('keyStatus');
@@ -136,26 +175,47 @@
         function displayChats() {
             const box = document.getElementById('chatMessages');
             if (!box) return;
+            
             let html = '';
-            chats.slice(-20).forEach(c => {
-                html += `<div class="chat-message"><b>${c.user}:</b> ${c.msg}</div>`;
-            });
-            box.innerHTML = html || 'No messages yet';
+            if (chats.length === 0) {
+                html = '<p style="color:#666;">No messages yet</p>';
+            } else {
+                chats.slice().reverse().forEach(c => {
+                    html += `<div class="chat-message"><b>${c.user}:</b> ${c.msg}</div>`;
+                });
+            }
+            box.innerHTML = html;
+            box.scrollTop = box.scrollHeight;
         }
 
-        function sendChat() {
-            if (!isMod) return alert('Activate key first!');
-            const msg = document.getElementById('chatInput').value;
+        async function sendChat() {
+            if (!isMod) {
+                alert('❌ Only moderators can chat!');
+                return;
+            }
+            
+            const msg = document.getElementById('chatInput').value.trim();
             if (!msg) return;
             
-            chats.push({ user: currentUser, msg: msg });
-            localStorage.setItem('chats', JSON.stringify(chats));
-            document.getElementById('chatInput').value = '';
-            displayChats();
+            chats.push({ 
+                user: currentUser, 
+                msg: msg,
+                time: new Date().toLocaleTimeString()
+            });
+            
+            const saved = await saveData();
+            
+            if (saved) {
+                document.getElementById('chatInput').value = '';
+                await loadData(); // Reload from server
+                displayChats();
+            } else {
+                showStatus('keyStatus', '❌ Failed to send message', 'error');
+            }
         }
 
         // ========== PUBLISH BUILD (ONLY MODS) ==========
-        function publishBuild() {
+        async function publishBuild() {
             if (!isMod) {
                 alert('❌ Only moderators can publish builds!');
                 return;
@@ -178,9 +238,11 @@
                 return;
             }
 
+            showStatus('uploadStatus', '⏫ Uploading...', 'success');
+
             // Read file as data URL
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 builds.push({
                     id: Date.now(),
                     name: name,
@@ -192,21 +254,25 @@
                     seller: currentUser
                 });
 
-                localStorage.setItem('builds', JSON.stringify(builds));
+                const saved = await saveData();
 
-                // Reset form
-                document.getElementById('buildName').value = '';
-                document.getElementById('buildPrice').value = '0';
-                document.getElementById('buildDesc').value = '';
-                document.getElementById('buildFile').value = '';
+                if (saved) {
+                    // Reset form
+                    document.getElementById('buildName').value = '';
+                    document.getElementById('buildPrice').value = '0';
+                    document.getElementById('buildDesc').value = '';
+                    document.getElementById('buildFile').value = '';
 
-                alert('✅ Build published successfully!');
-                displayBuilds();
+                    showStatus('uploadStatus', '✅ Build published successfully!', 'success');
+                    await loadData(); // Reload from server
+                } else {
+                    showStatus('uploadStatus', '❌ Failed to publish', 'error');
+                }
             };
             reader.readAsDataURL(file);
         }
 
-        // ========== DOWNLOAD BUILD - FIXED VERSION ==========
+        // ========== DOWNLOAD BUILD ==========
         function downloadBuild(fileData, fileName) {
             if (!fileData) {
                 alert('❌ File not available!');
@@ -214,32 +280,16 @@
             }
             
             try {
-                // Create download link
                 const link = document.createElement('a');
                 link.href = fileData;
                 link.download = fileName;
-                link.style.display = 'none';
-                
-                // Add to body, click, remove
                 document.body.appendChild(link);
                 link.click();
-                
-                // Wait a bit then remove
                 setTimeout(() => {
                     document.body.removeChild(link);
                 }, 1000);
-                
-                showStatus('uploadStatus', '✅ Download started: ' + fileName, 'success');
             } catch (error) {
-                console.error('Download error:', error);
                 alert('❌ Download failed: ' + error.message);
-                
-                // Alternative method
-                const newWindow = window.open();
-                if (newWindow) {
-                    newWindow.document.write('<iframe src="' + fileData + '" frameborder="0" style="width:0; height:0;"></iframe>');
-                    newWindow.document.title = fileName;
-                }
             }
         }
 
@@ -287,30 +337,11 @@
             grid.innerHTML = html;
         }
 
-        // ========== TEST DOWNLOAD FUNCTION ==========
-        function testDownload() {
-            // Create test file
-            const testContent = "Test build file";
-            const testFile = new Blob([testContent], { type: 'text/plain' });
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                downloadBuild(e.target.result, 'test.build');
-            };
-            reader.readAsDataURL(testFile);
-        }
+        // ========== AUTO REFRESH ==========
+        setInterval(loadData, 3000); // Refresh every 3 seconds
 
         // ========== INIT ==========
-        displayBuilds();
-        displayChats();
-        
-        // Auto-refresh every 5 seconds
-        setInterval(() => {
-            const saved = JSON.parse(localStorage.getItem('builds')) || [];
-            if (JSON.stringify(saved) !== JSON.stringify(builds)) {
-                builds = saved;
-                displayBuilds();
-            }
-        }, 5000);
+        loadData();
     </script>
 </body>
 </html>
