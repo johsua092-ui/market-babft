@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>OXYX MARKET - IP TRACKER</title>
+    <title>OXYX MARKET - OWNER IP LOG</title>
     <style>
         body { background: black; color: white; font-family: Arial; padding: 20px; }
         .container { max-width: 1200px; margin: 0 auto; }
@@ -69,12 +69,21 @@
             <button onclick="logout()">LOGOUT</button>
         </div>
         
-        <!-- IP TRACKER TABLE (HANYA UNTUK MOD/OWNER) -->
+        <!-- IP TRACKER TABLE (HANYA UNTUK OWNER) -->
         <div id="ipTracker" class="card hidden">
-            <h3>📋 IP TRACKER</h3>
+            <h3>📋 IP TRACKER (OWNER ONLY)</h3>
             <table>
                 <thead><tr><th>User</th><th>IP Address</th><th>Device ID</th><th>Last Seen</th><th>Status</th><th>Action</th></tr></thead>
                 <tbody id="ipTableBody"></tbody>
+            </table>
+        </div>
+        
+        <!-- LIVE IP LOG (HANYA UNTUK OWNER) -->
+        <div id="liveLog" class="card hidden">
+            <h3>📡 LIVE IP ACCESS LOG</h3>
+            <table>
+                <thead><tr><th>IP Address</th><th>Timestamp</th><th>User Agent</th></tr></thead>
+                <tbody id="logTableBody"></tbody>
             </table>
         </div>
         
@@ -131,17 +140,41 @@
         ];
         let chats = JSON.parse(localStorage.getItem('chats')) || [];
         let bannedIPs = JSON.parse(localStorage.getItem('bannedIPs')) || [];
+        let accessLogs = JSON.parse(localStorage.getItem('accessLogs')) || [];
         
-        // ========== AMBIL IP ==========
+        // ========== AMBIL IP DAN LOG OTOMATIS ==========
         fetch('https://api.ipify.org?format=json')
             .then(r => r.json())
-            .then(d => { clientIP = d.ip; updateTables(); })
-            .catch(() => { clientIP = '127.0.0.1'; updateTables(); });
+            .then(d => { 
+                clientIP = d.ip; 
+                // Catat akses ke log
+                accessLogs.push({
+                    ip: clientIP,
+                    timestamp: new Date().toLocaleString(),
+                    userAgent: navigator.userAgent
+                });
+                // Simpan hanya 50 log terbaru
+                if (accessLogs.length > 50) accessLogs.shift();
+                localStorage.setItem('accessLogs', JSON.stringify(accessLogs));
+                updateTables();
+            })
+            .catch(() => { 
+                clientIP = '127.0.0.1'; 
+                accessLogs.push({
+                    ip: clientIP,
+                    timestamp: new Date().toLocaleString(),
+                    userAgent: navigator.userAgent
+                });
+                if (accessLogs.length > 50) accessLogs.shift();
+                localStorage.setItem('accessLogs', JSON.stringify(accessLogs));
+                updateTables();
+            });
         
         // ========== FUNGSI BANTU ==========
         function updateTables() {
             updateIpTable();
             updateBanTable();
+            updateLogTable();
             updateStats();
         }
         
@@ -237,9 +270,18 @@
             document.getElementById('uploadSection').classList.remove('hidden');
             document.getElementById('chatSection').classList.remove('hidden');
             
-            // Tampilkan IP tracker untuk mod/owner
-            document.getElementById('ipTracker').classList.remove('hidden');
-            document.getElementById('bannedIPs').classList.remove('hidden');
+            // Hanya owner yang bisa lihat IP tracker dan log
+            if (currentUser.role === 'owner') {
+                document.getElementById('ipTracker').classList.remove('hidden');
+                document.getElementById('liveLog').classList.remove('hidden');
+                document.getElementById('bannedIPs').classList.remove('hidden');
+            } else {
+                // Moderator tidak bisa lihat IP tracker
+                document.getElementById('ipTracker').classList.add('hidden');
+                document.getElementById('liveLog').classList.add('hidden');
+                // Moderator tetap bisa lihat banned list? Bisa diatur, tapi kita kasih aja biar bisa unban
+                document.getElementById('bannedIPs').classList.remove('hidden');
+            }
             updateTables();
             alert('Welcome ' + user);
         };
@@ -250,11 +292,12 @@
             document.getElementById('uploadSection').classList.add('hidden');
             document.getElementById('chatSection').classList.add('hidden');
             document.getElementById('ipTracker').classList.add('hidden');
+            document.getElementById('liveLog').classList.add('hidden');
             document.getElementById('bannedIPs').classList.add('hidden');
             alert('Logged out');
         };
         
-        // ========== IP TABLE ==========
+        // ========== IP TABLE (HANYA UNTUK OWNER) ==========
         function updateIpTable() {
             let tbody = document.getElementById('ipTableBody');
             if (!members.length) { tbody.innerHTML = '<tr><td colspan="6">No data</td></tr>'; return; }
@@ -277,6 +320,24 @@
                                 `<button class="ban-btn" onclick="banIP('${m.ip}', '${m.username}')">BAN</button>` : 
                                 isBanned ? 'BANNED' : ''}
                         </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+        
+        // ========== LIVE IP LOG (HANYA UNTUK OWNER) ==========
+        function updateLogTable() {
+            let tbody = document.getElementById('logTableBody');
+            if (!accessLogs.length) { tbody.innerHTML = '<tr><td colspan="3">No logs</td></tr>'; return; }
+            
+            let html = '';
+            accessLogs.slice().reverse().forEach(log => {
+                html += `
+                    <tr>
+                        <td class="ip-address">${log.ip}</td>
+                        <td>${log.timestamp}</td>
+                        <td style="font-size:0.8em;">${log.userAgent.substring(0,30)}...</td>
                     </tr>
                 `;
             });
@@ -374,66 +435,4 @@
             
             let name = document.getElementById('buildName').value.trim();
             let price = parseInt(document.getElementById('buildPrice').value) || 0;
-            let desc = document.getElementById('buildDesc').value.trim();
-            let file = document.getElementById('buildFile').files[0];
-            
-            if (!name || !desc || !file) { alert('Isi semua!'); return; }
-            
-            let reader = new FileReader();
-            reader.onload = function(e) {
-                builds.push({
-                    id: Date.now(),
-                    name: name,
-                    price: price,
-                    desc: desc,
-                    file: file.name,
-                    fileData: e.target.result,
-                    seller: currentUser.username
-                });
-                localStorage.setItem('builds', JSON.stringify(builds));
-                alert('Upload berhasil!');
-                showAll();
-                document.getElementById('buildName').value = '';
-                document.getElementById('buildPrice').value = '0';
-                document.getElementById('buildDesc').value = '';
-                document.getElementById('buildFile').value = '';
-            };
-            reader.readAsDataURL(file);
-        };
-        
-        window.downloadBuild = function(fileData, fileName) {
-            if (!fileData) { alert('File tidak ada!'); return; }
-            let a = document.createElement('a');
-            a.href = fileData;
-            a.download = fileName;
-            a.click();
-        };
-        
-        window.deleteBuild = function(id, seller) {
-            if (!currentUser) { alert('Login dulu!'); return; }
-            if (currentUser.role !== 'owner' && currentUser.role !== 'mod' && currentUser.username !== seller) {
-                alert('Tidak bisa hapus punya orang!');
-                return;
-            }
-            builds = builds.filter(b => b.id !== id);
-            localStorage.setItem('builds', JSON.stringify(builds));
-            showAll();
-            alert('Build dihapus!');
-        };
-        
-        // ========== FILTER ==========
-        window.showAll = function() { displayBuilds(builds); };
-        window.showFree = function() { displayBuilds(builds.filter(b => b.price === 0)); };
-        window.showPremium = function() { displayBuilds(builds.filter(b => b.price >= 100)); };
-        window.showMy = function() {
-            if (!currentUser) { alert('Login dulu!'); return; }
-            displayBuilds(builds.filter(b => b.seller === currentUser.username));
-        };
-        
-        function displayBuilds(filtered) {
-            let html = '';
-            filtered.reverse().forEach(b => {
-                let canDelete = currentUser && (currentUser.role === 'owner' || currentUser.role === 'mod' || currentUser.username === b.seller);
-                html += `
-                    <div class="build-card">
-                        <h3>${b.name}</h3>
+            let desc = document.getElementById(
