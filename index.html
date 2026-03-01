@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OXYX MARKET - BUILD A BOAT</title>
+    <title>OXYX MARKET - FIXED</title>
     <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
     <style>
         * {
@@ -55,51 +55,6 @@
             border-radius: 10px;
             padding: 20px;
             margin-bottom: 20px;
-        }
-        
-        /* LIVE STATS */
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .stat-card {
-            background: #2a2a3a;
-            border: 2px solid #b300ff;
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: gold;
-            line-height: 1.2;
-        }
-        
-        .stat-label {
-            color: #b07cff;
-            font-size: 0.9em;
-            margin-top: 5px;
-        }
-        
-        .online-dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            background: #00ff00;
-            border-radius: 50%;
-            margin-right: 5px;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
-            100% { opacity: 1; transform: scale(1); }
         }
         
         .device-info {
@@ -162,38 +117,6 @@
             border-radius: 20px;
         }
         
-        /* IP TABLE */
-        .ip-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        
-        .ip-table th {
-            background: #b300ff;
-            color: white;
-            padding: 12px;
-            text-align: left;
-        }
-        
-        .ip-table td {
-            padding: 10px;
-            border-bottom: 1px solid #333;
-        }
-        
-        .ip-table tr:hover {
-            background: #2a2a3a;
-        }
-        
-        .online-badge {
-            color: #00ff00;
-            font-weight: bold;
-        }
-        
-        .offline-badge {
-            color: #666;
-        }
-        
         .chat-box {
             background: #0a0a1a;
             border: 2px solid #b300ff;
@@ -241,11 +164,6 @@
             padding: 15px;
         }
         
-        .build-card.premium {
-            border-color: gold;
-            box-shadow: 0 0 20px gold;
-        }
-        
         .build-price {
             color: gold;
             font-size: 1.2em;
@@ -279,38 +197,13 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>⚡ OXYX MARKET - BUILD A BOAT ⚡</h1>
+            <h1>⚡ OXYX MARKET ⚡</h1>
         </div>
 
         <div class="discord-links">
             <a href="#" class="discord-btn">MAIN SERVER</a>
             <a href="#" class="discord-btn">TRADE SERVER</a>
             <a href="#" class="discord-btn">BUILDER SERVER</a>
-        </div>
-
-        <!-- LIVE STATS -->
-        <div class="card">
-            <h2>📊 LIVE MEMBERS</h2>
-            <div class="stats-container">
-                <div class="stat-card">
-                    <div class="stat-value" id="totalMembers">0</div>
-                    <div class="stat-label">Total Members</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="onlineNow">0</div>
-                    <div class="stat-label">
-                        <span class="online-dot"></span> Online Now
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="totalBuilds">0</div>
-                    <div class="stat-label">Total Builds</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="totalIPs">0</div>
-                    <div class="stat-label">Unique IPs</div>
-                </div>
-            </div>
         </div>
 
         <div class="card">
@@ -342,25 +235,6 @@
             </div>
         </div>
 
-        <!-- ADMIN IP TABLE (Hanya untuk owner) -->
-        <div id="ipTableSection" class="card hidden">
-            <h2>👑 IP TRACKER - MEMBER DATABASE</h2>
-            <table class="ip-table">
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>IP Address</th>
-                        <th>Device ID</th>
-                        <th>Last Seen</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="ipTableBody">
-                    <tr><td colspan="5">Loading...</td></tr>
-                </tbody>
-            </table>
-        </div>
-
         <div id="chatSection" class="card hidden">
             <h2>💬 MOD CHAT</h2>
             <div class="chat-box" id="chatMessages"></div>
@@ -371,7 +245,7 @@
         </div>
 
         <div id="uploadSection" class="card hidden">
-            <h2>📤 UPLOAD BUILD (Build A Boat Only)</h2>
+            <h2>📤 UPLOAD BUILD</h2>
             <div class="form-group">
                 <label>Title</label>
                 <input type="text" id="buildTitle">
@@ -379,12 +253,14 @@
             <div class="form-group">
                 <label>Game</label>
                 <select id="buildGame">
-                    <option selected>Build A Boat</option>
+                    <option>Blox Fruits</option>
+                    <option>GPO</option>
+                    <option>Build A Boat</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>Price (Robux) - Premium min 100</label>
-                <input type="number" id="buildPrice" min="0" value="0">
+                <label>Price</label>
+                <input type="text" id="buildPrice">
             </div>
             <div class="form-group">
                 <label>Description</label>
@@ -398,18 +274,19 @@
         </div>
 
         <div class="card">
-            <h2>🏪 MARKETPLACE (Build A Boat)</h2>
-            <div style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap;">
-                <button onclick="filterBuilds('All')">📋 ALL</button>
-                <button onclick="filterBuilds('Free')">🆓 FREE (0)</button>
-                <button onclick="filterBuilds('Premium')">💎 PREMIUM (100+)</button>
-                <button onclick="filterBuilds('My Builds')">👤 MY BUILDS</button>
+            <h2>🏪 MARKETPLACE</h2>
+            <div style="display: flex; gap: 10px; margin: 15px 0;">
+                <button onclick="filterBuilds('All')">ALL</button>
+                <button onclick="filterBuilds('Blox Fruits')">BLOX</button>
+                <button onclick="filterBuilds('GPO')">GPO</button>
+                <button onclick="filterBuilds('Build A Boat')">BOAT</button>
+                <button onclick="filterBuilds('My Builds')">MY</button>
             </div>
             <div class="marketplace-grid" id="marketplace"></div>
         </div>
 
         <div class="footer">
-            <p>OXYX MARKET • Build A Boat Only • 1 Owner • 1 Moderator • Real IP Tracking</p>
+            <p>OXYX MARKET • 1 Device Only • Real Tracking</p>
         </div>
     </div>
 
@@ -419,19 +296,17 @@
         let currentFilter = 'All';
         let deviceId = 'unknown';
         let clientIP = 'unknown';
-        let members = JSON.parse(localStorage.getItem('members')) || [];
         
-        let builds = JSON.parse(localStorage.getItem('builds')) || [
-            { id: 1, title: "Dragon Boat", game: "Build A Boat", price: 0, desc: "Cool dragon boat", file: "dragon.build", seller: "owner" },
-            { id: 2, title: "Flying Ship", game: "Build A Boat", price: 150, desc: "Flying ship with wings", file: "flying.build", seller: "mod1" },
-            { id: 3, title: "Golden Raft", game: "Build A Boat", price: 200, desc: "Golden raft premium", file: "golden.build", seller: "member1" }
+        let builds = [
+            { id: 1, title: "Dragon Sword", game: "Blox Fruits", price: "Free", desc: "Auto farm", file: "dragon.build", seller: "owner" },
+            { id: 2, title: "Sea King", game: "GPO", price: "$5", desc: "Farm sea king", file: "sea.build", seller: "mod1" }
         ];
         
         let chats = [
-            { user: "owner", role: "owner", msg: "Welcome mods!" }
+            { user: "owner", role: "owner", msg: "Welcome!" }
         ];
 
-        // ========== FINGERPRINT & IP ==========
+        // ========== FINGERPRINT REAL ==========
         async function initFingerprint() {
             try {
                 const fp = await FingerprintJS.load();
@@ -443,107 +318,21 @@
                 const data = await res.json();
                 clientIP = data.ip;
                 document.getElementById('ipAddress').textContent = clientIP;
-                
-                // Auto update every 5 seconds
-                setInterval(updateOnlineStatus, 5000);
             } catch (e) {
                 console.log('Error:', e);
-                document.getElementById('deviceId').textContent = 'DEVICE-' + Math.random().toString(36).substring(2, 10);
-                document.getElementById('ipAddress').textContent = '127.0.0.1';
             }
         }
 
-        // ========== LIVE STATS ==========
-        function updateStats() {
-            document.getElementById('totalMembers').textContent = members.length;
-            document.getElementById('totalBuilds').textContent = builds.length;
-            
-            // Online now (last 5 minutes)
-            const fiveMinAgo = Date.now() - 300000;
-            const online = members.filter(m => new Date(m.lastSeen).getTime() > fiveMinAgo).length;
-            document.getElementById('onlineNow').textContent = online;
-            
-            // Unique IPs
-            const uniqueIPs = [...new Set(members.map(m => m.ip))].length;
-            document.getElementById('totalIPs').textContent = uniqueIPs;
-            
-            // Update IP table if admin
-            if (currentUser && currentUser.role === 'owner') {
-                updateIpTable();
-            }
-        }
-
-        function updateOnlineStatus() {
-            if (currentUser) {
-                // Update last seen for current user
-                const member = members.find(m => m.username === currentUser.username);
-                if (member) {
-                    member.lastSeen = new Date().toISOString();
-                    localStorage.setItem('members', JSON.stringify(members));
-                }
-            }
-            updateStats();
-        }
-
-        // ========== IP TABLE (ONLY OWNER) ==========
-        function updateIpTable() {
-            const tbody = document.getElementById('ipTableBody');
-            const fiveMinAgo = Date.now() - 300000;
-            
-            if (members.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5">No members yet</td></tr>';
-                return;
-            }
-            
-            let html = '';
-            members.sort((a, b) => new Date(b.lastSeen) - new Date(a.lastSeen)).forEach(m => {
-                const isOnline = new Date(m.lastSeen).getTime() > fiveMinAgo;
-                const statusClass = isOnline ? 'online-badge' : 'offline-badge';
-                const statusText = isOnline ? '🟢 Online' : '⚫ Offline';
-                
-                html += `
-                    <tr>
-                        <td><b>${m.username}</b></td>
-                        <td>${m.ip || 'Unknown'}</td>
-                        <td>${(m.deviceId || 'Unknown').substring(0, 15)}...</td>
-                        <td>${new Date(m.lastSeen).toLocaleString()}</td>
-                        <td class="${statusClass}">${statusText}</td>
-                    </tr>
-                `;
-            });
-            tbody.innerHTML = html;
-        }
-
-        // ========== AUTH ==========
+        // ========== AUTH REAL ==========
         window.loginMember = function() {
             const username = document.getElementById('memberUsername').value.trim();
             if (!username) return alert('Enter username!');
-            
-            // Check if member exists
-            let member = members.find(m => m.username === username);
-            const now = new Date().toISOString();
-            
-            if (member) {
-                member.lastSeen = now;
-                member.loginCount = (member.loginCount || 0) + 1;
-            } else {
-                members.push({
-                    username: username,
-                    ip: clientIP,
-                    deviceId: deviceId,
-                    firstSeen: now,
-                    lastSeen: now,
-                    loginCount: 1
-                });
-            }
-            localStorage.setItem('members', JSON.stringify(members));
             
             currentUser = { username: username, role: 'member' };
             document.getElementById('userInfo').classList.remove('hidden');
             document.getElementById('displayName').textContent = `🔥 ${username}`;
             document.getElementById('displayRole').textContent = 'MEMBER';
             document.getElementById('uploadSection').classList.remove('hidden');
-            updateStats();
             alert(`✅ Welcome ${username}!`);
         }
 
@@ -558,8 +347,6 @@
                 document.getElementById('displayRole').textContent = 'OWNER';
                 document.getElementById('uploadSection').classList.remove('hidden');
                 document.getElementById('chatSection').classList.remove('hidden');
-                document.getElementById('ipTableSection').classList.remove('hidden');
-                updateIpTable();
                 alert('✅ Welcome OWNER!');
             } 
             else if ((user === 'mod1' || user === 'mod2') && pass === 'mod123') {
@@ -581,5 +368,132 @@
             document.getElementById('userInfo').classList.add('hidden');
             document.getElementById('uploadSection').classList.add('hidden');
             document.getElementById('chatSection').classList.add('hidden');
-            document.getElementById('ipTableSection').classList.add('hidden');
-            a
+            alert('👋 Logged out');
+        }
+
+        // ========== CHAT ==========
+        window.sendChat = function() {
+            if (!currentUser || currentUser.role === 'member') {
+                return alert('Only mods can chat!');
+            }
+            
+            const msg = document.getElementById('chatInput').value.trim();
+            if (!msg) return;
+            
+            chats.push({ 
+                user: currentUser.username, 
+                role: currentUser.role, 
+                msg: msg 
+            });
+            
+            displayChat();
+            document.getElementById('chatInput').value = '';
+        }
+
+        function displayChat() {
+            const box = document.getElementById('chatMessages');
+            box.innerHTML = chats.map(c => 
+                `<div class="chat-message">
+                    <span class="${c.role}-text">${c.role === 'owner' ? '👑' : '🛡️'} ${c.user}:</span> ${c.msg}
+                </div>`
+            ).join('');
+        }
+
+        // ========== UPLOAD ==========
+        window.uploadBuild = function() {
+            if (!currentUser) return alert('Login first!');
+            
+            const title = document.getElementById('buildTitle').value.trim();
+            const game = document.getElementById('buildGame').value;
+            const price = document.getElementById('buildPrice').value.trim();
+            const desc = document.getElementById('buildDesc').value.trim();
+            const file = document.getElementById('buildFile').files[0];
+            
+            if (!title || !desc || !file) return alert('Fill all!');
+            
+            builds.push({
+                id: Date.now(),
+                title: title,
+                game: game,
+                price: price,
+                desc: desc,
+                file: file.name,
+                seller: currentUser.username
+            });
+            
+            alert('✅ Uploaded!');
+            displayMarketplace();
+        }
+
+        // ========== DOWNLOAD ==========
+        window.downloadBuild = function(id, filename) {
+            alert(`📥 Downloading ${filename}...`);
+        }
+
+        window.deleteBuild = function(id) {
+            if (!currentUser) return alert('Login first!');
+            
+            const build = builds.find(b => b.id === id);
+            if (!build) return;
+            
+            if (currentUser.role !== 'owner' && currentUser.role !== 'moderator' && build.seller !== currentUser.username) {
+                return alert('No permission!');
+            }
+            
+            builds = builds.filter(b => b.id !== id);
+            alert('✅ Deleted!');
+            displayMarketplace();
+        }
+
+        // ========== FILTER ==========
+        window.filterBuilds = function(filter) {
+            currentFilter = filter;
+            displayMarketplace();
+        }
+
+        function displayMarketplace() {
+            let filtered = builds;
+            
+            if (currentFilter !== 'All' && currentFilter !== 'My Builds') {
+                filtered = builds.filter(b => b.game === currentFilter);
+            } else if (currentFilter === 'My Builds') {
+                if (!currentUser) {
+                    document.getElementById('marketplace').innerHTML = '<p>Login first</p>';
+                    return;
+                }
+                filtered = builds.filter(b => b.seller === currentUser.username);
+            }
+            
+            if (filtered.length === 0) {
+                document.getElementById('marketplace').innerHTML = '<p>No builds</p>';
+                return;
+            }
+            
+            let html = '';
+            filtered.forEach(b => {
+                const canDelete = currentUser && (currentUser.role === 'owner' || currentUser.role === 'moderator' || b.seller === currentUser.username);
+                
+                html += `
+                    <div class="build-card">
+                        <h3>${b.title}</h3>
+                        <div>${b.game}</div>
+                        <div class="build-price">💰 ${b.price}</div>
+                        <p>${b.desc}</p>
+                        <div>📦 ${b.file}</div>
+                        <div>Seller: ${b.seller}</div>
+                        <button class="download-btn" onclick="downloadBuild(${b.id}, '${b.file}')">DOWNLOAD</button>
+                        ${canDelete ? `<button class="delete-btn" onclick="deleteBuild(${b.id})">DELETE</button>` : ''}
+                    </div>
+                `;
+            });
+            
+            document.getElementById('marketplace').innerHTML = html;
+        }
+
+        // ========== INIT ==========
+        initFingerprint();
+        displayChat();
+        displayMarketplace();
+    </script>
+</body>
+</html>
