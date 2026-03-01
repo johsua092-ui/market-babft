@@ -1,54 +1,28 @@
-body {
-    background-color: #0a0a0f;
-    font-family: 'Segoe UI', 'Arial', sans-serif;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+/* CSS Anda di sini */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
 }
+
+body {
+  background: #0a0a0f;
+  color: white;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  user-select: none;
+}
+
+/* Tambahkan semua CSS Anda di sini, termasuk animasi, gaya kartu, dll. */
 
 .container {
-    text-align: center;
-    background: rgba(10, 10, 30, 0.8);
-    padding: 20px;
-    border-radius: 10px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  position: relative;
+  z-index: 10;
 }
 
-input[type="text"],
-input[type="password"] {
-    padding: 10px;
-    margin: 5px;
-    border-radius: 5px;
-    border: 1px solid #b300ff;
-    width: 200px;
-}
-
-button {
-    padding: 10px 20px;
-    background: #b300ff;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-button:hover {
-    background: #d400ff;
-}
-
-.hidden {
-    display: none;
-}
-
-#chat-messages {
-    max-height: 300px;
-    overflow-y: auto;
-    border: 1px solid #b300ff;
-    border-radius: 5px;
-    padding: 10px;
-    background: #1a0a2a;
-    margin-top: 10px;
-}
+/* Lanjutkan dengan gaya lainnya ... */
