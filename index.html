@@ -3,135 +3,144 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Chatbot Sederhana</title>
+<title>OXYX MARKET - ULTIMATE</title>
+<!-- Tambahkan style dan script Anda di sini -->
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    margin: 0;
-    padding: 20px;
+  /* Style dasar untuk login dan area pengguna */
+  #login-area, #ganti-password-area {
+    margin-bottom: 20px;
   }
-
-  .chat-container {
-    max-width: 600px;
-    margin: 0 auto;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    display: flex;
-    flex-direction: column;
-    height: 80vh;
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .chat-box {
-    flex: 1;
+  #login-area {
     padding: 10px;
-    overflow-y: auto;
-    background-color: #fafafa;
+    background-color: #1a0a2a;
+    border-radius: 10px;
+    width: 300px;
   }
-
-  .chat-box p {
-    margin: 8px 0;
-  }
-
-  .user {
-    color: blue;
-  }
-
-  .bot {
-    color: green;
-  }
-
-  .chat-form {
-    display: flex;
-    padding: 10px;
-    border-top: 1px solid #ccc;
-  }
-
-  #user-input {
-    flex: 1;
+  #login-area input {
+    display: block;
+    margin-bottom: 10px;
     padding: 8px;
-    font-size: 16px;
+    width: 100%;
+    border-radius: 5px;
     border: 1px solid #ccc;
-    border-radius: 4px;
   }
-
-  button {
+  #login-area button {
     padding: 8px 16px;
-    margin-left: 8px;
-    font-size: 16px;
+    background-color: #b300ff;
+    color: #fff;
     border: none;
-    border-radius: 4px;
-    background-color: #4CAF50;
-    color: white;
+    border-radius: 5px;
     cursor: pointer;
   }
-
-  button:hover {
-    background-color: #45a049;
+  #login-area button:hover {
+    background-color: #d400ff;
+  }
+  #user-info {
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  #ganti-password-area {
+    display: none;
+  }
+  #ganti-password-area input {
+    padding: 8px;
+    width: calc(100% - 20px);
+    margin-bottom: 10px;
+  }
+  #ganti-password-area button {
+    padding: 8px 16px;
+    background-color: #00aa00;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  #ganti-password-area button:hover {
+    background-color: #00ff00;
   }
 </style>
+<script>
+  // Data pengguna
+  const users = {
+    owner: {
+      username: 'znyt',
+      password: 'Root!Delta_7KpZ'
+    },
+    moderator1: {
+      username: 'helper_tester',
+      password: 'huwydhdjsiqo'
+    },
+    moderator2: {
+      username: 'sigma',
+      password: 'uBwbONeqIwYQ97'
+    }
+  };
+
+  let currentUser = null;
+
+  function login() {
+    const username = document.getElementById('login-username').value;
+    const password = document.getElementById('login-password').value;
+
+    for (const role in users) {
+      if (users[role].username === username && users[role].password === password) {
+        currentUser = { role: role, username: username };
+        alert('Berhasil login sebagai ' + role);
+        document.getElementById('login-area').style.display = 'none';
+        document.getElementById('user-info').innerHTML = 'Login sebagai: ' + username + ' (' + role + ') <button onclick="logout()">Logout</button>';
+        document.getElementById('ganti-password-area').style.display = 'block';
+        return;
+      }
+    }
+    alert('Username atau password salah!');
+  }
+
+  function logout() {
+    currentUser = null;
+    document.getElementById('login-area').style.display = 'block';
+    document.getElementById('user-info').innerHTML = '';
+    document.getElementById('ganti-password-area').style.display = 'none';
+    document.getElementById('login-username').value = '';
+    document.getElementById('login-password').value = '';
+  }
+
+  function gantiPassword() {
+    const newPassword = document.getElementById('new-password').value;
+    if (!currentUser) {
+      alert('Silakan login terlebih dahulu.');
+      return;
+    }
+    // Ganti password sesuai role
+    users[currentUser.role].password = newPassword;
+    alert('Password berhasil diganti!');
+    document.getElementById('new-password').value = '';
+  }
+</script>
 </head>
 <body>
 
-<h2>Chatbot Sederhana</h2>
+<h2>Area Login</h2>
+<div id="login-area">
+  <input type="text" id="login-username" placeholder="Username" />
+  <input type="password" id="login-password" placeholder="Password" />
+  <button onclick="login()">Login</button>
+</div>
+<div id="user-info"></div>
 
-<div class="chat-container">
-  <div id="chat" class="chat-box"></div>
-  <form id="chat-form" class="chat-form">
-    <input type="text" id="user-input" placeholder="Ketik pesan..." autocomplete="off" />
-    <button type="submit">Kirim</button>
-  </form>
+<div id="ganti-password-area">
+  <h3>Ganti Password</h3>
+  <input type="password" id="new-password" placeholder="Password Baru" />
+  <button onclick="gantiPassword()">Ganti Password</button>
 </div>
 
-<script>
-  const chatBox = document.getElementById('chat');
-  const chatForm = document.getElementById('chat-form');
-  const userInput = document.getElementById('user-input');
-
-  // Fungsi untuk menambahkan pesan ke chat
-  function addMessage(sender, message) {
-    const p = document.createElement('p');
-    p.className = sender;
-    p.textContent = message;
-    chatBox.appendChild(p);
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
-
-  // Respon otomatis dari bot
-  function getBotResponse(message) {
-    const msg = message.toLowerCase();
-    if (msg.includes('halo')) {
-      return 'Halo! Ada yang bisa saya bantu?';
-    } else if (msg.includes('apa kabar')) {
-      return 'Saya baik, terima kasih!';
-    } else if (msg.includes('bye')) {
-      return 'Sampai jumpa!';
-    } else {
-      return 'Maaf, saya tidak mengerti.';
-    }
-  }
-
-  // Event submit form
-  chatForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const message = userInput.value.trim();
-    if (message === '') return;
-
-    // Tampilkan pesan pengguna
-    addMessage('user', message);
-
-    // Respon dari bot
-    const response = getBotResponse(message);
-    setTimeout(() => {
-      addMessage('bot', response);
-    }, 500);
-
-    userInput.value = '';
-    userInput.focus();
-  });
-</script>
+<!-- Sisanya kode HTML utama Anda -->
+<div class="container">
+  <!-- Contoh header -->
+  <div class="header" style="text-align:center; margin-bottom:30px;">
+    <h1 style="font-size:4em; font-weight:900; color:#b300ff; text-shadow: 4px 4px 0 #ff00ff, -4px -4px 0 #00ffff, 0 0 40px #b300ff; animation: glitch 3s infinite;">OXYX MARKET - ULTIMATE</h1>
+  </div>
+  <!-- Konten lain dari halaman Anda bisa tetap di sini -->
+</div>
 
 </body>
 </html>
