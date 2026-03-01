@@ -1,534 +1,180 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OXYX MARKET - BUILD A BOAT</title>
-    <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
+    <title>OXYX MARKET - FIX</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Arial, sans-serif;
-        }
-        
-        body {
-            background: #0a0a0a;
-            color: white;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        h1 {
-            color: #b300ff;
-            font-size: 3em;
-        }
-        
-        .discord-links {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin: 20px 0;
-        }
-        
-        .discord-btn {
-            padding: 10px 20px;
-            background: #5865F2;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-        
-        .card {
-            background: #1a1a2a;
-            border: 2px solid #b300ff;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        /* LIVE STATS */
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .stat-card {
-            background: #2a2a3a;
-            border: 2px solid #b300ff;
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: gold;
-            line-height: 1.2;
-        }
-        
-        .stat-label {
-            color: #b07cff;
-            font-size: 0.9em;
-            margin-top: 5px;
-        }
-        
-        .online-dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            background: #00ff00;
-            border-radius: 50%;
-            margin-right: 5px;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        
-        .device-info {
-            background: #0a0a1a;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 10px 0;
-        }
-        
-        .device-id {
-            color: #00ff00;
-            font-family: monospace;
-            word-break: break-all;
-        }
-        
-        .auth-section {
-            display: flex;
-            gap: 10px;
-            margin: 15px 0;
-        }
-        
-        .auth-section input {
-            flex: 1;
-            padding: 12px;
-            background: #2a2a3a;
-            border: 2px solid #b300ff;
-            border-radius: 5px;
-            color: white;
-        }
-        
-        button {
-            padding: 12px 25px;
-            background: #b300ff;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
-        button:hover {
-            background: #d400ff;
-        }
-        
-        .user-info {
-            background: #1a1a2a;
-            border: 2px solid gold;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 15px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .role-badge {
-            background: gold;
-            color: black;
-            padding: 5px 15px;
-            border-radius: 20px;
-        }
-        
-        /* IP TABLE */
-        .ip-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        
-        .ip-table th {
-            background: #b300ff;
-            color: white;
-            padding: 12px;
-            text-align: left;
-        }
-        
-        .ip-table td {
-            padding: 10px;
-            border-bottom: 1px solid #333;
-        }
-        
-        .ip-table tr:hover {
-            background: #2a2a3a;
-        }
-        
-        .online-badge {
-            color: #00ff00;
-            font-weight: bold;
-        }
-        
-        .offline-badge {
-            color: #666;
-        }
-        
-        .chat-box {
-            background: #0a0a1a;
-            border: 2px solid #b300ff;
-            border-radius: 5px;
-            padding: 15px;
-            height: 150px;
-            overflow-y: auto;
-            margin: 10px 0;
-        }
-        
-        .chat-message {
-            padding: 5px;
-            border-bottom: 1px solid #333;
-        }
-        
-        .owner-text { color: gold; }
-        .mod-text { color: #00ff00; }
-        
-        .form-group {
-            margin: 15px 0;
-        }
-        
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            background: #2a2a3a;
-            border: 2px solid #b300ff;
-            border-radius: 5px;
-            color: white;
-        }
-        
-        .marketplace-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-        
-        .build-card {
-            background: #2a2a3a;
-            border: 2px solid #b300ff;
-            border-radius: 5px;
-            padding: 15px;
-        }
-        
-        .build-card.premium {
-            border-color: gold;
-            box-shadow: 0 0 20px gold;
-        }
-        
-        .build-price {
-            color: gold;
-            font-size: 1.2em;
-            margin: 10px 0;
-        }
-        
-        .download-btn {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            background: #00aa00;
-        }
-        
-        .delete-btn {
-            width: 100%;
-            padding: 10px;
-            background: #aa0000;
-        }
-        
-        .hidden {
-            display: none !important;
-        }
-        
-        .footer {
-            text-align: center;
-            color: #666;
-            margin-top: 30px;
-        }
+        body { background: black; color: white; font-family: Arial; padding: 20px; }
+        .box { background: #1a1a2a; border: 2px solid purple; padding: 15px; margin: 10px 0; border-radius: 10px; }
+        input, button { padding: 10px; margin: 5px; width: 100%; background: #333; color: white; border: 1px solid purple; border-radius: 5px; }
+        button { background: purple; cursor: pointer; font-weight: bold; }
+        .device-info { background: #0a0a1a; padding: 10px; border-radius: 5px; font-family: monospace; }
+        .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 10px 0; }
+        .stat-card { background: #2a2a3a; padding: 15px; text-align: center; border-radius: 5px; }
+        .stat-number { font-size: 2em; color: gold; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: purple; padding: 10px; text-align: left; }
+        td { padding: 10px; border-bottom: 1px solid #333; }
+        .online { color: #00ff00; }
+        .offline { color: #666; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>⚡ OXYX MARKET - BUILD A BOAT ⚡</h1>
-        </div>
-
-        <div class="discord-links">
-            <a href="#" class="discord-btn">MAIN SERVER</a>
-            <a href="#" class="discord-btn">TRADE SERVER</a>
-            <a href="#" class="discord-btn">BUILDER SERVER</a>
-        </div>
-
-        <!-- LIVE STATS -->
-        <div class="card">
-            <h2>📊 LIVE MEMBERS</h2>
-            <div class="stats-container">
-                <div class="stat-card">
-                    <div class="stat-value" id="totalMembers">0</div>
-                    <div class="stat-label">Total Members</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="onlineNow">0</div>
-                    <div class="stat-label">
-                        <span class="online-dot"></span> Online Now
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="totalBuilds">0</div>
-                    <div class="stat-label">Total Builds</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="totalIPs">0</div>
-                    <div class="stat-label">Unique IPs</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2>🔐 DEVICE FINGERPRINT</h2>
-            <div class="device-info">
-                <div>🖥️ Device ID: <span class="device-id" id="deviceId">Loading...</span></div>
-                <div>📍 IP Address: <span id="ipAddress">Detecting...</span></div>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2>🔐 MEMBER ACCESS</h2>
-            
-            <div class="auth-section">
-                <input type="text" id="memberUsername" placeholder="Enter username">
-                <button onclick="loginMember()">LOGIN</button>
-            </div>
-            
-            <div class="auth-section">
-                <input type="text" id="adminUser" placeholder="Admin">
-                <input type="password" id="adminPass" placeholder="Password">
-                <button onclick="loginAdmin()">ADMIN</button>
-            </div>
-            
-            <div id="userInfo" class="user-info hidden">
-                <span id="displayName"></span>
-                <span class="role-badge" id="displayRole"></span>
-                <button onclick="logout()">LOGOUT</button>
-            </div>
-        </div>
-
-        <!-- ADMIN IP TABLE (Hanya untuk owner) -->
-        <div id="ipTableSection" class="card hidden">
-            <h2>👑 IP TRACKER - MEMBER DATABASE</h2>
-            <table class="ip-table">
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>IP Address</th>
-                        <th>Device ID</th>
-                        <th>Last Seen</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="ipTableBody">
-                    <tr><td colspan="5">Loading...</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div id="chatSection" class="card hidden">
-            <h2>💬 MOD CHAT</h2>
-            <div class="chat-box" id="chatMessages"></div>
-            <div style="display: flex; gap: 10px;">
-                <input type="text" id="chatInput" placeholder="Type..." style="flex: 1; padding: 10px; background:#2a2a3a; border:2px solid #b300ff; color:white;">
-                <button onclick="sendChat()">SEND</button>
-            </div>
-        </div>
-
-        <div id="uploadSection" class="card hidden">
-            <h2>📤 UPLOAD BUILD (Build A Boat Only)</h2>
-            <div class="form-group">
-                <label>Title</label>
-                <input type="text" id="buildTitle">
-            </div>
-            <div class="form-group">
-                <label>Game</label>
-                <select id="buildGame">
-                    <option selected>Build A Boat</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Price (Robux) - Premium min 100</label>
-                <input type="number" id="buildPrice" min="0" value="0">
-            </div>
-            <div class="form-group">
-                <label>Description</label>
-                <textarea id="buildDesc"></textarea>
-            </div>
-            <div class="form-group">
-                <label>File (.build)</label>
-                <input type="file" id="buildFile" accept=".build">
-            </div>
-            <button onclick="uploadBuild()">UPLOAD</button>
-        </div>
-
-        <div class="card">
-            <h2>🏪 MARKETPLACE (Build A Boat)</h2>
-            <div style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap;">
-                <button onclick="filterBuilds('All')">📋 ALL</button>
-                <button onclick="filterBuilds('Free')">🆓 FREE (0)</button>
-                <button onclick="filterBuilds('Premium')">💎 PREMIUM (100+)</button>
-                <button onclick="filterBuilds('My Builds')">👤 MY BUILDS</button>
-            </div>
-            <div class="marketplace-grid" id="marketplace"></div>
-        </div>
-
-        <div class="footer">
-            <p>OXYX MARKET • Build A Boat Only • 1 Owner • 1 Moderator • Real IP Tracking</p>
+    <h1>⚡ OXYX MARKET - BUILD A BOAT ⚡</h1>
+    
+    <!-- DEVICE INFO - PAKE LOCAL STORAGE -->
+    <div class="box">
+        <h3>📱 DEVICE INFO</h3>
+        <div class="device-info">
+            <p>Device ID: <span id="deviceId">LOADING...</span></p>
+            <p>IP Address: <span id="ipAddress">LOADING...</span></p>
         </div>
     </div>
-
+    
+    <!-- STATS -->
+    <div class="box">
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalMembers">0</div>
+                <div>Members</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="onlineNow">0</div>
+                <div>Online</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalBuilds">0</div>
+                <div>Builds</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- LOGIN -->
+    <div class="box">
+        <h3>🔐 LOGIN</h3>
+        <input type="text" id="username" placeholder="Username (member)">
+        <button onclick="loginMember()">LOGIN MEMBER</button>
+        
+        <input type="text" id="adminUser" placeholder="Admin: owner">
+        <input type="password" id="adminPass" placeholder="Password">
+        <button onclick="loginAdmin()">LOGIN ADMIN</button>
+        
+        <div id="userInfo" class="hidden" style="margin-top:10px; padding:10px; background:#2a2a3a; border-radius:5px;">
+            <p>Logged in as: <span id="displayName"></span></p>
+            <button onclick="logout()" style="background:#aa0000;">LOGOUT</button>
+        </div>
+    </div>
+    
+    <!-- IP TABLE UNTUK OWNER -->
+    <div id="ipTable" class="box hidden">
+        <h3>👑 IP TRACKER - MEMBER DATABASE</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>IP Address</th>
+                    <th>Device ID</th>
+                    <th>Last Seen</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="ipTableBody"></tbody>
+        </table>
+    </div>
+    
+    <!-- CHAT MOD -->
+    <div id="chatSection" class="box hidden">
+        <h3>💬 MOD CHAT</h3>
+        <div id="chatMessages" style="background:#0a0a1a; height:150px; overflow:auto; padding:10px; margin:10px 0;"></div>
+        <input type="text" id="chatMsg" placeholder="Type message...">
+        <button onclick="sendChat()">SEND</button>
+    </div>
+    
+    <!-- UPLOAD -->
+    <div id="uploadSection" class="box hidden">
+        <h3>📤 UPLOAD BUILD</h3>
+        <input type="text" id="buildName" placeholder="Build name">
+        <input type="number" id="buildPrice" value="0" min="0" placeholder="Price (100+ = premium)">
+        <textarea id="buildDesc" rows="3" placeholder="Description"></textarea>
+        <input type="file" id="buildFile" accept=".build">
+        <button onclick="uploadBuild()">PUBLISH</button>
+    </div>
+    
+    <!-- MARKETPLACE -->
+    <div class="box">
+        <h3>🏪 MARKETPLACE</h3>
+        <div style="display:flex; gap:5px; margin:10px 0; flex-wrap:wrap;">
+            <button onclick="filterBuilds('all')">ALL</button>
+            <button onclick="filterBuilds('free')">FREE (0)</button>
+            <button onclick="filterBuilds('premium')">PREMIUM (100+)</button>
+            <button onclick="filterBuilds('my')">MY BUILDS</button>
+        </div>
+        <div id="marketplace"></div>
+    </div>
+    
     <script>
-        // ========== DATA REAL ==========
+        // ========== DATA ==========
         let currentUser = null;
-        let currentFilter = 'All';
-        let deviceId = 'unknown';
-        let clientIP = 'unknown';
+        let currentFilter = 'all';
+        let deviceId = 'DEVICE-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+        let clientIP = '0.0.0.0';
+        
+        // Load data dari localStorage
         let members = JSON.parse(localStorage.getItem('members')) || [];
-        
         let builds = JSON.parse(localStorage.getItem('builds')) || [
-            { id: 1, title: "Dragon Boat", game: "Build A Boat", price: 0, desc: "Cool dragon boat", file: "dragon.build", seller: "owner" },
-            { id: 2, title: "Flying Ship", game: "Build A Boat", price: 150, desc: "Flying ship with wings", file: "flying.build", seller: "mod1" },
-            { id: 3, title: "Golden Raft", game: "Build A Boat", price: 200, desc: "Golden raft premium", file: "golden.build", seller: "member1" }
+            {id:1, name:"Dragon Boat", price:0, desc:"Cool dragon boat", file:"dragon.build", seller:"owner"},
+            {id:2, name:"Flying Ship", price:150, desc:"Flying ship", file:"flying.build", seller:"mod1"},
+            {id:3, name:"Golden Raft", price:200, desc:"Golden raft", file:"golden.build", seller:"member1"}
         ];
+        let chats = JSON.parse(localStorage.getItem('chats')) || [];
         
-        let chats = [
-            { user: "owner", role: "owner", msg: "Welcome mods!" }
-        ];
-
-        // ========== FINGERPRINT & IP ==========
-        async function initFingerprint() {
-            try {
-                const fp = await FingerprintJS.load();
-                const result = await fp.get();
-                deviceId = result.visitorId;
-                document.getElementById('deviceId').textContent = deviceId;
-                
-                const res = await fetch('https://api.ipify.org?format=json');
-                const data = await res.json();
-                clientIP = data.ip;
-                document.getElementById('ipAddress').textContent = clientIP;
-                
-                // Auto update every 5 seconds
-                setInterval(updateOnlineStatus, 5000);
-            } catch (e) {
-                console.log('Error:', e);
-                document.getElementById('deviceId').textContent = 'DEVICE-' + Math.random().toString(36).substring(2, 10);
-                document.getElementById('ipAddress').textContent = '127.0.0.1';
-            }
-        }
-
-        // ========== LIVE STATS ==========
-        function updateStats() {
-            document.getElementById('totalMembers').textContent = members.length;
-            document.getElementById('totalBuilds').textContent = builds.length;
-            
-            // Online now (last 5 minutes)
-            const fiveMinAgo = Date.now() - 300000;
-            const online = members.filter(m => new Date(m.lastSeen).getTime() > fiveMinAgo).length;
-            document.getElementById('onlineNow').textContent = online;
-            
-            // Unique IPs
-            const uniqueIPs = [...new Set(members.map(m => m.ip))].length;
-            document.getElementById('totalIPs').textContent = uniqueIPs;
-            
-            // Update IP table if admin
-            if (currentUser && currentUser.role === 'owner') {
-                updateIpTable();
-            }
-        }
-
-        function updateOnlineStatus() {
-            if (currentUser) {
-                // Update last seen for current user
-                const member = members.find(m => m.username === currentUser.username);
-                if (member) {
-                    member.lastSeen = new Date().toISOString();
-                    localStorage.setItem('members', JSON.stringify(members));
-                }
-            }
-            updateStats();
-        }
-
-        // ========== IP TABLE (ONLY OWNER) ==========
-        function updateIpTable() {
-            const tbody = document.getElementById('ipTableBody');
-            const fiveMinAgo = Date.now() - 300000;
-            
-            if (members.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5">No members yet</td></tr>';
-                return;
-            }
-            
-            let html = '';
-            members.sort((a, b) => new Date(b.lastSeen) - new Date(a.lastSeen)).forEach(m => {
-                const isOnline = new Date(m.lastSeen).getTime() > fiveMinAgo;
-                const statusClass = isOnline ? 'online-badge' : 'offline-badge';
-                const statusText = isOnline ? '🟢 Online' : '⚫ Offline';
-                
-                html += `
-                    <tr>
-                        <td><b>${m.username}</b></td>
-                        <td>${m.ip || 'Unknown'}</td>
-                        <td>${(m.deviceId || 'Unknown').substring(0, 15)}...</td>
-                        <td>${new Date(m.lastSeen).toLocaleString()}</td>
-                        <td class="${statusClass}">${statusText}</td>
-                    </tr>
-                `;
+        // ========== DEVICE ID & IP FIX ==========
+        document.getElementById('deviceId').innerText = deviceId;
+        
+        // IP PAKE API ALTERNATIF (PASTI WORK)
+        fetch('https://httpbin.org/ip')
+            .then(res => res.json())
+            .then(data => {
+                clientIP = data.origin;
+                document.getElementById('ipAddress').innerText = clientIP;
+            })
+            .catch(() => {
+                clientIP = '127.0.0.1';
+                document.getElementById('ipAddress').innerText = clientIP;
             });
-            tbody.innerHTML = html;
+        
+        // ========== FUNCTIONS ==========
+        function updateStats() {
+            document.getElementById('totalMembers').innerText = members.length;
+            document.getElementById('totalBuilds').innerText = builds.length;
+            
+            let online = members.filter(m => {
+                let last = new Date(m.lastSeen).getTime();
+                return Date.now() - last < 300000;
+            }).length;
+            document.getElementById('onlineNow').innerText = online;
         }
-
-        // ========== AUTH ==========
+        
+        function saveMembers() {
+            localStorage.setItem('members', JSON.stringify(members));
+            updateStats();
+            updateIpTable();
+        }
+        
+        // ========== LOGIN MEMBER ==========
         window.loginMember = function() {
-            const username = document.getElementById('memberUsername').value.trim();
-            if (!username) return alert('Enter username!');
+            let user = document.getElementById('username').value.trim();
+            if (!user) { alert('Masukin nama!'); return; }
             
-            // Check if member exists
-            let member = members.find(m => m.username === username);
-            const now = new Date().toISOString();
+            let now = new Date().toISOString();
+            let existing = members.find(m => m.username === user);
             
-            if (member) {
-                member.lastSeen = now;
-                member.loginCount = (member.loginCount || 0) + 1;
+            if (existing) {
+                existing.lastSeen = now;
+                existing.loginCount = (existing.loginCount || 0) + 1;
             } else {
                 members.push({
-                    username: username,
+                    username: user,
                     ip: clientIP,
                     deviceId: deviceId,
                     firstSeen: now,
@@ -536,50 +182,197 @@
                     loginCount: 1
                 });
             }
-            localStorage.setItem('members', JSON.stringify(members));
+            saveMembers();
             
-            currentUser = { username: username, role: 'member' };
-            document.getElementById('userInfo').classList.remove('hidden');
-            document.getElementById('displayName').textContent = `🔥 ${username}`;
-            document.getElementById('displayRole').textContent = 'MEMBER';
-            document.getElementById('uploadSection').classList.remove('hidden');
-            updateStats();
-            alert(`✅ Welcome ${username}!`);
-        }
-
+            currentUser = { username: user, role: 'member' };
+            showUserInfo();
+            alert('✅ Welcome ' + user);
+        };
+        
+        // ========== LOGIN ADMIN ==========
         window.loginAdmin = function() {
-            const user = document.getElementById('adminUser').value;
-            const pass = document.getElementById('adminPass').value;
+            let user = document.getElementById('adminUser').value.trim();
+            let pass = document.getElementById('adminPass').value.trim();
             
             if (user === 'owner' && pass === 'owner_oxyx_2026') {
                 currentUser = { username: 'owner', role: 'owner' };
-                document.getElementById('userInfo').classList.remove('hidden');
-                document.getElementById('displayName').textContent = '👑 owner';
-                document.getElementById('displayRole').textContent = 'OWNER';
-                document.getElementById('uploadSection').classList.remove('hidden');
-                document.getElementById('chatSection').classList.remove('hidden');
-                document.getElementById('ipTableSection').classList.remove('hidden');
+                showUserInfo();
+                document.getElementById('ipTable').classList.remove('hidden');
                 updateIpTable();
-                alert('✅ Welcome OWNER!');
-            } 
+                alert('✅ Welcome OWNER');
+            }
             else if ((user === 'mod1' || user === 'mod2') && pass === 'mod123') {
-                currentUser = { username: user, role: 'moderator' };
-                document.getElementById('userInfo').classList.remove('hidden');
-                document.getElementById('displayName').textContent = `🛡️ ${user}`;
-                document.getElementById('displayRole').textContent = 'MODERATOR';
-                document.getElementById('uploadSection').classList.remove('hidden');
+                currentUser = { username: user, role: 'mod' };
+                showUserInfo();
                 document.getElementById('chatSection').classList.remove('hidden');
-                alert(`✅ Welcome ${user}!`);
+                alert('✅ Welcome ' + user);
             }
             else {
-                alert('❌ Wrong credentials!');
+                alert('❌ Wrong credentials');
+            }
+        };
+        
+        function showUserInfo() {
+            document.getElementById('userInfo').classList.remove('hidden');
+            document.getElementById('displayName').innerText = currentUser.username + ' (' + currentUser.role + ')';
+            document.getElementById('uploadSection').classList.remove('hidden');
+            if (currentUser.role === 'owner' || currentUser.role === 'mod') {
+                document.getElementById('chatSection').classList.remove('hidden');
+                displayChat();
             }
         }
-
+        
         window.logout = function() {
             currentUser = null;
             document.getElementById('userInfo').classList.add('hidden');
             document.getElementById('uploadSection').classList.add('hidden');
             document.getElementById('chatSection').classList.add('hidden');
-            document.getElementById('ipTableSection').classList.add('hidden');
-            a
+            document.getElementById('ipTable').classList.add('hidden');
+            alert('Logged out');
+        };
+        
+        // ========== IP TABLE ==========
+        function updateIpTable() {
+            let tbody = document.getElementById('ipTableBody');
+            if (members.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5">Belum ada member</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            let fiveMinAgo = Date.now() - 300000;
+            
+            members.sort((a,b) => new Date(b.lastSeen) - new Date(a.lastSeen)).forEach(m => {
+                let isOnline = new Date(m.lastSeen).getTime() > fiveMinAgo;
+                let status = isOnline ? '<span class="online">🟢 ONLINE</span>' : '<span class="offline">⚫ OFFLINE</span>';
+                html += `
+                    <tr>
+                        <td><b>${m.username}</b></td>
+                        <td>${m.ip || 'Unknown'}</td>
+                        <td>${(m.deviceId || '').substring(0,15)}...</td>
+                        <td>${new Date(m.lastSeen).toLocaleString()}</td>
+                        <td>${status}</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+        
+        // ========== CHAT ==========
+        window.sendChat = function() {
+            if (!currentUser || currentUser.role === 'member') {
+                alert('Only mods can chat');
+                return;
+            }
+            let msg = document.getElementById('chatMsg').value.trim();
+            if (!msg) return;
+            
+            chats.push({ user: currentUser.username, role: currentUser.role, msg: msg });
+            localStorage.setItem('chats', JSON.stringify(chats));
+            document.getElementById('chatMsg').value = '';
+            displayChat();
+        };
+        
+        function displayChat() {
+            let box = document.getElementById('chatMessages');
+            let html = '';
+            chats.slice(-10).forEach(c => {
+                html += `<div><b>${c.user}:</b> ${c.msg}</div>`;
+            });
+            box.innerHTML = html;
+        }
+        
+        // ========== UPLOAD ==========
+        window.uploadBuild = function() {
+            if (!currentUser) { alert('Login dulu!'); return; }
+            
+            let name = document.getElementById('buildName').value.trim();
+            let price = parseInt(document.getElementById('buildPrice').value) || 0;
+            let desc = document.getElementById('buildDesc').value.trim();
+            let file = document.getElementById('buildFile').files[0];
+            
+            if (!name || !desc || !file) { alert('Isi semua!'); return; }
+            
+            builds.push({
+                id: Date.now(),
+                name: name,
+                price: price,
+                desc: desc,
+                file: file.name,
+                seller: currentUser.username
+            });
+            localStorage.setItem('builds', JSON.stringify(builds));
+            alert('✅ Upload berhasil');
+            displayBuilds();
+            updateStats();
+        };
+        
+        // ========== DELETE ==========
+        window.deleteBuild = function(id, seller) {
+            if (!currentUser) { alert('Login dulu!'); return; }
+            if (currentUser.role === 'owner' || currentUser.role === 'mod' || currentUser.username === seller) {
+                builds = builds.filter(b => b.id !== id);
+                localStorage.setItem('builds', JSON.stringify(builds));
+                displayBuilds();
+                updateStats();
+                alert('✅ Build dihapus');
+            } else {
+                alert('❌ Ga boleh hapus punya orang');
+            }
+        };
+        
+        window.downloadBuild = function(file) {
+            alert('📥 Download ' + file);
+        };
+        
+        // ========== FILTER ==========
+        window.filterBuilds = function(filter) {
+            currentFilter = filter;
+            displayBuilds();
+        };
+        
+        function displayBuilds() {
+            let filtered = builds;
+            
+            if (currentFilter === 'free') {
+                filtered = builds.filter(b => b.price === 0);
+            } else if (currentFilter === 'premium') {
+                filtered = builds.filter(b => b.price >= 100);
+            } else if (currentFilter === 'my') {
+                if (!currentUser) {
+                    document.getElementById('marketplace').innerHTML = '<p>Login untuk lihat buildmu</p>';
+                    return;
+                }
+                filtered = builds.filter(b => b.seller === currentUser.username);
+            }
+            
+            if (filtered.length === 0) {
+                document.getElementById('marketplace').innerHTML = '<p>No builds</p>';
+                return;
+            }
+            
+            let html = '';
+            filtered.reverse().forEach(b => {
+                let canDelete = currentUser && (currentUser.role === 'owner' || currentUser.role === 'mod' || currentUser.username === b.seller);
+                html += `
+                    <div style="border:1px solid purple; margin:10px 0; padding:10px; border-radius:5px; ${b.price>=100?'border-color:gold;':''}">
+                        <h3>${b.name}</h3>
+                        <p>💰 ${b.price} Robux</p>
+                        <p>${b.desc}</p>
+                        <p>📦 ${b.file}</p>
+                        <p>Seller: ${b.seller}</p>
+                        <button onclick="downloadBuild('${b.file}')">⬇️ DOWNLOAD</button>
+                        ${canDelete ? `<button onclick="deleteBuild(${b.id}, '${b.seller}')" style="background:#aa0000;">🗑️ DELETE</button>` : ''}
+                    </div>
+                `;
+            });
+            document.getElementById('marketplace').innerHTML = html;
+        }
+        
+        // ========== INIT ==========
+        updateStats();
+        displayBuilds();
+        setInterval(updateStats, 5000);
+    </script>
+</body>
+</html>
