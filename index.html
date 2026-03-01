@@ -98,9 +98,6 @@
         
         .hidden { display:none !important; }
         .footer { text-align:center; color:#666; margin-top:30px; }
-        
-        /* OWNER BUTTONS */
-        .owner-btn { background:#aa0000; margin:5px; }
     </style>
 </head>
 <body>
@@ -214,8 +211,8 @@
         let clientIP = 'Unknown';
         let members = JSON.parse(localStorage.getItem('members')) || [];
         let builds = JSON.parse(localStorage.getItem('builds')) || [
-            {id:1, name:"Dragon Boat", price:0, desc:"Cool dragon boat", file:"dragon.build", seller:"znyt"},
-            {id:2, name:"Flying Ship", price:150, desc:"Flying ship", file:"flying.build", seller:"helper_tester"}
+            {id:1, name:"Dragon Boat", price:0, desc:"Cool dragon boat", file:"dragon.build", seller:"znyt", fileData:null},
+            {id:2, name:"Flying Ship", price:150, desc:"Flying ship", file:"flying.build", seller:"helper_tester", fileData:null}
         ];
         let chats = JSON.parse(localStorage.getItem('chats')) || [];
         let activeSessions = JSON.parse(localStorage.getItem('activeSessions')) || {};
@@ -230,7 +227,7 @@
         fetch('https://api.ipify.org?format=json')
             .then(r => r.json())
             .then(d => { clientIP = d.ip; updateDeviceInfo(); })
-            .catch(() => { clientIP = 'Unknown'; updateDeviceInfo(); });
+            .catch(() => { clientIP = '127.0.0.1'; updateDeviceInfo(); });
         
         function updateDeviceInfo() {
             document.getElementById('deviceInfo').innerHTML = `
@@ -433,4 +430,4 @@
         };
         
         window.unbanIP = function(ip) {
-            if (!cur
+            if (!currentUser || currentUser.role !== 'owner') {
