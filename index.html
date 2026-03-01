@@ -3,35 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OXYX MARKET - ULTIMATE</title>
+    <title>OXYX MARKET - 1 DEVICE SYSTEM</title>
     
-    <!-- ANTI DEVTOOLS -->
-    <script>
-        // Blok shortcut
-        document.addEventListener('keydown', function(e) {
-            const blockedKeys = [
-                e.key === 'F12',
-                (e.ctrlKey && e.shiftKey && e.key === 'I'),
-                (e.ctrlKey && e.shiftKey && e.key === 'J'),
-                (e.ctrlKey && e.key === 'u'),
-                (e.ctrlKey && e.key === 's'),
-                (e.ctrlKey && e.key === 'p')
-            ];
-            
-            if (blockedKeys.includes(true)) {
-                e.preventDefault();
-                alert('🔒 Akses ditolak!');
-                return false;
-            }
-        });
-        
-        // Blok right click
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-            alert('🔒 Right click diblokir');
-            return false;
-        });
-    </script>
+    <!-- FingerprintJS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
     
     <style>
         * {
@@ -111,6 +86,28 @@
             margin-bottom: 20px;
         }
         
+        /* DEVICE INFO */
+        .device-info {
+            background: #1a0a2a;
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-family: monospace;
+        }
+        
+        .device-id {
+            color: #00ff00;
+            font-size: 0.9em;
+            word-break: break-all;
+        }
+        
+        .session-info {
+            color: #ffaa00;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        
         /* AUTH SECTION */
         .auth-section {
             display: flex;
@@ -148,6 +145,10 @@
             background: #aa0000;
         }
         
+        .logout-btn:hover {
+            background: #ff0000;
+        }
+        
         /* USER INFO */
         .user-info {
             background: #1a0a2a;
@@ -167,6 +168,45 @@
             padding: 5px 15px;
             border-radius: 50px;
             font-weight: bold;
+        }
+        
+        /* SESSIONS */
+        .sessions-panel {
+            background: #1a0a2a;
+            border: 2px solid #ffaa00;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .session-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .session-item:last-child {
+            border-bottom: none;
+        }
+        
+        .session-device {
+            color: #00ff00;
+            font-size: 0.8em;
+        }
+        
+        .session-ip {
+            color: #888;
+            font-size: 0.8em;
+        }
+        
+        .session-current {
+            background: #00aa00;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7em;
         }
         
         /* CHAT */
@@ -192,9 +232,6 @@
             background: #2a1a3a;
             border-radius: 5px;
         }
-        
-        .chat-sender.owner { color: gold; }
-        .chat-sender.moderator { color: #00ff00; }
         
         .chat-input-container {
             display: flex;
@@ -288,7 +325,7 @@
             cursor: pointer;
         }
         
-        /* FORM */
+        /* UPLOAD FORM */
         .form-group {
             margin-bottom: 20px;
         }
@@ -412,11 +449,6 @@
             padding: 20px;
             border-top: 2px solid #b300ff;
         }
-        
-        @media (max-width: 768px) {
-            h1 { font-size: 2.5em; }
-            .auth-section { flex-direction: column; }
-        }
     </style>
 </head>
 <body>
@@ -431,6 +463,15 @@
             <a href="#" class="discord-btn">🔮 MAIN SERVER</a>
             <a href="#" class="discord-btn">⚡ TRADE SERVER</a>
             <a href="#" class="discord-btn">🎮 BUILDER SERVER</a>
+        </div>
+
+        <!-- DEVICE INFO -->
+        <div class="card" id="deviceInfo">
+            <h2>🔐 DEVICE FINGERPRINT</h2>
+            <div class="device-info">
+                <div>🖥️ Device ID: <span class="device-id" id="deviceId">Loading...</span></div>
+                <div class="session-info" id="sessionInfo">📍 IP: Detecting...</div>
+            </div>
         </div>
 
         <!-- AUTH CARD -->
@@ -461,18 +502,19 @@
                 <span class="user-role" id="userRole">MEMBER</span>
                 <button class="auth-btn logout-btn" id="logoutBtn">LOGOUT</button>
             </div>
+
+            <!-- ACTIVE SESSIONS -->
+            <div class="sessions-panel hidden" id="sessionsPanel">
+                <h3 style="color:#ffaa00; margin-bottom:10px;">📱 ACTIVE SESSIONS</h3>
+                <div id="sessionsList"></div>
+            </div>
         </div>
 
         <!-- MOD CHAT (HIDDEN) -->
         <div class="card hidden" id="chatCard">
             <h2>💬 MOD CHAT</h2>
             <div class="chat-container">
-                <div class="chat-messages" id="chatMessages">
-                    <div class="chat-message">
-                        <span class="chat-sender owner">👑 owner:</span>
-                        <span class="chat-text">Welcome mods!</span>
-                    </div>
-                </div>
+                <div class="chat-messages" id="chatMessages"></div>
                 <div class="chat-input-container">
                     <input type="text" class="chat-input" id="chatInput" placeholder="Type message...">
                     <button class="auth-btn" id="sendChatBtn">SEND</button>
@@ -540,7 +582,7 @@
                     <label>Build File (.build only)</label>
                     <input type="file" id="buildFile" accept=".build" required>
                 </div>
-                <button type="submit" class="upload-btn" id="uploadBtn">🚀 UPLOAD BUILD</button>
+                    <button type="submit" class="upload-btn" id="uploadBtn">🚀 UPLOAD BUILD</button>
             </form>
         </div>
 
@@ -558,20 +600,23 @@
             </div>
             
             <div class="marketplace" id="marketplace">
-                <!-- Builds akan muncul di sini -->
+                <p style="color:#666;">Loading...</p>
             </div>
         </div>
 
         <div class="footer">
-            <p>OXYX MARKET • 1 Owner • 2 Moderators • Members Can Upload</p>
+            <p>OXYX MARKET • 1 Device Per Account • Auto Logout • IP Tracking</p>
         </div>
     </div>
 
     <script>
-        // ========== DATA ==========
+        // ========== DATA STORAGE ==========
         let currentUser = null;
         let currentFilter = 'All';
+        let deviceId = '';
+        let clientIP = 'Unknown';
         
+        // Data stores
         let builds = [
             {
                 id: 1,
@@ -592,16 +637,6 @@
                 fileName: "sea_king.build",
                 seller: "mod1",
                 uploadedAt: new Date().toISOString()
-            },
-            {
-                id: 3,
-                title: "Infinity Castle",
-                game: "Anime Defenders",
-                price: "Free",
-                description: "Auto farm in Infinity Castle",
-                fileName: "infinity.build",
-                seller: "member1",
-                uploadedAt: new Date().toISOString()
             }
         ];
         
@@ -615,43 +650,20 @@
             { id: 1, sender: "owner", role: "owner", message: "Welcome mods!" }
         ];
 
-        // ========== HELPER FUNCTIONS ==========
-        function showToast(message, type) {
-            alert(message); // Simple alert untuk testing
-        }
+        // Active sessions storage (username -> deviceId)
+        let activeSessions = JSON.parse(localStorage.getItem('activeSessions')) || {};
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // ========== AUTH FUNCTIONS ==========
-        function login() {
-            const username = document.getElementById('loginUsername').value.trim();
-            if (!username) {
-                alert('❌ Enter username!');
-                return;
-            }
-            
-            // Check blacklist
-            if (blacklist.some(u => u.username === username)) {
-                alert('❌ You are blacklisted!');
-                return;
-            }
-            
-            currentUser = { username: username, role: 'member' };
-            updateUI();
-            alert(`✅ Welcome ${username}!`);
-        }
-
-        function adminLogin() {
-            const username = document.getElementById('adminUsername').value.trim();
-            const password = document.getElementById('adminPassword').value.trim();
-            
-            if (username === 'owner' && password === 'owner_oxyx_2026') {
-                currentUser = { username: 'owner', role: 'owner' };
-                updateUI();
-                alert('✅ Welcome OWNER!');
-            } else if (username === 'mod1' && password === 'mod1_builder_2026') {
-                curren
+        // ========== FINGERPRINT & IP ==========
+        async function initFingerprint() {
+            try {
+                const fp = await FingerprintJS.load();
+                const result = await fp.get();
+                deviceId = result.visitorId;
+                document.getElementById('deviceId').textContent = deviceId;
+                
+                // Get IP
+                fetch('https://api.ipify.org?format=json')
+                    .then(res => res.json())
+                    .then(data => {
+                        clientIP = data.ip;
+                        document.getElementById('sessionInfo').innerHTML = `📍 IP: ${
