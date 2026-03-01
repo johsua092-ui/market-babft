@@ -24,17 +24,6 @@
             alert('🔒 Right click diblokir');
             return false;
         });
-        
-        // Deteksi DevTools
-        setInterval(function() {
-            const start = performance.now();
-            debugger;
-            const end = performance.now();
-            if (end - start > 100) {
-                document.body.innerHTML = '<h1 style="color:red; text-align:center; margin-top:100px;">🔒 DevTools terdeteksi! Halaman ditutup.</h1>';
-                setTimeout(() => window.close(), 1000);
-            }
-        }, 1000);
     </script>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Arial,sans-serif; }
@@ -63,6 +52,7 @@
             font-size: 1.1em;
             border: 2px solid #b300ff;
             transition: 0.3s;
+            display: inline-block;
         }
         .discord-btn:hover {
             transform: scale(1.05);
@@ -117,8 +107,6 @@
         .build-card { background:#2a2a3a; border:2px solid #b300ff; border-radius:10px; padding:15px; }
         .build-card.premium { border-color:gold; }
         .build-price { color:gold; font-size:1.2em; margin:10px 0; }
-        .download-btn { background:#00aa00; }
-        .delete-btn { background:#aa0000; }
         
         .hidden { display:none !important; }
         .footer { text-align:center; color:#666; margin-top:30px; }
@@ -128,7 +116,7 @@
     <div class="container">
         <h1>⚡ OXYX MARKET ⚡</h1>
         
-        <!-- DISCORD LINKS - 3 LINK -->
+        <!-- DISCORD LINKS -->
         <div class="discord-links">
             <a href="https://discord.gg/autobuild" target="_blank" class="discord-btn">🔮 MAIN SERVER</a>
             <a href="https://discord.gg/boatbuilderhub" target="_blank" class="discord-btn">⚡ SUPPORT 1</a>
@@ -150,13 +138,13 @@
                 <div>
                     <h3>MEMBER</h3>
                     <input type="text" id="memberUsername" placeholder="Username">
-                    <button onclick="loginMember()">LOGIN MEMBER</button>
+                    <button id="loginMemberBtn">LOGIN MEMBER</button>
                 </div>
                 <div>
                     <h3>ADMIN</h3>
                     <input type="text" id="adminUser" placeholder="Username">
                     <input type="password" id="adminPass" placeholder="Password">
-                    <button onclick="loginAdmin()">LOGIN ADMIN</button>
+                    <button id="loginAdminBtn">LOGIN ADMIN</button>
                 </div>
             </div>
             
@@ -168,14 +156,14 @@
             <!-- USER INFO -->
             <div id="userInfo" class="hidden" style="margin-top:15px; padding:15px; background:#2a0a3a; border-radius:10px;">
                 <p>Logged in as: <span id="displayName"></span></p>
-                <button onclick="logout()">LOGOUT</button>
+                <button id="logoutBtn">LOGOUT</button>
             </div>
             
-            <!-- DEVICE INFO (HANYA UNTUK MOD/OWNER) -->
+            <!-- DEVICE INFO -->
             <div id="deviceInfo" class="device-info hidden"></div>
         </div>
         
-        <!-- OWNER PANEL (HANYA UNTUK OWNER) -->
+        <!-- OWNER PANEL -->
         <div id="ownerPanel" class="card hidden">
             <h2>👑 OWNER PANEL</h2>
             
@@ -183,8 +171,8 @@
             <div class="timer-section">
                 <div class="timer-label">CHAT AUTO CLEAR</div>
                 <div class="timer-display" id="chatTimer">03:00</div>
-                <button onclick="resetChatTimer()" style="background:gold; color:black; margin-top:10px;">RESET TIMER</button>
-                <button onclick="manualClearChat()" style="background:#aa0000; margin-top:10px;">CLEAR CHAT NOW</button>
+                <button id="resetTimerBtn" style="background:gold; color:black; margin-top:10px;">RESET TIMER</button>
+                <button id="clearChatBtn" style="background:#aa0000; margin-top:10px;">CLEAR CHAT NOW</button>
             </div>
             
             <!-- IP TABLE -->
@@ -207,7 +195,7 @@
             <h2>💬 MOD CHAT</h2>
             <div class="chat-box" id="chatMessages"></div>
             <input type="text" id="chatMsg" placeholder="Message...">
-            <button onclick="sendChat()">SEND</button>
+            <button id="sendChatBtn">SEND</button>
         </div>
         
         <!-- UPLOAD -->
@@ -217,17 +205,17 @@
             <input type="number" id="buildPrice" min="0" value="0" placeholder="Price">
             <textarea id="buildDesc" rows="3" placeholder="Description"></textarea>
             <input type="file" id="buildFile" accept=".build">
-            <button onclick="uploadBuild()">PUBLISH</button>
+            <button id="uploadBtn">PUBLISH</button>
         </div>
         
         <!-- MARKETPLACE -->
         <div class="card">
             <h2>🏪 MARKETPLACE</h2>
             <div style="display:flex; gap:10px; margin:15px 0; flex-wrap:wrap;">
-                <button onclick="filterAll()">ALL</button>
-                <button onclick="filterFree()">FREE</button>
-                <button onclick="filterPremium()">PREMIUM</button>
-                <button onclick="filterMy()">MY BUILDS</button>
+                <button id="filterAll">ALL</button>
+                <button id="filterFree">FREE</button>
+                <button id="filterPremium">PREMIUM</button>
+                <button id="filterMy">MY BUILDS</button>
             </div>
             <div id="marketplace" class="build-grid"></div>
         </div>
@@ -238,6 +226,7 @@
     <script>
         // ========== DATA ==========
         let currentUser = null;
+        let currentFilter = 'all';
         let deviceId = 'DEV-' + Math.random().toString(36).substring(2,10).toUpperCase();
         let clientIP = 'Unknown';
         let members = JSON.parse(localStorage.getItem('members')) || [];
@@ -261,10 +250,13 @@
             .catch(() => { clientIP = '127.0.0.1'; updateDeviceInfo(); });
         
         function updateDeviceInfo() {
-            document.getElementById('deviceInfo').innerHTML = `
-                <p>Device ID: <span class="device-id">${deviceId}</span></p>
-                <p>IP Address: <span class="ip-addr">${clientIP}</span></p>
-            `;
+            let info = document.getElementById('deviceInfo');
+            if (info) {
+                info.innerHTML = `
+                    <p>Device ID: <span class="device-id">${deviceId}</span></p>
+                    <p>IP Address: <span class="ip-addr">${clientIP}</span></p>
+                `;
+            }
         }
         
         // ========== CHECK BANNED IP ==========
@@ -282,8 +274,8 @@
             localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
         }
         
-        // ========== LOGIN MEMBER ==========
-        window.loginMember = function() {
+        // ========== LOGIN FUNCTIONS ==========
+        function loginMember() {
             if (checkBannedIP()) {
                 alert('❌ IP Anda telah di-banned!');
                 return;
@@ -317,10 +309,9 @@
             document.getElementById('uploadSection').classList.remove('hidden');
             alert('✅ Welcome ' + user);
             updateStats();
-        };
+        }
         
-        // ========== LOGIN ADMIN ==========
-        window.loginAdmin = function() {
+        function loginAdmin() {
             if (checkBannedIP()) {
                 alert('❌ IP Anda telah di-banned!');
                 return;
@@ -369,9 +360,9 @@
             } else {
                 alert('❌ Wrong credentials');
             }
-        };
+        }
         
-        window.logout = function() {
+        function logout() {
             if (currentUser) {
                 delete activeSessions[currentUser.username];
                 localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
@@ -385,7 +376,7 @@
             document.getElementById('deviceInfo').classList.add('hidden');
             document.getElementById('sessionWarning').classList.add('hidden');
             alert('Logged out');
-        };
+        }
         
         // ========== CHAT TIMER ==========
         function startChatTimer() {
@@ -406,15 +397,17 @@
                 
                 let minutes = Math.floor(timeLeft / 60000);
                 let seconds = Math.floor((timeLeft % 60000) / 1000);
-                document.getElementById('chatTimer').innerText = 
-                    `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+                let timerEl = document.getElementById('chatTimer');
+                if (timerEl) {
+                    timerEl.innerText = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+                }
             }
             
             updateTimer();
             timerInterval = setInterval(updateTimer, 1000);
         }
         
-        window.resetChatTimer = function() {
+        function resetChatTimer() {
             if (!currentUser || currentUser.role !== 'owner') {
                 alert('❌ Only owner can reset timer!');
                 return;
@@ -422,8 +415,23 @@
             lastChatClear = Date.now();
             localStorage.setItem('lastChatClear', lastChatClear);
             alert('✅ Chat timer reset!');
-        };
+        }
         
-        window.manualClearChat = function() {
+        function manualClearChat() {
             if (!currentUser || currentUser.role !== 'owner') {
                 alert('❌ Only owner can clear chat!');
+                return;
+            }
+            chats = [];
+            localStorage.setItem('chats', JSON.stringify(chats));
+            lastChatClear = Date.now();
+            localStorage.setItem('lastChatClear', lastChatClear);
+            displayChat();
+            alert('✅ Chat cleared!');
+        }
+        
+        // ========== BAN IP ==========
+        function banIP(ip, username) {
+            if (!currentUser || currentUser.role !== 'owner') {
+                alert('❌ Only owner can ban IP!');
+                return;
