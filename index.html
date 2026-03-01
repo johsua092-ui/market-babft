@@ -261,6 +261,17 @@
             box-shadow: 0 0 30px #b300ff;
         }
         
+        /* MEMBER INFO */
+        .member-info {
+            background: #1a0a2a;
+            border: 2px solid #b300ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+            color: #b07cff;
+        }
+        
         /* USER INFO */
         .user-info {
             background: #1a0a2a;
@@ -574,6 +585,27 @@
         .hidden {
             display: none !important;
         }
+        
+        /* MEMBER ONLY SECTION */
+        .member-notice {
+            background: #1a1a2a;
+            border: 2px solid #b300ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: center;
+            color: #b07cff;
+        }
+        
+        .member-notice a {
+            color: #b300ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .member-notice a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -598,14 +630,19 @@
         
         <!-- AUTH SECTION -->
         <div class="card">
-            <h2>🔐 AUTHENTICATION</h2>
+            <h2>🔐 MEMBER ACCESS</h2>
             <div class="auth-section">
-                <input type="text" id="username" placeholder="Enter username">
-                <button class="auth-btn" onclick="login()">LOGIN</button>
+                <input type="text" id="username" placeholder="Enter username (member/owner/mod1/mod2)">
+                <button class="auth-btn" onclick="login()" id="loginBtn">LOGIN</button>
             </div>
             <div id="authStatus" class="status"></div>
             
-            <!-- USER INFO -->
+            <!-- MEMBER INFO (for non-logged in users) -->
+            <div id="memberInfo" class="member-info">
+                👤 Browse as Guest • Login to upload builds
+            </div>
+            
+            <!-- USER INFO (for logged in users) -->
             <div id="userInfo" class="user-info hidden">
                 <span id="displayName"></span>
                 <span id="displayRole" class="user-role"></span>
@@ -630,33 +667,8 @@
             </div>
         </div>
         
-        <!-- UPLOAD SECTION -->
+        <!-- UPLOAD SECTION (HIDDEN FOR NON-LOGGED IN) -->
         <div id="uploadSection" class="card hidden">
             <h2>📤 UPLOAD BUILD</h2>
             <div class="form-group">
                 <label>Build Name</label>
-                <input type="text" id="buildName" maxlength="50">
-            </div>
-            <div class="form-group">
-                <label>Type</label>
-                <select id="buildType">
-                    <option value="Ship">🚢 Ship</option>
-                    <option value="Plane">✈️ Plane</option>
-                    <option value="Mech">🤖 Mech</option>
-                    <option value="Vehicle">🚗 Vehicle</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Price (Robux)</label>
-                <input type="number" id="buildPrice" min="0" value="0">
-            </div>
-            <div class="form-group">
-                <label>Description</label>
-                <textarea id="buildDesc" rows="4" maxlength="500"></textarea>
-            </div>
-            <div class="form-group">
-                <label>Build File (.build)</label>
-                <input type="file" id="buildFile" accept=".build">
-            </div>
-            <button class="upload-btn" onclick="uploadBuild()">🚀 PUBLISH BUILD</button>
-            <div id="uploadS
