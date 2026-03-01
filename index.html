@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OXYX MARKET - Premium Build Marketplace</title>
+    <title>OXYX MARKET - Ultimate Build Marketplace</title>
     
     <!-- ANTI SEMUA SHORTCUT -->
     <script>
         // Blok SEMUA shortcut berbahaya
         document.addEventListener('keydown', function(e) {
-            // Blok F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+S, Ctrl+P
             const blockedKeys = [
                 e.key === 'F12',
                 (e.ctrlKey && e.shiftKey && e.key === 'I'),
@@ -17,7 +16,7 @@
                 (e.ctrlKey && e.key === 'u'),
                 (e.ctrlKey && e.key === 's'),
                 (e.ctrlKey && e.key === 'p'),
-                (e.ctrlKey && e.key === 'c' && !e.target.matches('input, textarea')),
+                (e.ctrlKey && e.key === 'c' && !e.target.matches('input, textarea, button')),
                 (e.ctrlKey && e.key === 'v' && !e.target.matches('input, textarea'))
             ];
             
@@ -304,7 +303,7 @@
         
         .mod-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 15px;
             margin-top: 15px;
         }
@@ -341,6 +340,41 @@
             border-radius: 5px;
             color: black;
             font-weight: bold;
+            cursor: pointer;
+        }
+        
+        /* BLACKLIST SECTION */
+        .blacklist-panel {
+            background: #2a0a3a;
+            border: 2px solid #ff4444;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .blacklist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .blacklist-item {
+            background: #1a0a2a;
+            border: 2px solid #ff4444;
+            border-radius: 5px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .unblacklist-btn {
+            padding: 5px 10px;
+            background: #ff4444;
+            border: none;
+            border-radius: 3px;
+            color: white;
             cursor: pointer;
         }
         
@@ -526,6 +560,23 @@
             background: #ff0000;
         }
         
+        .kick-btn {
+            width: 100%;
+            padding: 12px;
+            background: #ff8800;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin: 5px 0;
+        }
+        
+        .kick-btn:hover {
+            background: #ffaa00;
+        }
+        
         /* STATUS MESSAGES */
         .status {
             padding: 15px;
@@ -585,27 +636,6 @@
         .hidden {
             display: none !important;
         }
-        
-        /* MEMBER ONLY SECTION */
-        .member-notice {
-            background: #1a1a2a;
-            border: 2px solid #b300ff;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 15px 0;
-            text-align: center;
-            color: #b07cff;
-        }
-        
-        .member-notice a {
-            color: #b300ff;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        
-        .member-notice a:hover {
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
@@ -632,43 +662,28 @@
         <div class="card">
             <h2>🔐 MEMBER ACCESS</h2>
             <div class="auth-section">
-                <input type="text" id="username" placeholder="Enter username (member/owner/mod1/mod2)">
-                <button class="auth-btn" onclick="login()" id="loginBtn">LOGIN</button>
+                <input type="text" id="username" placeholder="Enter username (any name for member)">
+                <button class="auth-btn" onclick="login()">LOGIN AS MEMBER</button>
+            </div>
+            <div class="auth-section">
+                <input type="text" id="adminUsername" placeholder="Admin username">
+                <input type="password" id="adminPassword" placeholder="Admin password">
+                <button class="auth-btn" onclick="adminLogin()">ADMIN LOGIN</button>
             </div>
             <div id="authStatus" class="status"></div>
             
-            <!-- MEMBER INFO (for non-logged in users) -->
+            <!-- MEMBER INFO -->
             <div id="memberInfo" class="member-info">
-                👤 Browse as Guest • Login to upload builds
+                👤 Members: Just enter any username to login and start uploading!
             </div>
             
-            <!-- USER INFO (for logged in users) -->
+            <!-- USER INFO -->
             <div id="userInfo" class="user-info hidden">
                 <span id="displayName"></span>
                 <span id="displayRole" class="user-role"></span>
                 <button class="auth-btn" onclick="logout()" style="background:#aa0000;">LOGOUT</button>
             </div>
             
-            <!-- MODERATOR PANEL (HIDDEN) -->
+            <!-- MODERATOR PANEL -->
             <div id="modPanel" class="mod-panel hidden">
-                <h3 style="color:gold;">👑 OWNER PANEL</h3>
-                <div class="mod-grid">
-                    <div class="mod-item">
-                        <label>Moderator 1 Password</label>
-                        <input type="password" id="mod1Pass" placeholder="New password">
-                        <button class="mod-btn" onclick="changeModPass('mod1')">CHANGE MOD 1</button>
-                    </div>
-                    <div class="mod-item">
-                        <label>Moderator 2 Password</label>
-                        <input type="password" id="mod2Pass" placeholder="New password">
-                        <button class="mod-btn" onclick="changeModPass('mod2')">CHANGE MOD 2</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- UPLOAD SECTION (HIDDEN FOR NON-LOGGED IN) -->
-        <div id="uploadSection" class="card hidden">
-            <h2>📤 UPLOAD BUILD</h2>
-            <div class="form-group">
-                <label>Build Name</label>
+                <h3 style="col
