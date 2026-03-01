@@ -2,470 +2,390 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>OXYX MARKET</title>
-    
-    <!-- ANTI SEMUA SHORTCUT -->
-    <script>
-        // Blok SEMUA shortcut yang bisa buka source
-        document.addEventListener('keydown', function(e) {
-            // Blok Ctrl+U (View Source)
-            if (e.ctrlKey && e.key === 'u') {
-                e.preventDefault();
-                alert('🔒 Source code dikunci!');
-                return false;
-            }
-            
-            // Blok Ctrl+Shift+I (Inspect)
-            if (e.ctrlKey && e.shiftKey && e.key === 'I') {
-                e.preventDefault();
-                alert('🔒 Developer tools diblokir!');
-                return false;
-            }
-            
-            // Blok Ctrl+Shift+J (Console)
-            if (e.ctrlKey && e.shiftKey && e.key === 'J') {
-                e.preventDefault();
-                alert('🔒 Console diblokir!');
-                return false;
-            }
-            
-            // Blok F12
-            if (e.key === 'F12') {
-                e.preventDefault();
-                alert('🔒 F12 diblokir!');
-                return false;
-            }
-            
-            // Blok Ctrl+S (Save)
-            if (e.ctrlKey && e.key === 's') {
-                e.preventDefault();
-                return false;
-            }
-            
-            // Blok Ctrl+P (Print)
-            if (e.ctrlKey && e.key === 'p') {
-                e.preventDefault();
-                return false;
-            }
-            
-            // Blok Ctrl+C di area sensitif
-            if (e.ctrlKey && e.key === 'c') {
-                if (!e.target.matches('input, textarea')) {
-                    e.preventDefault();
-                    return false;
-                }
-            }
-        });
-        
-        // Blok right click
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-            return false;
-        });
-        
-        // Deteksi DevTools (lebih canggih)
-        setInterval(function() {
-            const start = performance.now();
-            debugger;
-            const end = performance.now();
-            
-            // Kalau debugger kena, berarti DevTools terbuka
-            if (end - start > 100) {
-                document.body.innerHTML = '<h1 style="color:red; text-align:center; margin-top:100px;">🔒 DevTools terdeteksi! Halaman ditutup.</h1>';
-                setTimeout(function() {
-                    window.close();
-                }, 1000);
-            }
-            
-            // Cek ukuran window
-            if (window.outerHeight - window.innerHeight > 200 || 
-                window.outerWidth - window.innerWidth > 200) {
-                document.body.innerHTML = '<h1 style="color:red; text-align:center; margin-top:100px;">🔒 Inspect element terdeteksi!</h1>';
-            }
-        }, 500);
-        
-        // Redirect kalau pake view-source:
-        if (window.location.protocol === 'view-source:') {
-            window.location.href = 'about:blank';
-        }
-    </script>
-    
+    <title>Secure Build Marketplace</title>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Arial,sans-serif; }
         body { background:#0a0a0a; color:white; padding:20px; }
         .container { max-width:1200px; margin:0 auto; }
-        h1 { color:#b87cff; text-align:center; margin-bottom:30px; border-bottom:2px solid #9f4dff; padding-bottom:10px; }
-        .card { background:#1a1a2a; border:2px solid #9f4dff; border-radius:10px; padding:20px; margin-bottom:20px; }
-        .discord-links { display:flex; gap:10px; justify-content:center; margin:20px 0; flex-wrap:wrap; }
-        .discord-links a { padding:10px 20px; background:#5865F2; color:white; text-decoration:none; border-radius:5px; }
-        .key-section { display:flex; gap:10px; margin:20px 0; }
-        .key-section input { flex:1; padding:12px; background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; color:white; }
-        .key-section button { padding:12px 30px; background:#9f4dff; border:none; border-radius:5px; color:white; cursor:pointer; }
-        .status { padding:10px; border-radius:5px; margin:10px 0; display:none; }
-        .success { background:#1a3a1a; border:1px solid #00ff00; color:#00ff00; }
-        .error { background:#3a1a1a; border:1px solid #ff0000; color:#ff0000; }
-        .chat-box { background:#0a0a1a; border:2px solid #9f4dff; border-radius:5px; padding:15px; height:200px; overflow-y:auto; margin-bottom:15px; display:flex; flex-direction:column; }
-        .chat-message { padding:8px; border-bottom:1px solid #333; width:100%; }
-        .chat-message b { color:#b87cff; }
-        .publish-btn { width:100%; padding:15px; background:#9f4dff; border:none; border-radius:5px; color:white; font-size:1.2em; cursor:pointer; margin-top:15px; }
-        .sort-buttons { display:flex; gap:10px; margin:20px 0; }
-        .sort-btn { flex:1; padding:12px; background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; color:white; cursor:pointer; }
-        .sort-btn.active { background:#9f4dff; }
-        .build-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:15px; }
-        .build-card { background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; padding:15px; }
-        .build-card.free { border-color:#00ff00; }
-        .build-card.premium { border-color:gold; }
-        .build-price { font-size:1.2em; font-weight:bold; margin:10px 0; }
-        .free .build-price { color:#00ff00; }
-        .premium .build-price { color:gold; }
-        .download-btn { width:100%; padding:12px; margin-top:15px; background:#00aa00; border:none; border-radius:5px; color:white; font-weight:bold; cursor:pointer; font-size:1em; }
-        .download-btn:hover { background:#00ff00; }
+        h1 { color:#4CAF50; text-align:center; margin-bottom:30px; border-bottom:2px solid #4CAF50; padding-bottom:10px; }
+        .card { background:#1a1a2a; border:2px solid #4CAF50; border-radius:10px; padding:20px; margin-bottom:20px; }
+        .auth-section { display:flex; gap:10px; margin-bottom:20px; justify-content:center; }
+        .auth-section input { padding:10px 15px; background:#2a2a3a; border:1px solid #4CAF50; border-radius:5px; color:white; }
+        .auth-section button { padding:10px 25px; background:#4CAF50; border:none; border-radius:5px; color:black; font-weight:bold; cursor:pointer; }
+        .auth-section button:hover { background:#45a049; }
+        .user-info { text-align:center; color:#4CAF50; margin-bottom:20px; font-weight:bold; }
+        .user-info span { color:#888; }
+        .form-group { margin:15px 0; }
+        .form-group label { display:block; margin-bottom:5px; color:#4CAF50; font-weight:bold; }
+        input, select, textarea { width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #4CAF50; border-radius:5px; color:white; }
+        textarea { resize:vertical; }
+        .upload-btn { width:100%; padding:15px; background:#4CAF50; border:none; border-radius:5px; color:black; font-weight:bold; font-size:1.1em; cursor:pointer; margin-top:15px; }
+        .upload-btn:hover { background:#45a049; }
+        .status { padding:12px; border-radius:5px; margin:10px 0; display:none; }
+        .success { background:#1a3a1a; border:1px solid #4CAF50; color:#4CAF50; }
+        .error { background:#3a1a1a; border:1px solid #ff4444; color:#ff4444; }
+        .info { background:#1a2a3a; border:1px solid #2196F3; color:#2196F3; }
+        .filters { display:flex; gap:10px; margin:20px 0; flex-wrap:wrap; }
+        .filter-btn { padding:10px 20px; background:#2a2a3a; border:2px solid #4CAF50; border-radius:5px; color:white; cursor:pointer; }
+        .filter-btn.active { background:#4CAF50; color:black; font-weight:bold; }
+        .marketplace { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:15px; }
+        .build-card { background:#2a2a3a; border:2px solid #4CAF50; border-radius:5px; padding:15px; }
+        .build-title { color:#4CAF50; font-size:1.2em; font-weight:bold; margin-bottom:10px; }
+        .build-info { color:#aaa; font-size:0.9em; margin:8px 0; }
+        .build-price { color:#FFD700; font-size:1.3em; font-weight:bold; margin:10px 0; }
+        .build-desc { color:#ccc; margin:10px 0; line-height:1.5; }
+        .build-seller { color:#888; font-size:0.85em; margin:10px 0; }
+        .download-btn { width:100%; padding:10px; margin-top:10px; background:#4CAF50; border:none; border-radius:5px; color:black; font-weight:bold; cursor:pointer; }
+        .download-btn:hover { background:#45a049; }
+        .delete-btn { width:100%; padding:10px; margin-top:5px; background:#ff4444; border:none; border-radius:5px; color:white; font-weight:bold; cursor:pointer; }
+        .delete-btn:hover { background:#cc0000; }
         .footer { text-align:center; color:#666; margin-top:30px; padding-top:20px; border-top:1px solid #333; }
-        input, select, textarea { width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; color:white; }
-        .admin-section { display:none; margin-top:20px; padding:20px; background:#2a1a3a; border:2px solid gold; border-radius:10px; }
-        .admin-btn { background:gold; color:black; font-weight:bold; padding:10px 20px; border:none; border-radius:5px; cursor:pointer; margin:5px; }
-        .admin-btn:hover { background:#ffaa00; }
-        .super-bypass { font-size:0.8em; color:#666; text-align:center; margin-top:10px; cursor:pointer; }
-        .super-bypass:hover { color:#9f4dff; }
+        .hidden { display:none !important; }
+        .file-size { color:#888; font-size:0.85em; }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>⚡ OXYX MARKET ⚡</h1>
+    <h1>🏗️ SECURE BUILD MARKETPLACE</h1>
 
-    <div class="discord-links">
-        <a href="https://discord.gg/autobuild" target="_blank">MAIN SERVER</a>
-        <a href="https://discord.gg/boatbuilderhub" target="_blank">SUPPORT 1</a>
-        <a href="https://discord.gg/boatbuilderhub" target="_blank">SUPPORT 2</a>
-    </div>
-
+    <!-- AUTH SECTION -->
     <div class="card">
-        <h3>🔐 MODERATOR/OWNER ONLY</h3>
-        <div class="key-section">
-            <input type="password" id="keyInput" placeholder="Enter moderator key">
-            <button onclick="activateKey()">ACTIVATE</button>
+        <h3>🔐 Authentication</h3>
+        <div class="auth-section">
+            <input type="text" id="username" placeholder="Enter username (3+ chars)" maxlength="20">
+            <button onclick="login()">LOGIN</button>
+            <button onclick="logout()" class="hidden" id="logoutBtn">LOGOUT</button>
         </div>
-        <div id="keyStatus" class="status"></div>
-        <div class="super-bypass" onclick="initiateBypass()">🔒 SUPER SECURE BYPASS</div>
+        <div id="authStatus" class="status"></div>
+        <div id="userInfo" class="user-info hidden"></div>
     </div>
 
-    <!-- BYPASS PASSWORD PANEL -->
-    <div id="bypassPanel" class="admin-section">
-        <h3 style="color:gold;">🔐 VERIFIKASI ADMIN</h3>
-        <p style="color:#ffaa00;">Masukkan password super rahasia</p>
-        
-        <div style="display:flex; gap:10px;">
-            <input type="password" id="adminPassword" placeholder="Enter admin password" style="flex:1;">
-            <button class="admin-btn" onclick="verifyAdminPassword()">VERIFY</button>
-        </div>
-        
-        <div id="bypassStatus" class="status" style="margin-top:10px;"></div>
-    </div>
-
-    <!-- BYPASS MENU -->
-    <div id="bypassMenu" class="admin-section" style="display:none;">
-        <h3 style="color:gold;">👑 SUPER ADMIN BYPASS</h3>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="admin-btn" onclick="secureBypass('owner')">👑 OWNER</button>
-            <button class="admin-btn" onclick="secureBypass('mod1')">🛡️ MOD 1</button>
-            <button class="admin-btn" onclick="secureBypass('mod2')">⚔️ MOD 2</button>
-            <button class="admin-btn" onclick="resetBypass()">🔄 RESET</button>
-        </div>
-    </div>
-
-    <div id="modSection" style="display:none;" class="card">
-        <h3>💬 MOD CHAT</h3>
-        <div class="chat-box" id="chatMessages">Loading...</div>
-        <div style="display:flex; gap:10px;">
-            <input type="text" id="chatInput" placeholder="Type message..." style="flex:1;">
-            <button onclick="sendChat()">SEND</button>
-        </div>
-    </div>
-
-    <div class="card">
+    <!-- UPLOAD SECTION -->
+    <div id="uploadSection" class="card hidden">
         <h3>📤 UPLOAD BUILD</h3>
-        <input type="text" id="buildName" placeholder="Build Name">
-        <select id="buildType">
-            <option value="Ship">🚢 Ship</option>
-            <option value="Plane">✈️ Plane</option>
-            <option value="Mech">🤖 Mech</option>
-        </select>
-        <input type="number" id="buildPrice" min="0" value="0" placeholder="Price (Robux)">
-        <textarea id="buildDesc" rows="3" placeholder="Build description..."></textarea>
-        <input type="file" id="buildFile" accept=".build">
-        <button class="publish-btn" onclick="publishBuild()">🚀 PUBLISH BUILD</button>
+        <div class="form-group">
+            <label>Build Name</label>
+            <input type="text" id="buildName" placeholder="e.g., Cool Ship Design" maxlength="50">
+        </div>
+        <div class="form-group">
+            <label>Type</label>
+            <select id="buildType">
+                <option value="Ship">🚢 Ship</option>
+                <option value="Plane">✈️ Plane</option>
+                <option value="Mech">🤖 Mech</option>
+                <option value="Vehicle">🚗 Vehicle</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Price (Robux)</label>
+            <input type="number" id="buildPrice" min="0" max="1000000" value="0" placeholder="0 for free">
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <textarea id="buildDesc" rows="4" placeholder="Describe your build..." maxlength="500"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Build File (.build)</label>
+            <input type="file" id="buildFile" accept=".build" required>
+        </div>
+        <button class="upload-btn" onclick="uploadBuild()">🚀 PUBLISH BUILD</button>
         <div id="uploadStatus" class="status"></div>
     </div>
 
-    <div class="sort-buttons">
-        <button class="sort-btn active" onclick="filterBuilds('all', event)">📋 ALL</button>
-        <button class="sort-btn" onclick="filterBuilds('free', event)">🆓 FREE (0)</button>
-        <button class="sort-btn" onclick="filterBuilds('premium', event)">💎 PREMIUM (90-100)</button>
-    </div>
-
+    <!-- MARKETPLACE -->
     <div class="card">
         <h3>🏪 MARKETPLACE</h3>
-        <div id="marketplace" class="build-grid">Loading...</div>
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterBuilds('all', this)">📋 ALL</button>
+            <button class="filter-btn" onclick="filterBuilds('free', this)">🆓 FREE</button>
+            <button class="filter-btn" onclick="filterBuilds('paid', this)">💎 PAID</button>
+            <button class="filter-btn" onclick="filterBuilds('mybuilds', this)">👤 MY UPLOADS</button>
+        </div>
+        <div id="marketplace" class="marketplace">
+            <p style="color:#666;">Loading marketplace...</p>
+        </div>
     </div>
 
-    <div class="footer">OXYX MARKET • Only Moderators Can Publish • Everyone Can Download</div>
+    <div class="footer">
+        Secure Build Marketplace • Transparent • No Hidden Access • Proper File Handling
+    </div>
 </div>
 
 <script>
-    // ========== KONFIGURASI SUPER RAHASIA ==========
-    // Data diencode pake kombinasi biar susah ditebak
-    const SECRETS = {
-        // owner_oxyx_2026 di-reverse trus encode
-        owner: (() => {
-            const encoded = ['6','2','0','2','_','x','y','x','o','_','r','e','n','w','o'];
-            return encoded.reverse().join('');
-        })(),
-        
-        // mod1_builder_2026
-        mod1: (() => {
-            const encoded = ['6','2','0','2','_','r','e','d','l','i','u','b','_','1','d','o','m'];
-            return encoded.reverse().join('');
-        })(),
-        
-        // mod2_helper_2026
-        mod2: (() => {
-            const encoded = ['6','2','0','2','_','r','e','p','l','e','h','_','2','d','o','m'];
-            return encoded.reverse().join('');
-        })(),
-        
-        // Admin password: JawaTimur2026 (encode pake char code)
-        adminPass: String.fromCharCode(74,97,119,97,84,105,109,117,114,50,48,50,54)
-    };
-
-    const API_KEY = '$2a$10$RYz0R2fKkR23Gf1qGguLi.5Tlr.5UlfHymp1bYXB5Zhp352m4fdua';
-    const BIN_ID = '69a24d2a43b1c97be9a53651';
-    const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+    // ========== SECURE DATA MANAGEMENT ==========
+    const STORAGE_KEY = 'marketplace_data';
+    const SESSION_KEY = 'user_session';
     
-    let builds=[], chats=[], isMod=false, currentUser='', currentFilter='all';
-    let bypassVerified = false;
+    let currentUser = null;
+    let currentFilter = 'all';
 
-    // ========== HAPUS SEMUA JEJAK ==========
-    // Hapus semua console
-    console = {};
-    window.console = {};
-    
-    // Hapus history
-    if (window.history && window.history.replaceState) {
-        window.history.replaceState(null, null, window.location.href);
+    // Initialize
+    function init() {
+        loadSession();
+        loadMarketplace();
+        updateUI();
     }
 
-    // ========== LOAD DATA ==========
-    async function loadData() {
-        try {
-            const res = await fetch(API_URL + '/latest', { headers:{ 'X-Access-Key':API_KEY }});
-            const data = await res.json();
-            builds = data.record.builds || [];
-            chats = data.record.chats || [];
-            displayBuilds();
-            displayChats();
-        } catch(e){}
-    }
-
-    async function saveData(){
-        try {
-            await fetch(API_URL,{method:'PUT', headers:{'Content-Type':'application/json','X-Access-Key':API_KEY}, body:JSON.stringify({builds,chats})});
-            return true;
-        } catch(e){ return false;}
-    }
-
-    // ========== KEY SYSTEM ==========
-    function activateKey(){
-        const key=document.getElementById('keyInput').value;
-        const status=document.getElementById('keyStatus');
+    // ========== AUTHENTICATION ==========
+    function login() {
+        const username = document.getElementById('username').value.trim();
         
-        if(key === SECRETS.owner || key === SECRETS.mod1 || key === SECRETS.mod2){
-            isMod=true; 
-            currentUser=key;
-            document.getElementById('modSection').style.display='block';
-            showStatus('keyStatus','✅ Key valid! Welcome','success');
-            displayChats();
-        } else {
-            showStatus('keyStatus','❌ Wrong key!','error');
-        }
-    }
-
-    // ========== SECURE BYPASS ==========
-    function initiateBypass() {
-        document.getElementById('bypassPanel').style.display = 'block';
-        document.getElementById('bypassMenu').style.display = 'none';
-        document.getElementById('adminPassword').value = '';
-        showBypassStatus('🔒 Masukkan password admin', 'info');
-    }
-
-    function verifyAdminPassword() {
-        const password = document.getElementById('adminPassword').value;
-        
-        if (password === SECRETS.adminPass) {
-            bypassVerified = true;
-            document.getElementById('bypassPanel').style.display = 'none';
-            document.getElementById('bypassMenu').style.display = 'block';
-            showBypassStatus('✅ Verifikasi berhasil!', 'success');
-            
-            // Hapus password
-            document.getElementById('adminPassword').value = '';
-            
-            // Randomize biar susah dilacak
-            setTimeout(() => {
-                document.getElementById('bypassMenu').style.display = 'block';
-            }, 100);
-        } else {
-            showBypassStatus('❌ Password salah!', 'error');
-        }
-    }
-
-    function secureBypass(role) {
-        if (!bypassVerified) {
-            showBypassStatus('❌ Verifikasi dulu!', 'error');
+        if (!username || username.length < 3) {
+            showStatus('authStatus', '❌ Username must be 3+ characters', 'error');
             return;
         }
-        
-        switch(role) {
-            case 'owner': currentUser = SECRETS.owner; break;
-            case 'mod1': currentUser = SECRETS.mod1; break;
-            case 'mod2': currentUser = SECRETS.mod2; break;
+
+        if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+            showStatus('authStatus', '❌ Username can only contain letters, numbers, underscores', 'error');
+            return;
         }
-        
-        isMod = true;
-        document.getElementById('modSection').style.display = 'block';
-        document.getElementById('bypassMenu').style.display = 'none';
-        showBypassStatus(`✅ Bypass sebagai ${role.toUpperCase()}!`, 'success');
-        displayChats();
+
+        currentUser = username;
+        sessionStorage.setItem(SESSION_KEY, username);
+        showStatus('authStatus', `✅ Logged in as ${username}`, 'success');
+        updateUI();
     }
 
-    function resetBypass() {
-        isMod = false;
-        currentUser = '';
-        bypassVerified = false;
-        document.getElementById('modSection').style.display = 'none';
-        document.getElementById('bypassMenu').style.display = 'none';
-        document.getElementById('bypassPanel').style.display = 'none';
-        showBypassStatus('🔄 Bypass direset', 'success');
+    function logout() {
+        currentUser = null;
+        sessionStorage.removeItem(SESSION_KEY);
+        document.getElementById('username').value = '';
+        showStatus('authStatus', '✅ Logged out', 'success');
+        updateUI();
     }
 
-    function showBypassStatus(msg, type) {
-        const el = document.getElementById('bypassStatus');
-        el.style.display = 'block';
-        el.className = 'status ' + type;
-        el.textContent = msg;
-        setTimeout(() => el.style.display = 'none', 3000);
+    function loadSession() {
+        currentUser = sessionStorage.getItem(SESSION_KEY);
     }
 
-    function showStatus(id,msg,type){
-        const el=document.getElementById(id);
-        el.style.display='block'; el.className='status '+type; el.textContent=msg;
-        setTimeout(()=>el.style.display='none',3000);
-    }
+    // ========== UI UPDATES ==========
+    function updateUI() {
+        const uploadSection = document.getElementById('uploadSection');
+        const userInfo = document.getElementById('userInfo');
+        const logoutBtn = document.getElementById('logoutBtn');
 
-    // ========== CHAT ==========
-    function displayChats(){
-        const box=document.getElementById('chatMessages');
-        if(!box) return;
-        let html='';
-        if(chats.length===0){
-            html='<p style="color:#666;">No messages yet</p>';
+        if (currentUser) {
+            uploadSection.classList.remove('hidden');
+            userInfo.classList.remove('hidden');
+            userInfo.innerHTML = `👤 Logged in as <span>${currentUser}</span>`;
+            logoutBtn.classList.remove('hidden');
+            document.getElementById('username').classList.add('hidden');
         } else {
-            chats.forEach(c => {
-                html+=`<div class="chat-message"><b>${c.user}:</b> ${c.msg}</div>`;
-            });
-        }
-        box.innerHTML=html;
-        box.scrollTop = box.scrollHeight;
-    }
-
-    async function sendChat(){
-        if(!isMod){ alert('❌ Only moderators can chat!'); return; }
-        const msg=document.getElementById('chatInput').value.trim();
-        if(!msg) return;
-        
-        chats.push({user:currentUser,msg,time:new Date().toLocaleTimeString()});
-        
-        if(await saveData()){ 
-            document.getElementById('chatInput').value=''; 
-            await loadData();
+            uploadSection.classList.add('hidden');
+            userInfo.classList.add('hidden');
+            logoutBtn.classList.add('hidden');
+            document.getElementById('username').classList.remove('hidden');
         }
     }
 
-    // ========== PUBLISH BUILD ==========
-    async function publishBuild(){
-        if(!isMod){ alert('❌ Only moderators can publish builds!'); return; }
-        const name=document.getElementById('buildName').value.trim();
-        const type=document.getElementById('buildType').value;
-        const price=parseInt(document.getElementById('buildPrice').value);
-        const desc=document.getElementById('buildDesc').value.trim();
-        const fileInput=document.getElementById('buildFile');
-        if(!name||!type||!desc||!fileInput.files[0]) { alert('Fill all fields!'); return; }
-        const file=fileInput.files[0];
-        if(!file.name.toLowerCase().endsWith('.build')){ alert('File must be .build!'); return; }
+    // ========== FILE UPLOAD ==========
+    function uploadBuild() {
+        if (!currentUser) {
+            showStatus('uploadStatus', '❌ Please log in first', 'error');
+            return;
+        }
 
-        showStatus('uploadStatus','⏫ Uploading...', 'success');
+        const name = document.getElementById('buildName').value.trim();
+        const type = document.getElementById('buildType').value;
+        const price = parseInt(document.getElementById('buildPrice').value) || 0;
+        const desc = document.getElementById('buildDesc').value.trim();
+        const fileInput = document.getElementById('buildFile');
+
+        // Validation
+        if (!name) {
+            showStatus('uploadStatus', '❌ Build name is required', 'error');
+            return;
+        }
+        if (!desc) {
+            showStatus('uploadStatus', '❌ Description is required', 'error');
+            return;
+        }
+        if (!fileInput.files[0]) {
+            showStatus('uploadStatus', '❌ Please select a .build file', 'error');
+            return;
+        }
+
+        const file = fileInput.files[0];
+        
+        if (!file.name.toLowerCase().endsWith('.build')) {
+            showStatus('uploadStatus', '❌ File must be .build format', 'error');
+            return;
+        }
+
+        if (file.size > 10 * 1024 * 1024) { // 10MB limit
+            showStatus('uploadStatus', '❌ File too large (max 10MB)', 'error');
+            return;
+        }
+
+        showStatus('uploadStatus', '⏳ Uploading...', 'info');
 
         const reader = new FileReader();
-        reader.onload = async function(e) {
-            builds.push({
-                id:Date.now(),
-                name,type,price,desc,
-                fileName:file.name,
-                fileData:e.target.result,
-                seller:currentUser
-            });
+        reader.onload = function(e) {
+            const builds = loadMarketplace();
             
-            if(await saveData()){
-                document.getElementById('buildName').value='';
-                document.getElementById('buildPrice').value='0';
-                document.getElementById('buildDesc').value='';
-                document.getElementById('buildFile').value='';
-                showStatus('uploadStatus','✅ Build published!','success');
-                await loadData();
-            }
+            builds.push({
+                id: Date.now(),
+                name: name,
+                type: type,
+                price: price,
+                desc: desc,
+                fileName: file.name,
+                fileData: e.target.result, // Base64 encoded
+                seller: currentUser,
+                uploadedAt: new Date().toISOString(),
+                fileSize: file.size
+            });
+
+            saveMarketplace(builds);
+            
+            // Clear form
+            document.getElementById('buildName').value = '';
+            document.getElementById('buildPrice').value = '0';
+            document.getElementById('buildDesc').value = '';
+            document.getElementById('buildFile').value = '';
+
+            showStatus('uploadStatus', '✅ Build published successfully!', 'success');
+            loadMarketplace();
         };
+
+        reader.onerror = function() {
+            showStatus('uploadStatus', '❌ Error reading file', 'error');
+        };
+
         reader.readAsDataURL(file);
     }
 
-    function downloadBuild(fileData,fileName){
-        const link=document.createElement('a'); 
-        link.href=fileData; 
-        link.download=fileName;
-        document.body.appendChild(link); 
-        link.click();
-        setTimeout(()=>document.body.removeChild(link),1000);
+    // ========== FILE DOWNLOAD ==========
+    function downloadBuild(buildId) {
+        const builds = loadMarketplace();
+        const build = builds.find(b => b.id === buildId);
+
+        if (!build) {
+            showStatus('uploadStatus', '❌ Build not found', 'error');
+            return;
+        }
+
+        try {
+            const link = document.createElement('a');
+            link.href = build.fileData;
+            link.download = build.fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showStatus('uploadStatus', `✅ Downloaded: ${build.fileName}`, 'success');
+        } catch(e) {
+            showStatus('uploadStatus', '❌ Download failed', 'error');
+        }
     }
 
-    function filterBuilds(filter,evt){
-        currentFilter=filter;
-        document.querySelectorAll('.sort-btn').forEach(btn=>btn.classList.remove('active'));
-        if(evt) evt.currentTarget.classList.add('active');
-        displayBuilds();
+    // ========== MARKETPLACE MANAGEMENT ==========
+    function loadMarketplace() {
+        const data = localStorage.getItem(STORAGE_KEY);
+        return data ? JSON.parse(data) : [];
     }
 
-    function displayBuilds(){
-        const grid=document.getElementById('marketplace');
-        let filtered=builds;
-        if(currentFilter==='free') filtered=builds.filter(b=>b.price===0);
-        if(currentFilter==='premium') filtered=builds.filter(b=>b.price>=90&&b.price<=100);
-        if(filtered.length===0){ grid.innerHTML='<p style="text-align:center;color:#666;">No builds available</p>'; return;}
-        
-        let html='';
-        filtered.slice().reverse().forEach(b=>{
-            const isFree=b.price===0; const isPremium=b.price>=90&&b.price<=100;
-            let cardClass=isFree?'free':(isPremium?'premium':'');
-            html+=`<div class="build-card ${cardClass}">
-                <h3>${b.name}</h3><div>${b.type}</div>
-                <div class="build-price">💰 ${b.price} Robux</div>
-                <p>${b.desc}</p>
-                <div><small>Seller: ${b.seller}</small></div>
-                ${b.fileData?`<button class="download-btn" onclick="downloadBuild('${b.fileData}','${b.fileName}')">⬇️ DOWNLOAD</button>`:''}
-            </div>`;
+    function saveMarketplace(builds) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(builds));
+    }
+
+    function deleteBuild(buildId) {
+        if (!confirm('Are you sure you want to delete this build?')) return;
+
+        let builds = loadMarketplace();
+        const build = builds.find(b => b.id === buildId);
+
+        if (!build) {
+            showStatus('uploadStatus', '❌ Build not found', 'error');
+            return;
+        }
+
+        if (build.seller !== currentUser) {
+            showStatus('uploadStatus', '❌ You can only delete your own builds', 'error');
+            return;
+        }
+
+        builds = builds.filter(b => b.id !== buildId);
+        saveMarketplace(builds);
+        displayMarketplace();
+        showStatus('uploadStatus', '✅ Build deleted', 'success');
+    }
+
+    function filterBuilds(filter, btn) {
+        currentFilter = filter;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        displayMarketplace();
+    }
+
+    function displayMarketplace() {
+        const marketplace = document.getElementById('marketplace');
+        let builds = loadMarketplace();
+
+        // Apply filters
+        if (currentFilter === 'free') {
+            builds = builds.filter(b => b.price === 0);
+        } else if (currentFilter === 'paid') {
+            builds = builds.filter(b => b.price > 0);
+        } else if (currentFilter === 'mybuilds') {
+            if (!currentUser) {
+                marketplace.innerHTML = '<p style="color:#666;">Log in to see your builds</p>';
+                return;
+            }
+            builds = builds.filter(b => b.seller === currentUser);
+        }
+
+        if (builds.length === 0) {
+            marketplace.innerHTML = '<p style="color:#666;">No builds found</p>';
+            return;
+        }
+
+        // Display builds (newest first)
+        let html = '';
+        builds.slice().reverse().forEach(build => {
+            const uploadDate = new Date(build.uploadedAt).toLocaleDateString();
+            const fileSize = (build.fileSize / 1024).toFixed(2);
+            const isOwner = currentUser === build.seller;
+
+            html += `
+                <div class="build-card">
+                    <div class="build-title">${escapeHtml(build.name)}</div>
+                    <div class="build-info">Type: ${build.type}</div>
+                    <div class="build-price">💰 ${build.price} Robux</div>
+                    <div class="build-desc">${escapeHtml(build.desc)}</div>
+                    <div class="build-seller">By: ${escapeHtml(build.seller)}</div>
+                    <div class="file-size">📦 ${fileSize}KB | ${uploadDate}</div>
+                    <button class="download-btn" onclick="downloadBuild(${build.id})">⬇️ DOWNLOAD</button>
+                    ${isOwner ? `<button class="delete-btn" onclick="deleteBuild(${build.id})">🗑️ DELETE</button>` : ''}
+                </div>
+            `;
         });
-        grid.innerHTML=html;
+
+        marketplace.innerHTML = html;
     }
 
-    setInterval(loadData,3000);
-    loadData();
+    // ========== UTILITIES ==========
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    function showStatus(id, msg, type) {
+        const el = document.getElementById(id);
+        el.style.display = 'block';
+        el.className = 'status ' + type;
+        el.textContent = msg;
+        setTimeout(() => el.style.display = 'none', 4000);
+    }
+
+    // Start app
+    init();
 </script>
 </body>
 </html>
