@@ -71,6 +71,7 @@
             min-height: 100vh;
             position: relative;
             overflow-x: hidden;
+            user-select: none;
         }
         
         /* CHAIN BACKGROUND ANIMATION */
@@ -129,6 +130,33 @@
             z-index: -2;
         }
         
+        /* CORNER CHAINS */
+        .corner-chain {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            background-image:
+                radial-gradient(circle, rgba(180, 0, 255, 0.3) 3px, transparent 3px),
+                radial-gradient(circle, rgba(200, 0, 255, 0.3) 3px, transparent 3px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            z-index: -1;
+        }
+        
+        .corner-chain.top-right {
+            top: -50px;
+            right: -50px;
+            animation: chainRotate 20s linear infinite, chainGlow 3s ease-in-out infinite;
+            border-radius: 0 0 0 100%;
+        }
+        
+        .corner-chain.bottom-left {
+            bottom: -50px;
+            left: -50px;
+            animation: chainRotateReverse 25s linear infinite, chainGlow 4s ease-in-out infinite;
+            border-radius: 0 100% 0 0;
+        }
+        
         @keyframes chainMove {
             0% { transform: translateX(0) translateY(0); }
             100% { transform: translateX(20px) translateY(20px); }
@@ -142,6 +170,21 @@
         @keyframes linkFloat {
             0%, 100% { transform: scale(1); opacity: 0.5; }
             50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        @keyframes chainRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes chainRotateReverse {
+            0% { transform: rotate(360deg); }
+            100% { transform: rotate(0deg); }
+        }
+        
+        @keyframes chainGlow {
+            0%, 100% { opacity: 0.6; filter: brightness(1); }
+            50% { opacity: 0.9; filter: brightness(1.5); }
         }
         
         /* MAIN CONTAINER */
@@ -260,6 +303,14 @@
             box-shadow: 0 0 30px #b300ff;
         }
         
+        .logout-btn {
+            background: #aa0000;
+        }
+        
+        .logout-btn:hover {
+            background: #ff0000;
+        }
+        
         /* MEMBER INFO */
         .member-info {
             background: #1a0a2a;
@@ -282,6 +333,7 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
+            gap: 15px;
         }
         
         .user-role {
@@ -290,6 +342,76 @@
             padding: 5px 15px;
             border-radius: 50px;
             font-weight: bold;
+        }
+        
+        /* CHAT SECTION */
+        .chat-container {
+            background: #1a0a2a;
+            border: 2px solid #b300ff;
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .chat-messages {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #0a0a1a;
+            border-radius: 5px;
+        }
+        
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #2a1a3a;
+            border-radius: 5px;
+        }
+        
+        .chat-sender {
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .chat-sender.owner {
+            color: gold;
+        }
+        
+        .chat-sender.moderator {
+            color: #00ff00;
+        }
+        
+        .chat-text {
+            color: #ccc;
+        }
+        
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            background: #0a0a1a;
+            border: 2px solid #b300ff;
+            border-radius: 5px;
+            color: white;
+        }
+        
+        .chat-send-btn {
+            padding: 12px 25px;
+            background: #b300ff;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .chat-send-btn:hover {
+            background: #d400ff;
         }
         
         /* MODERATOR PANEL */
@@ -303,7 +425,7 @@
         
         .mod-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 15px;
             margin-top: 15px;
         }
@@ -341,6 +463,27 @@
             color: black;
             font-weight: bold;
             cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .mod-btn:hover {
+            background: #ffdd00;
+        }
+        
+        .moderator-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .moderator-item {
+            background: #1a0a2a;
+            border: 2px solid #00ff00;
+            border-radius: 5px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         /* BLACKLIST SECTION */
@@ -376,6 +519,12 @@
             border-radius: 3px;
             color: white;
             cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        
+        .unblacklist-btn:hover {
+            background: #ff6666;
         }
         
         /* FORM ELEMENTS */
@@ -525,6 +674,7 @@
             margin: 10px 0;
             color: #aaa;
             font-size: 0.9em;
+            word-break: break-all;
         }
         
         .download-btn {
@@ -542,6 +692,7 @@
         
         .download-btn:hover {
             background: #00ff00;
+            box-shadow: 0 0 20px #00ff00;
         }
         
         .delete-btn {
@@ -558,132 +709,4 @@
         
         .delete-btn:hover {
             background: #ff0000;
-        }
-        
-        .kick-btn {
-            width: 100%;
-            padding: 12px;
-            background: #ff8800;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            margin: 5px 0;
-        }
-        
-        .kick-btn:hover {
-            background: #ffaa00;
-        }
-        
-        /* STATUS MESSAGES */
-        .status {
-            padding: 15px;
-            border-radius: 10px;
-            margin: 15px 0;
-            display: none;
-        }
-        
-        .success {
-            background: #1a3a1a;
-            border: 2px solid #00ff00;
-            color: #00ff00;
-        }
-        
-        .error {
-            background: #3a1a1a;
-            border: 2px solid #ff0000;
-            color: #ff0000;
-        }
-        
-        .info {
-            background: #1a2a3a;
-            border: 2px solid #0088ff;
-            color: #0088ff;
-        }
-        
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 10px;
-            color: white;
-            font-weight: bold;
-            z-index: 9999;
-            animation: slideIn 0.3s, fadeOut 0.3s 2.7s forwards;
-            box-shadow: 0 0 30px black;
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        
-        @keyframes fadeOut {
-            to { opacity: 0; transform: translateY(-20px); }
-        }
-        
-        .footer {
-            text-align: center;
-            color: #666;
-            margin-top: 40px;
-            padding: 20px;
-            border-top: 2px solid #b300ff;
-        }
-        
-        .hidden {
-            display: none !important;
-        }
-    </style>
-</head>
-<body>
-    <!-- CHAIN BACKGROUND -->
-    <div class="chain-bg"></div>
-    <div class="chain-vertical"></div>
-    <div class="chain-diagonal"></div>
-    <div class="chain-links"></div>
-    
-    <div class="container">
-        <!-- HEADER -->
-        <div class="header">
-            <h1>⚡ OXYX MARKET ⚡</h1>
-        </div>
-        
-        <!-- DISCORD LINKS -->
-        <div class="discord-container">
-            <a href="https://discord.gg/autobuild" target="_blank" class="discord-btn">🔮 MAIN SERVER</a>
-            <a href="https://discord.gg/boatbuilderhub" target="_blank" class="discord-btn">⚡ TRADE SERVER</a>
-            <a href="https://discord.gg/builders" target="_blank" class="discord-btn">🎮 BUILDER SERVER</a>
-        </div>
-        
-        <!-- AUTH SECTION -->
-        <div class="card">
-            <h2>🔐 MEMBER ACCESS</h2>
-            <div class="auth-section">
-                <input type="text" id="username" placeholder="Enter username (any name for member)">
-                <button class="auth-btn" onclick="login()">LOGIN AS MEMBER</button>
-            </div>
-            <div class="auth-section">
-                <input type="text" id="adminUsername" placeholder="Admin username">
-                <input type="password" id="adminPassword" placeholder="Admin password">
-                <button class="auth-btn" onclick="adminLogin()">ADMIN LOGIN</button>
-            </div>
-            <div id="authStatus" class="status"></div>
-            
-            <!-- MEMBER INFO -->
-            <div id="memberInfo" class="member-info">
-                👤 Members: Just enter any username to login and start uploading!
-            </div>
-            
-            <!-- USER INFO -->
-            <div id="userInfo" class="user-info hidden">
-                <span id="displayName"></span>
-                <span id="displayRole" class="user-role"></span>
-                <button class="auth-btn" onclick="logout()" style="background:#aa0000;">LOGOUT</button>
-            </div>
-            
-            <!-- MODERATOR PANEL -->
-            <div id="modPanel" class="mod-panel hidden">
-                <h3 style="col
+            box-shadow: 0 0 20px #ff0000
