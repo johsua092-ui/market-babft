@@ -45,6 +45,30 @@
         
         .card { background:#1a1a2a; border:2px solid #b300ff; border-radius:15px; padding:20px; margin-bottom:20px; }
         
+        /* DISCORD LINKS */
+        .discord-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0 30px 0;
+            flex-wrap: wrap;
+        }
+        .discord-btn {
+            padding: 15px 30px;
+            background: #5865F2;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1em;
+            border: 2px solid #b300ff;
+            transition: 0.3s;
+        }
+        .discord-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px #5865F2;
+        }
+        
         /* STATS */
         .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:15px; margin:20px 0; }
         .stat-card { background:#2a0a3a; border:2px solid gold; border-radius:10px; padding:15px; text-align:center; }
@@ -67,7 +91,7 @@
         .ip-table { width:100%; border-collapse:collapse; margin-top:15px; }
         .ip-table th { background:#b300ff; padding:12px; text-align:left; }
         .ip-table td { padding:10px; border-bottom:1px solid #333; }
-        .ip-table td button { padding:5px 10px; margin:0; background:#aa0000; }
+        .ip-table td button { padding:5px 10px; margin:0; background:#aa0000; border:none; color:white; border-radius:3px; cursor:pointer; }
         .online { color:#00ff00; }
         .offline { color:#666; }
         
@@ -75,7 +99,7 @@
         .ban-table { width:100%; border-collapse:collapse; margin-top:15px; }
         .ban-table th { background:#aa0000; padding:12px; text-align:left; }
         .ban-table td { padding:10px; border-bottom:1px solid #333; }
-        .ban-table td button { padding:5px 10px; margin:0; background:#00aa00; }
+        .ban-table td button { padding:5px 10px; margin:0; background:#00aa00; border:none; color:white; border-radius:3px; cursor:pointer; }
         
         /* CLEAR CHAT TIMER */
         .timer-section { background:#2a0a3a; border:2px solid gold; border-radius:10px; padding:15px; margin:15px 0; text-align:center; }
@@ -103,6 +127,13 @@
 <body>
     <div class="container">
         <h1>⚡ OXYX MARKET ⚡</h1>
+        
+        <!-- DISCORD LINKS - 3 LINK -->
+        <div class="discord-links">
+            <a href="https://discord.gg/autobuild" target="_blank" class="discord-btn">🔮 MAIN SERVER</a>
+            <a href="https://discord.gg/boatbuilderhub" target="_blank" class="discord-btn">⚡ SUPPORT 1</a>
+            <a href="https://discord.gg/boatbuilderhub" target="_blank" class="discord-btn">🎮 SUPPORT 2</a>
+        </div>
         
         <!-- STATS -->
         <div class="stats">
@@ -201,7 +232,7 @@
             <div id="marketplace" class="build-grid"></div>
         </div>
         
-        <div class="footer">OXYX MARKET • Build A Boat Only</div>
+        <div class="footer">OXYX MARKET • Build A Boat Only • 3 Discord Servers</div>
     </div>
     
     <script>
@@ -219,7 +250,7 @@
         let bannedIPs = JSON.parse(localStorage.getItem('bannedIPs')) || [];
         
         // Chat auto clear timer (3 jam = 180 menit)
-        let chatClearInterval = 180 * 60 * 1000; // 3 jam dalam ms
+        let chatClearInterval = 180 * 60 * 1000;
         let lastChatClear = parseInt(localStorage.getItem('lastChatClear')) || Date.now();
         let timerInterval = null;
         
@@ -365,7 +396,6 @@
                 let timeLeft = (lastChatClear + chatClearInterval) - now;
                 
                 if (timeLeft <= 0) {
-                    // Auto clear chat
                     chats = [];
                     localStorage.setItem('chats', JSON.stringify(chats));
                     lastChatClear = now;
@@ -397,37 +427,3 @@
         window.manualClearChat = function() {
             if (!currentUser || currentUser.role !== 'owner') {
                 alert('❌ Only owner can clear chat!');
-                return;
-            }
-            chats = [];
-            localStorage.setItem('chats', JSON.stringify(chats));
-            lastChatClear = Date.now();
-            localStorage.setItem('lastChatClear', lastChatClear);
-            displayChat();
-            alert('✅ Chat cleared!');
-        };
-        
-        // ========== BAN IP ==========
-        window.banIP = function(ip, username) {
-            if (!currentUser || currentUser.role !== 'owner') {
-                alert('❌ Only owner can ban IP!');
-                return;
-            }
-            
-            let reason = prompt('Reason for ban:', 'Violating rules');
-            if (!reason) return;
-            
-            bannedIPs.push({
-                ip: ip,
-                username: username,
-                reason: reason,
-                bannedAt: new Date().toLocaleString()
-            });
-            
-            localStorage.setItem('bannedIPs', JSON.stringify(bannedIPs));
-            updateBanTable();
-            alert(`✅ IP ${ip} banned!`);
-        };
-        
-        window.unbanIP = function(ip) {
-            if (!currentUser || currentUser.role !== 'owner') {
