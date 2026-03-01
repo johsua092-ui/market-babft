@@ -7,50 +7,47 @@
         body { background:#0a0a0a; color:white; padding:20px; }
         .container { max-width:1400px; margin:0 auto; }
         
-        /* TITLE */
         h1 { font-size:4em; text-align:center; color:#b300ff; text-shadow:3px 3px 0 #ff00ff,-3px -3px 0 #00ffff; margin-bottom:30px; }
         
         .card { background:#1a1a2a; border:2px solid #b300ff; border-radius:15px; padding:20px; margin-bottom:20px; }
         
-        /* STATS */
         .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:15px; margin:20px 0; }
         .stat-card { background:#2a0a3a; border:2px solid gold; border-radius:10px; padding:15px; text-align:center; }
         .stat-value { font-size:2.5em; color:gold; }
         .online-dot { display:inline-block; width:10px; height:10px; background:#00ff00; border-radius:50%; animation:pulse 2s infinite; }
         @keyframes pulse { 0%{opacity:1} 50%{opacity:0.5;transform:scale(1.3)} }
         
-        /* DEVICE INFO (HANYA UNTUK MOD/OWNER) */
         #deviceInfoSection { display:none; }
         .admin-device { background:#0a0a1a; padding:10px; border-radius:5px; font-family:monospace; }
         .device-id { color:#00ff00; }
         .ip-addr { color:#ffaa00; }
         
-        /* LOGIN */
         .login-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
         input { width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #b300ff; border-radius:5px; color:white; }
         button { width:100%; padding:15px; background:#b300ff; border:none; border-radius:5px; color:white; font-weight:bold; cursor:pointer; }
         button:hover { background:#d400ff; }
         
-        /* IP TABLE */
         .ip-table { width:100%; border-collapse:collapse; margin-top:15px; }
         .ip-table th { background:#b300ff; padding:12px; text-align:left; }
         .ip-table td { padding:10px; border-bottom:1px solid #333; }
         .online { color:#00ff00; }
         .offline { color:#666; }
         
-        /* SESSION WARNING */
-        .session-warning { background:#aa0000; padding:10px; border-radius:5px; text-align:center; }
+        .ban-table { width:100%; border-collapse:collapse; margin-top:15px; }
+        .ban-table th { background:#aa0000; padding:12px; text-align:left; }
+        .ban-table td { padding:10px; border-bottom:1px solid #333; }
+        .ban-btn { background:#aa0000; padding:5px 10px; width:auto; margin:0; }
+        .unban-btn { background:#00aa00; padding:5px 10px; width:auto; margin:0; }
         
+        .session-warning { background:#aa0000; padding:10px; border-radius:5px; text-align:center; }
         .hidden { display:none !important; }
         .footer { text-align:center; color:#666; margin-top:30px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- JUDUL TANPA 3D -->
         <h1>⚡ OXYX MARKET ⚡</h1>
         
-        <!-- STATS -->
         <div class="stats">
             <div class="stat-card"><div class="stat-value" id="totalMembers">0</div><div>Total Members</div></div>
             <div class="stat-card"><div class="stat-value" id="onlineNow">0</div><div><span class="online-dot"></span> Online</div></div>
@@ -58,7 +55,6 @@
             <div class="stat-card"><div class="stat-value" id="totalIPs">0</div><div>Unique IPs</div></div>
         </div>
         
-        <!-- DEVICE INFO (HANYA UNTUK MOD/OWNER) -->
         <div id="deviceInfoSection" class="card">
             <h2>📱 DEVICE INFO</h2>
             <div class="admin-device">
@@ -67,7 +63,6 @@
             </div>
         </div>
         
-        <!-- LOGIN SECTION -->
         <div class="card">
             <h2>🔐 LOGIN</h2>
             <div class="login-grid">
@@ -84,28 +79,34 @@
                 </div>
             </div>
             
-            <!-- SESSION WARNING -->
             <div id="sessionWarning" class="session-warning hidden">
                 ⚠️ Account ini sudah aktif di device lain! Tidak bisa login.
             </div>
             
-            <!-- USER INFO -->
             <div id="userInfo" class="hidden" style="margin-top:20px; padding:15px; background:#2a0a3a; border-radius:10px;">
                 <p>Logged in as: <span id="displayName"></span></p>
                 <button onclick="logout()" style="background:#aa0000;">LOGOUT</button>
             </div>
         </div>
         
-        <!-- IP TABLE (OWNER ONLY) -->
+        <!-- IP TRACKER (OWNER ONLY) -->
         <div id="ipTableSection" class="card hidden">
             <h2>👑 IP TRACKER</h2>
             <table class="ip-table">
-                <thead><tr><th>Username</th><th>IP</th><th>Device ID</th><th>Last Seen</th><th>Status</th></tr></thead>
+                <thead><tr><th>Username</th><th>IP</th><th>Device ID</th><th>Last Seen</th><th>Status</th><th>Action</th></tr></thead>
                 <tbody id="ipTableBody"></tbody>
             </table>
         </div>
         
-        <!-- MOD CHAT -->
+        <!-- BANNED IPS (MOD & OWNER) -->
+        <div id="banSection" class="card hidden">
+            <h2>🚫 BANNED IPS</h2>
+            <table class="ban-table">
+                <thead><tr><th>IP Address</th><th>Reason</th><th>Banned At</th><th>Action</th></tr></thead>
+                <tbody id="banTableBody"></tbody>
+            </table>
+        </div>
+        
         <div id="chatSection" class="card hidden">
             <h2>💬 MOD CHAT</h2>
             <div id="chatMessages" style="height:150px; overflow:auto; background:#0a0a1a; padding:10px; margin:10px 0;"></div>
@@ -113,7 +114,6 @@
             <button onclick="sendChat()">SEND</button>
         </div>
         
-        <!-- UPLOAD -->
         <div id="uploadSection" class="card hidden">
             <h2>📤 UPLOAD BUILD</h2>
             <input type="text" id="buildName" placeholder="Build name">
@@ -123,7 +123,6 @@
             <button onclick="uploadBuild()">PUBLISH</button>
         </div>
         
-        <!-- MARKETPLACE -->
         <div class="card">
             <h2>🏪 MARKETPLACE</h2>
             <div style="display:flex; gap:10px; margin:15px 0; flex-wrap:wrap;">
@@ -135,7 +134,6 @@
             <div id="marketplace" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:15px;"></div>
         </div>
         
-        <!-- FOOTER - HANYA NAMA MARKET -->
         <div class="footer">OXYX MARKET • Build A Boat Only</div>
     </div>
     
@@ -149,13 +147,14 @@
         let activeSessions = JSON.parse(localStorage.getItem('activeSessions')) || {};
         let members = JSON.parse(localStorage.getItem('members')) || [];
         let builds = JSON.parse(localStorage.getItem('builds')) || [
-            {id:1, name:"Dragon Boat", price:0, desc:"Cool dragon boat", file:"dragon.build", seller:"znyt"},
-            {id:2, name:"Flying Ship", price:150, desc:"Flying ship", file:"flying.build", seller:"helper_tester"},
-            {id:3, name:"Golden Raft", price:200, desc:"Golden raft", file:"golden.build", seller:"sigma"}
+            {id:1, name:"Dragon Boat", price:0, desc:"Cool dragon boat", file:"dragon.build", seller:"znyt", fileData:null},
+            {id:2, name:"Flying Ship", price:150, desc:"Flying ship", file:"flying.build", seller:"helper_tester", fileData:null},
+            {id:3, name:"Golden Raft", price:200, desc:"Golden raft", file:"golden.build", seller:"sigma", fileData:null}
         ];
         let chats = JSON.parse(localStorage.getItem('chats')) || [{user:"znyt",role:"owner",msg:"Welcome!"}];
+        let bannedIPs = JSON.parse(localStorage.getItem('bannedIPs')) || [];
         
-        // ========== DEVICE & IP ==========
+        // ========== IP FIX ==========
         fetch('https://httpbin.org/ip')
             .then(res => res.json())
             .then(data => { clientIP = data.origin; document.getElementById('ipAddress').innerText = clientIP; })
@@ -163,8 +162,12 @@
         
         document.getElementById('deviceId').innerText = deviceId;
         
-        // ========== SESSION ==========
+        // ========== SESSION CHECK (DIPERBAIKI) ==========
         function checkSession(username) {
+            // Owner boleh login di device manapun (override)
+            if (username === 'znyt') return false;
+            
+            // Untuk user lain, cek session
             return activeSessions[username] && activeSessions[username] !== deviceId;
         }
         
@@ -183,7 +186,11 @@
             let user = document.getElementById('memberUsername').value.trim();
             if (!user) { alert('Masukin nama!'); return; }
             
-            if (checkSession(user)) { alert('❌ Account sedang digunakan di device lain!'); return; }
+            if (checkSession(user)) { 
+                document.getElementById('sessionWarning').classList.remove('hidden');
+                alert('❌ Account sedang digunakan di device lain!'); 
+                return; 
+            }
             
             let now = new Date().toISOString();
             let existing = members.find(m => m.username === user);
@@ -205,29 +212,39 @@
             let user = document.getElementById('adminUser').value.trim();
             let pass = document.getElementById('adminPass').value.trim();
             
-            if (checkSession(user)) { alert('❌ Account sedang digunakan di device lain!'); return; }
+            if (checkSession(user)) { 
+                document.getElementById('sessionWarning').classList.remove('hidden');
+                alert('❌ Account sedang digunakan di device lain!'); 
+                return; 
+            }
             
             if (user === 'znyt' && pass === 'Root!Delta_7KpZ') {
                 currentUser = { username: 'znyt', role: 'owner' };
                 setSession('znyt');
                 showUserInfo();
                 document.getElementById('ipTableSection').classList.remove('hidden');
+                document.getElementById('banSection').classList.remove('hidden');
                 document.getElementById('deviceInfoSection').style.display = 'block';
                 updateIpTable();
+                updateBanTable();
                 alert('✅ Welcome OWNER');
             } else if (user === 'helper_tester' && pass === 'huwydhdjsiqo') {
                 currentUser = { username: 'helper_tester', role: 'mod' };
                 setSession('helper_tester');
                 showUserInfo();
                 document.getElementById('chatSection').classList.remove('hidden');
+                document.getElementById('banSection').classList.remove('hidden');
                 document.getElementById('deviceInfoSection').style.display = 'block';
+                updateBanTable();
                 alert('✅ Welcome MOD 1');
             } else if (user === 'sigma' && pass === 'uBwbONeqIwYQ97') {
                 currentUser = { username: 'sigma', role: 'mod' };
                 setSession('sigma');
                 showUserInfo();
                 document.getElementById('chatSection').classList.remove('hidden');
+                document.getElementById('banSection').classList.remove('hidden');
                 document.getElementById('deviceInfoSection').style.display = 'block';
+                updateBanTable();
                 alert('✅ Welcome MOD 2');
             } else {
                 alert('❌ Wrong credentials');
@@ -251,12 +268,13 @@
             document.getElementById('uploadSection').classList.add('hidden');
             document.getElementById('chatSection').classList.add('hidden');
             document.getElementById('ipTableSection').classList.add('hidden');
+            document.getElementById('banSection').classList.add('hidden');
             document.getElementById('deviceInfoSection').style.display = 'none';
             document.getElementById('sessionWarning').classList.add('hidden');
             alert('Logged out');
         };
         
-        // ========== STATS & IP TABLE ==========
+        // ========== STATS ==========
         function updateStats() {
             document.getElementById('totalMembers').innerText = members.length;
             document.getElementById('totalBuilds').innerText = builds.length;
@@ -267,15 +285,75 @@
             document.getElementById('totalIPs').innerText = uniqueIPs;
         }
         
+        // ========== IP TABLE (OWNER ONLY) ==========
         function updateIpTable() {
             let tbody = document.getElementById('ipTableBody');
-            if (members.length === 0) { tbody.innerHTML = '<tr><td colspan="5">Belum ada member</td></tr>'; return; }
+            if (members.length === 0) { tbody.innerHTML = '<tr><td colspan="6">Belum ada member</td></tr>'; return; }
             let html = '';
             let last24h = Date.now() - 86400000;
             members.sort((a,b) => new Date(b.lastSeen) - new Date(a.lastSeen)).forEach(m => {
                 let isOnline = new Date(m.lastSeen).getTime() > last24h;
                 let status = isOnline ? '<span class="online">🟢 ONLINE</span>' : '<span class="offline">⚫ OFFLINE</span>';
-                html += `<tr><td><b>${m.username}</b></td><td>${m.ip || 'Unknown'}</td><td>${(m.deviceId || '').substring(0,15)}...</td><td>${new Date(m.lastSeen).toLocaleString()}</td><td>${status}</td></tr>`;
+                let isBanned = bannedIPs.some(b => b.ip === m.ip);
+                html += `<tr>
+                    <td><b>${m.username}</b> ${isBanned ? '🚫' : ''}</td>
+                    <td>${m.ip || 'Unknown'}</td>
+                    <td>${(m.deviceId || '').substring(0,15)}...</td>
+                    <td>${new Date(m.lastSeen).toLocaleString()}</td>
+                    <td>${status}</td>
+                    <td>
+                        ${!isBanned ? `<button class="ban-btn" onclick="banIP('${m.ip}', '${m.username}')">BAN</button>` : ''}
+                    </td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+        
+        // ========== BAN IP (MOD & OWNER) ==========
+        window.banIP = function(ip, username) {
+            if (!currentUser || (currentUser.role !== 'owner' && currentUser.role !== 'mod')) {
+                alert('❌ Hanya moderator/owner yang bisa ban!');
+                return;
+            }
+            let reason = prompt('Alasan ban (opsional):', 'Melanggar aturan');
+            if (reason === null) return;
+            
+            bannedIPs.push({
+                ip: ip,
+                username: username,
+                reason: reason || 'No reason',
+                bannedAt: new Date().toLocaleString(),
+                bannedBy: currentUser.username
+            });
+            localStorage.setItem('bannedIPs', JSON.stringify(bannedIPs));
+            if (currentUser.role === 'owner') updateIpTable();
+            updateBanTable();
+            alert(`✅ IP ${ip} berhasil di-ban!`);
+        };
+        
+        window.unbanIP = function(ip) {
+            if (!currentUser || (currentUser.role !== 'owner' && currentUser.role !== 'mod')) {
+                alert('❌ Hanya moderator/owner yang bisa unban!');
+                return;
+            }
+            bannedIPs = bannedIPs.filter(b => b.ip !== ip);
+            localStorage.setItem('bannedIPs', JSON.stringify(bannedIPs));
+            if (currentUser.role === 'owner') updateIpTable();
+            updateBanTable();
+            alert(`✅ IP ${ip} berhasil di-unban!`);
+        };
+        
+        function updateBanTable() {
+            let tbody = document.getElementById('banTableBody');
+            if (bannedIPs.length === 0) { tbody.innerHTML = '<tr><td colspan="4">Tidak ada IP yang di-ban</td></tr>'; return; }
+            let html = '';
+            bannedIPs.forEach(b => {
+                html += `<tr>
+                    <td>${b.ip}</td>
+                    <td>${b.reason}</td>
+                    <td>${b.bannedAt}</td>
+                    <td><button class="unban-btn" onclick="unbanIP('${b.ip}')">UNBAN</button></td>
+                </tr>`;
             });
             tbody.innerHTML = html;
         }
@@ -304,70 +382,20 @@
         // ========== UPLOAD ==========
         window.uploadBuild = function() {
             if (!currentUser) { alert('Login dulu!'); return; }
+            
+            // Cek apakah IP di-ban
+            if (bannedIPs.some(b => b.ip === clientIP)) {
+                alert('❌ IP Anda telah di-ban! Tidak bisa upload.');
+                return;
+            }
+            
             let name = document.getElementById('buildName').value.trim();
             let price = parseInt(document.getElementById('buildPrice').value) || 0;
             let desc = document.getElementById('buildDesc').value.trim();
             let file = document.getElementById('buildFile').files[0];
             if (!name || !desc || !file) { alert('Isi semua!'); return; }
-            builds.push({ id: Date.now(), name: name, price: price, desc: desc, file: file.name, seller: currentUser.username });
-            localStorage.setItem('builds', JSON.stringify(builds));
-            alert('✅ Upload berhasil');
-            displayBuilds();
-            updateStats();
-        };
-        
-        window.deleteBuild = function(id, seller) {
-            if (!currentUser) { alert('Login dulu!'); return; }
-            if (currentUser.role === 'owner' || currentUser.role === 'mod' || currentUser.username === seller) {
-                builds = builds.filter(b => b.id !== id);
-                localStorage.setItem('builds', JSON.stringify(builds));
-                displayBuilds();
-                updateStats();
-                alert('✅ Build dihapus');
-            } else { alert('❌ Ga boleh hapus punya orang'); }
-        };
-        
-        window.downloadBuild = function(file) { alert('📥 Download ' + file); };
-        
-        // ========== FILTER ==========
-        window.filterBuilds = function(filter) {
-            currentFilter = filter;
-            displayBuilds();
-        };
-        
-        function displayBuilds() {
-            let filtered = builds;
-            if (currentFilter === 'free') filtered = builds.filter(b => b.price === 0);
-            else if (currentFilter === 'premium') filtered = builds.filter(b => b.price >= 100);
-            else if (currentFilter === 'my') {
-                if (!currentUser) { document.getElementById('marketplace').innerHTML = '<p>Login untuk lihat buildmu</p>'; return; }
-                filtered = builds.filter(b => b.seller === currentUser.username);
-            }
-            if (filtered.length === 0) { document.getElementById('marketplace').innerHTML = '<p>No builds</p>'; return; }
             
-            let html = '';
-            filtered.reverse().forEach(b => {
-                let canDelete = currentUser && (currentUser.role === 'owner' || currentUser.role === 'mod' || currentUser.username === b.seller);
-                let isPremium = b.price >= 100;
-                html += `
-                    <div style="background:#2a2a3a; border:2px solid ${isPremium?'gold':'#b300ff'}; border-radius:10px; padding:15px;">
-                        <h3>${b.name}</h3>
-                        <p style="color:gold;">💰 ${b.price} Robux</p>
-                        <p>${b.desc}</p>
-                        <p>📦 ${b.file}</p>
-                        <p>Seller: ${b.seller}</p>
-                        <button style="width:100%; padding:10px; background:#00aa00; border:none; color:white; border-radius:5px; margin:5px 0;" onclick="downloadBuild('${b.file}')">⬇️ DOWNLOAD</button>
-                        ${canDelete ? `<button style="width:100%; padding:10px; background:#aa0000; border:none; color:white; border-radius:5px;" onclick="deleteBuild(${b.id}, '${b.seller}')">🗑️ DELETE</button>` : ''}
-                    </div>
-                `;
-            });
-            document.getElementById('marketplace').innerHTML = html;
-        }
-        
-        // ========== INIT ==========
-        updateStats();
-        displayBuilds();
-        setInterval(updateStats, 10000);
-    </script>
-</body>
-</html>
+            // Simulasi upload (tanpa fileData agar tidak error)
+            builds.push({ 
+                id: Date.now(), 
+                name: name,
