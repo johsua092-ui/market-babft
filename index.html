@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>OXYX MARKET - OWNER IP LOG</title>
+    <title>OXYX MARKET - FIXED</title>
     <style>
         body { background: black; color: white; font-family: Arial; padding: 20px; }
         .container { max-width: 1200px; margin: 0 auto; }
@@ -19,9 +19,6 @@
         .online { color: #00ff00; }
         .offline { color: #666; }
         .ip-address { color: #ffaa00; }
-        .device-id { color: #00ff00; }
-        .ban-btn { background: #aa0000; padding: 5px 10px; width: auto; }
-        .unban-btn { background: #00aa00; padding: 5px 10px; width: auto; }
         .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 15px; margin: 20px 0; }
         .stat-card { background: #2a0a3a; border: 2px solid gold; border-radius: 10px; padding: 15px; text-align: center; }
         .stat-value { font-size: 2.5em; color: gold; }
@@ -33,7 +30,7 @@
     <div class="container">
         <h1>⚡ OXYX MARKET ⚡</h1>
         
-        <!-- DISCORD LINKS (ganti link sesuai keinginan) -->
+        <!-- DISCORD LINKS (ganti link di sini) -->
         <div style="text-align:center; margin:20px 0;">
             <a href="https://discord.gg/autobuild" target="_blank" style="color:purple; margin:0 10px;">DISCORD 1</a>
             <a href="https://discord.gg/boatbuilderhub" target="_blank" style="color:purple; margin:0 10px;">DISCORD 2</a>
@@ -52,7 +49,7 @@
         <div class="card">
             <h3>MEMBER LOGIN</h3>
             <input type="text" id="memberName" placeholder="Username">
-            <button onclick="memberLogin()">LOGIN</button>
+            <button id="btnMemberLogin">LOGIN</button>
         </div>
         
         <!-- LOGIN ADMIN -->
@@ -60,38 +57,38 @@
             <h3>ADMIN LOGIN</h3>
             <input type="text" id="adminUser" placeholder="Username">
             <input type="password" id="adminPass" placeholder="Password">
-            <button onclick="adminLogin()">LOGIN</button>
+            <button id="btnAdminLogin">LOGIN</button>
         </div>
         
         <!-- USER INFO -->
         <div id="userInfo" class="card hidden">
             <p>Logged in as: <span id="displayName"></span></p>
-            <button onclick="logout()">LOGOUT</button>
+            <button id="btnLogout">LOGOUT</button>
         </div>
         
-        <!-- IP TRACKER TABLE (HANYA UNTUK OWNER) -->
+        <!-- IP TRACKER (HANYA UNTUK OWNER) -->
         <div id="ipTracker" class="card hidden">
             <h3>📋 IP TRACKER (OWNER ONLY)</h3>
             <table>
-                <thead><tr><th>User</th><th>IP Address</th><th>Device ID</th><th>Last Seen</th><th>Status</th><th>Action</th></tr></thead>
+                <thead><tr><th>User</th><th>IP</th><th>Device</th><th>Last Seen</th><th>Status</th><th>Action</th></tr></thead>
                 <tbody id="ipTableBody"></tbody>
             </table>
         </div>
         
         <!-- LIVE IP LOG (HANYA UNTUK OWNER) -->
         <div id="liveLog" class="card hidden">
-            <h3>📡 LIVE IP ACCESS LOG</h3>
+            <h3>📡 LIVE IP LOG</h3>
             <table>
-                <thead><tr><th>IP Address</th><th>Timestamp</th><th>User Agent</th></tr></thead>
+                <thead><tr><th>IP</th><th>Timestamp</th><th>User Agent</th></tr></thead>
                 <tbody id="logTableBody"></tbody>
             </table>
         </div>
         
-        <!-- BANNED IPS TABLE -->
+        <!-- BANNED IPS -->
         <div id="bannedIPs" class="card hidden">
             <h3>🚫 BANNED IPS</h3>
             <table>
-                <thead><tr><th>IP Address</th><th>Reason</th><th>Banned At</th><th>Action</th></tr></thead>
+                <thead><tr><th>IP</th><th>Reason</th><th>Banned At</th><th>Action</th></tr></thead>
                 <tbody id="banTableBody"></tbody>
             </table>
         </div>
@@ -101,7 +98,7 @@
             <h3>MOD CHAT</h3>
             <div class="chat-box" id="chatMessages"></div>
             <input type="text" id="chatMsg" placeholder="Message">
-            <button onclick="sendChat()">SEND</button>
+            <button id="btnSendChat">SEND</button>
         </div>
         
         <!-- UPLOAD BUILD -->
@@ -111,328 +108,310 @@
             <input type="number" id="buildPrice" value="0" placeholder="Price">
             <textarea id="buildDesc" placeholder="Description"></textarea>
             <input type="file" id="buildFile" accept=".build">
-            <button onclick="uploadBuild()">PUBLISH</button>
+            <button id="btnUpload">PUBLISH</button>
         </div>
         
         <!-- MARKETPLACE -->
         <div class="card">
             <h3>MARKETPLACE</h3>
             <div style="display:flex; gap:5px; margin:10px 0;">
-                <button onclick="showAll()">ALL</button>
-                <button onclick="showFree()">FREE</button>
-                <button onclick="showPremium()">PREMIUM</button>
-                <button onclick="showMy()">MY BUILDS</button>
+                <button id="filterAll">ALL</button>
+                <button id="filterFree">FREE</button>
+                <button id="filterPremium">PREMIUM</button>
+                <button id="filterMy">MY BUILDS</button>
             </div>
             <div id="marketplace"></div>
         </div>
     </div>
     
     <script>
-        // ========== DATA ==========
-        let currentUser = null;
-        let deviceId = 'DEV-' + Math.random().toString(36).substring(2,10).toUpperCase();
-        let clientIP = 'Unknown';
-        
-        let members = JSON.parse(localStorage.getItem('members')) || [];
-        let builds = JSON.parse(localStorage.getItem('builds')) || [
-            {id:1, name:"Dragon Boat", price:0, desc:"Cool boat", file:"dragon.build", seller:"znyt", fileData:null},
-            {id:2, name:"Flying Ship", price:150, desc:"Flying ship", file:"flying.build", seller:"helper_tester", fileData:null}
-        ];
-        let chats = JSON.parse(localStorage.getItem('chats')) || [];
-        let bannedIPs = JSON.parse(localStorage.getItem('bannedIPs')) || [];
-        let accessLogs = JSON.parse(localStorage.getItem('accessLogs')) || [];
-        
-        // ========== AMBIL IP DAN LOG OTOMATIS ==========
-        fetch('https://api.ipify.org?format=json')
-            .then(r => r.json())
-            .then(d => { 
-                clientIP = d.ip; 
-                // Catat akses ke log
-                accessLogs.push({
-                    ip: clientIP,
-                    timestamp: new Date().toLocaleString(),
-                    userAgent: navigator.userAgent
+        document.addEventListener('DOMContentLoaded', function() {
+            // ========== DATA ==========
+            let currentUser = null;
+            let deviceId = 'DEV-' + Math.random().toString(36).substring(2,10).toUpperCase();
+            let clientIP = 'Unknown';
+            
+            let members = JSON.parse(localStorage.getItem('members')) || [];
+            let builds = JSON.parse(localStorage.getItem('builds')) || [
+                {id:1, name:"Dragon Boat", price:0, desc:"Cool boat", file:"dragon.build", seller:"znyt", fileData:null},
+                {id:2, name:"Flying Ship", price:150, desc:"Flying ship", file:"flying.build", seller:"helper_tester", fileData:null}
+            ];
+            let chats = JSON.parse(localStorage.getItem('chats')) || [];
+            let bannedIPs = JSON.parse(localStorage.getItem('bannedIPs')) || [];
+            let accessLogs = JSON.parse(localStorage.getItem('accessLogs')) || [];
+            
+            // ========== AMBIL IP ==========
+            fetch('https://api.ipify.org?format=json')
+                .then(r => r.json())
+                .then(d => { 
+                    clientIP = d.ip; 
+                    accessLogs.push({
+                        ip: clientIP,
+                        timestamp: new Date().toLocaleString(),
+                        userAgent: navigator.userAgent
+                    });
+                    if (accessLogs.length > 50) accessLogs.shift();
+                    localStorage.setItem('accessLogs', JSON.stringify(accessLogs));
+                    updateTables();
+                })
+                .catch(() => { 
+                    clientIP = '127.0.0.1'; 
+                    accessLogs.push({
+                        ip: clientIP,
+                        timestamp: new Date().toLocaleString(),
+                        userAgent: navigator.userAgent
+                    });
+                    localStorage.setItem('accessLogs', JSON.stringify(accessLogs));
+                    updateTables();
                 });
-                // Simpan hanya 50 log terbaru
-                if (accessLogs.length > 50) accessLogs.shift();
-                localStorage.setItem('accessLogs', JSON.stringify(accessLogs));
+            
+            // ========== FUNGSI UPDATE ==========
+            function updateStats() {
+                document.getElementById('totalMembers').innerText = members.length;
+                document.getElementById('totalBuilds').innerText = builds.length;
+                let online = members.filter(m => new Date(m.lastSeen).getTime() > Date.now() - 86400000).length;
+                document.getElementById('onlineNow').innerText = online;
+                document.getElementById('totalIPs').innerText = [...new Set(members.map(m => m.ip))].length;
+            }
+            
+            function updateIpTable() {
+                let tbody = document.getElementById('ipTableBody');
+                if (!members.length) { tbody.innerHTML = '<tr><td colspan="6">No data</td></tr>'; return; }
+                let html = '';
+                members.sort((a,b) => new Date(b.lastSeen) - new Date(a.lastSeen)).forEach(m => {
+                    let online = new Date(m.lastSeen).getTime() > Date.now() - 86400000;
+                    let isBanned = bannedIPs.some(b => b.ip === m.ip);
+                    html += `
+                        <tr>
+                            <td>${m.username} ${isBanned ? '🚫' : ''}</td>
+                            <td class="ip-address">${m.ip || 'Unknown'}</td>
+                            <td>${(m.deviceId || '').substring(0,10)}...</td>
+                            <td>${new Date(m.lastSeen).toLocaleString()}</td>
+                            <td class="${online ? 'online' : 'offline'}">${online ? '🟢 Online' : '⚫ Offline'}</td>
+                            <td>
+                                ${currentUser && (currentUser.role === 'owner' || currentUser.role === 'mod') && !isBanned ? 
+                                    `<button class="ban-btn" data-ip="${m.ip}" data-user="${m.username}">BAN</button>` : 
+                                    isBanned ? 'BANNED' : ''}
+                            </td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = html;
+                
+                // Tambah event listener untuk tombol ban
+                document.querySelectorAll('.ban-btn').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        let ip = this.dataset.ip;
+                        let user = this.dataset.user;
+                        banIP(ip, user);
+                    });
+                });
+            }
+            
+            function updateLogTable() {
+                let tbody = document.getElementById('logTableBody');
+                if (!accessLogs.length) { tbody.innerHTML = '<tr><td colspan="3">No logs</td></tr>'; return; }
+                let html = '';
+                accessLogs.slice().reverse().forEach(log => {
+                    html += `
+                        <tr>
+                            <td class="ip-address">${log.ip}</td>
+                            <td>${log.timestamp}</td>
+                            <td style="font-size:0.8em;">${log.userAgent.substring(0,30)}...</td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = html;
+            }
+            
+            function updateBanTable() {
+                let tbody = document.getElementById('banTableBody');
+                if (!bannedIPs.length) { tbody.innerHTML = '<tr><td colspan="4">No banned IPs</td></tr>'; return; }
+                let html = '';
+                bannedIPs.forEach(b => {
+                    html += `
+                        <tr>
+                            <td class="ip-address">${b.ip}</td>
+                            <td>${b.reason}</td>
+                            <td>${b.bannedAt}</td>
+                            <td>
+                                ${currentUser && (currentUser.role === 'owner' || currentUser.role === 'mod') ? 
+                                    `<button class="unban-btn" data-ip="${b.ip}">UNBAN</button>` : ''}
+                            </td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = html;
+                
+                document.querySelectorAll('.unban-btn').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        let ip = this.dataset.ip;
+                        unbanIP(ip);
+                    });
+                });
+            }
+            
+            function updateTables() {
+                updateStats();
+                if (currentUser && currentUser.role === 'owner') {
+                    updateIpTable();
+                    updateLogTable();
+                    updateBanTable();
+                } else if (currentUser && currentUser.role === 'mod') {
+                    updateBanTable();
+                }
+            }
+            
+            // ========== LOGIN MEMBER ==========
+            function memberLogin() {
+                let name = document.getElementById('memberName').value.trim();
+                if (!name) { alert('Masukin nama!'); return; }
+                
+                if (bannedIPs.some(b => b.ip === clientIP)) {
+                    alert('IP Anda telah di-banned!');
+                    return;
+                }
+                
+                let now = new Date().toISOString();
+                let existing = members.find(m => m.username === name);
+                if (existing) {
+                    existing.lastSeen = now;
+                    existing.ip = clientIP;
+                    existing.deviceId = deviceId;
+                } else {
+                    members.push({
+                        username: name,
+                        ip: clientIP,
+                        deviceId: deviceId,
+                        firstSeen: now,
+                        lastSeen: now,
+                        loginCount: 1
+                    });
+                }
+                localStorage.setItem('members', JSON.stringify(members));
+                
+                currentUser = { username: name, role: 'member' };
+                document.getElementById('userInfo').classList.remove('hidden');
+                document.getElementById('displayName').innerText = name + ' (MEMBER)';
+                document.getElementById('uploadSection').classList.remove('hidden');
+                updateStats();
+                alert('Welcome ' + name);
+            }
+            
+            // ========== LOGIN ADMIN ==========
+            function adminLogin() {
+                let user = document.getElementById('adminUser').value.trim();
+                let pass = document.getElementById('adminPass').value.trim();
+                
+                if (bannedIPs.some(b => b.ip === clientIP)) {
+                    alert('IP Anda telah di-banned!');
+                    return;
+                }
+                
+                // GANTI PASSWORD DI SINI
+                if (user === 'znyt' && pass === 'Root!Delta_7KpZ') {
+                    currentUser = { username: 'znyt', role: 'owner' };
+                } else if (user === 'helper_tester' && pass === 'huwydhdjsiqo') {
+                    currentUser = { username: 'helper_tester', role: 'mod' };
+                } else if (user === 'sigma' && pass === 'uBwbONeqIwYQ97') {
+                    currentUser = { username: 'sigma', role: 'mod' };
+                } else {
+                    alert('Salah password!');
+                    return;
+                }
+                
+                let now = new Date().toISOString();
+                let existing = members.find(m => m.username === user);
+                if (existing) {
+                    existing.lastSeen = now;
+                    existing.ip = clientIP;
+                    existing.deviceId = deviceId;
+                } else {
+                    members.push({
+                        username: user,
+                        ip: clientIP,
+                        deviceId: deviceId,
+                        firstSeen: now,
+                        lastSeen: now,
+                        loginCount: 1
+                    });
+                }
+                localStorage.setItem('members', JSON.stringify(members));
+                
+                document.getElementById('userInfo').classList.remove('hidden');
+                document.getElementById('displayName').innerText = user + ' (' + currentUser.role.toUpperCase() + ')';
+                document.getElementById('uploadSection').classList.remove('hidden');
+                document.getElementById('chatSection').classList.remove('hidden');
+                
+                if (currentUser.role === 'owner') {
+                    document.getElementById('ipTracker').classList.remove('hidden');
+                    document.getElementById('liveLog').classList.remove('hidden');
+                    document.getElementById('bannedIPs').classList.remove('hidden');
+                } else {
+                    document.getElementById('bannedIPs').classList.remove('hidden');
+                }
                 updateTables();
-            })
-            .catch(() => { 
-                clientIP = '127.0.0.1'; 
-                accessLogs.push({
-                    ip: clientIP,
-                    timestamp: new Date().toLocaleString(),
-                    userAgent: navigator.userAgent
-                });
-                if (accessLogs.length > 50) accessLogs.shift();
-                localStorage.setItem('accessLogs', JSON.stringify(accessLogs));
-                updateTables();
-            });
-        
-        // ========== FUNGSI BANTU ==========
-        function updateTables() {
-            updateIpTable();
-            updateBanTable();
-            updateLogTable();
-            updateStats();
-        }
-        
-        function updateStats() {
-            document.getElementById('totalMembers').innerText = members.length;
-            document.getElementById('totalBuilds').innerText = builds.length;
-            let online = members.filter(m => new Date(m.lastSeen).getTime() > Date.now() - 86400000).length;
-            document.getElementById('onlineNow').innerText = online;
-            document.getElementById('totalIPs').innerText = [...new Set(members.map(m => m.ip))].length;
-        }
-        
-        // ========== LOGIN MEMBER ==========
-        window.memberLogin = function() {
-            let name = document.getElementById('memberName').value.trim();
-            if (!name) { alert('Masukin nama!'); return; }
-            
-            // Cek apakah IP dibanned
-            if (bannedIPs.some(b => b.ip === clientIP)) {
-                alert('IP Anda telah di-banned!');
-                return;
+                alert('Welcome ' + user);
             }
             
-            let now = new Date().toISOString();
-            let existing = members.find(m => m.username === name);
-            if (existing) {
-                existing.lastSeen = now;
-                existing.ip = clientIP;
-                existing.deviceId = deviceId;
-            } else {
-                members.push({
-                    username: name,
-                    ip: clientIP,
-                    deviceId: deviceId,
-                    firstSeen: now,
-                    lastSeen: now,
-                    loginCount: 1
-                });
-            }
-            localStorage.setItem('members', JSON.stringify(members));
-            
-            currentUser = { username: name, role: 'member' };
-            document.getElementById('userInfo').classList.remove('hidden');
-            document.getElementById('displayName').innerText = name + ' (MEMBER)';
-            document.getElementById('uploadSection').classList.remove('hidden');
-            updateStats();
-            alert('Welcome ' + name);
-        };
-        
-        // ========== LOGIN ADMIN ==========
-        window.adminLogin = function() {
-            let user = document.getElementById('adminUser').value.trim();
-            let pass = document.getElementById('adminPass').value.trim();
-            
-            // Cek IP banned
-            if (bannedIPs.some(b => b.ip === clientIP)) {
-                alert('IP Anda telah di-banned!');
-                return;
-            }
-            
-            // GANTI PASSWORD DI SINI
-            if (user === 'znyt' && pass === 'Root!Delta_7KpZ') {
-                currentUser = { username: 'znyt', role: 'owner' };
-            } else if (user === 'helper_tester' && pass === 'huwydhdjsiqo') {
-                currentUser = { username: 'helper_tester', role: 'mod' };
-            } else if (user === 'sigma' && pass === 'uBwbONeqIwYQ97') {
-                currentUser = { username: 'sigma', role: 'mod' };
-            } else {
-                alert('Salah password!');
-                return;
-            }
-            
-            // Record login
-            let now = new Date().toISOString();
-            let existing = members.find(m => m.username === user);
-            if (existing) {
-                existing.lastSeen = now;
-                existing.ip = clientIP;
-                existing.deviceId = deviceId;
-            } else {
-                members.push({
-                    username: user,
-                    ip: clientIP,
-                    deviceId: deviceId,
-                    firstSeen: now,
-                    lastSeen: now,
-                    loginCount: 1
-                });
-            }
-            localStorage.setItem('members', JSON.stringify(members));
-            
-            document.getElementById('userInfo').classList.remove('hidden');
-            document.getElementById('displayName').innerText = user + ' (' + currentUser.role.toUpperCase() + ')';
-            document.getElementById('uploadSection').classList.remove('hidden');
-            document.getElementById('chatSection').classList.remove('hidden');
-            
-            // Hanya owner yang bisa lihat IP tracker dan log
-            if (currentUser.role === 'owner') {
-                document.getElementById('ipTracker').classList.remove('hidden');
-                document.getElementById('liveLog').classList.remove('hidden');
-                document.getElementById('bannedIPs').classList.remove('hidden');
-            } else {
-                // Moderator tidak bisa lihat IP tracker
+            // ========== LOGOUT ==========
+            function logout() {
+                currentUser = null;
+                document.getElementById('userInfo').classList.add('hidden');
+                document.getElementById('uploadSection').classList.add('hidden');
+                document.getElementById('chatSection').classList.add('hidden');
                 document.getElementById('ipTracker').classList.add('hidden');
                 document.getElementById('liveLog').classList.add('hidden');
-                // Moderator tetap bisa lihat banned list? Bisa diatur, tapi kita kasih aja biar bisa unban
-                document.getElementById('bannedIPs').classList.remove('hidden');
-            }
-            updateTables();
-            alert('Welcome ' + user);
-        };
-        
-        window.logout = function() {
-            currentUser = null;
-            document.getElementById('userInfo').classList.add('hidden');
-            document.getElementById('uploadSection').classList.add('hidden');
-            document.getElementById('chatSection').classList.add('hidden');
-            document.getElementById('ipTracker').classList.add('hidden');
-            document.getElementById('liveLog').classList.add('hidden');
-            document.getElementById('bannedIPs').classList.add('hidden');
-            alert('Logged out');
-        };
-        
-        // ========== IP TABLE (HANYA UNTUK OWNER) ==========
-        function updateIpTable() {
-            let tbody = document.getElementById('ipTableBody');
-            if (!members.length) { tbody.innerHTML = '<tr><td colspan="6">No data</td></tr>'; return; }
-            
-            let html = '';
-            members.sort((a,b) => new Date(b.lastSeen) - new Date(a.lastSeen)).forEach(m => {
-                let online = new Date(m.lastSeen).getTime() > Date.now() - 86400000;
-                let statusClass = online ? 'online' : 'offline';
-                let statusText = online ? '🟢 Online' : '⚫ Offline';
-                let isBanned = bannedIPs.some(b => b.ip === m.ip);
-                html += `
-                    <tr>
-                        <td>${m.username} ${isBanned ? '🚫' : ''}</td>
-                        <td class="ip-address">${m.ip || 'Unknown'}</td>
-                        <td class="device-id">${(m.deviceId || '').substring(0,10)}...</td>
-                        <td>${new Date(m.lastSeen).toLocaleString()}</td>
-                        <td class="${statusClass}">${statusText}</td>
-                        <td>
-                            ${currentUser && (currentUser.role === 'owner' || currentUser.role === 'mod') && !isBanned ? 
-                                `<button class="ban-btn" onclick="banIP('${m.ip}', '${m.username}')">BAN</button>` : 
-                                isBanned ? 'BANNED' : ''}
-                        </td>
-                    </tr>
-                `;
-            });
-            tbody.innerHTML = html;
-        }
-        
-        // ========== LIVE IP LOG (HANYA UNTUK OWNER) ==========
-        function updateLogTable() {
-            let tbody = document.getElementById('logTableBody');
-            if (!accessLogs.length) { tbody.innerHTML = '<tr><td colspan="3">No logs</td></tr>'; return; }
-            
-            let html = '';
-            accessLogs.slice().reverse().forEach(log => {
-                html += `
-                    <tr>
-                        <td class="ip-address">${log.ip}</td>
-                        <td>${log.timestamp}</td>
-                        <td style="font-size:0.8em;">${log.userAgent.substring(0,30)}...</td>
-                    </tr>
-                `;
-            });
-            tbody.innerHTML = html;
-        }
-        
-        // ========== BAN IP ==========
-        window.banIP = function(ip, username) {
-            if (!currentUser || (currentUser.role !== 'owner' && currentUser.role !== 'mod')) {
-                alert('Hanya moderator/owner yang bisa ban!');
-                return;
+                document.getElementById('bannedIPs').classList.add('hidden');
+                alert('Logged out');
             }
             
-            let reason = prompt('Alasan ban (opsional):', 'Melanggar aturan');
-            if (reason === null) return;
-            
-            bannedIPs.push({
-                ip: ip,
-                username: username,
-                reason: reason || 'No reason',
-                bannedAt: new Date().toLocaleString(),
-                bannedBy: currentUser.username
-            });
-            localStorage.setItem('bannedIPs', JSON.stringify(bannedIPs));
-            updateTables();
-            alert(`IP ${ip} berhasil di-ban!`);
-        };
-        
-        window.unbanIP = function(ip) {
-            if (!currentUser || (currentUser.role !== 'owner' && currentUser.role !== 'mod')) {
-                alert('Hanya moderator/owner yang bisa unban!');
-                return;
+            // ========== BAN IP ==========
+            function banIP(ip, username) {
+                if (!currentUser || (currentUser.role !== 'owner' && currentUser.role !== 'mod')) {
+                    alert('Hanya moderator/owner yang bisa ban!');
+                    return;
+                }
+                let reason = prompt('Alasan ban (opsional):', 'Melanggar aturan');
+                if (reason === null) return;
+                bannedIPs.push({
+                    ip: ip,
+                    username: username,
+                    reason: reason || 'No reason',
+                    bannedAt: new Date().toLocaleString(),
+                    bannedBy: currentUser.username
+                });
+                localStorage.setItem('bannedIPs', JSON.stringify(bannedIPs));
+                updateTables();
+                alert(`IP ${ip} berhasil di-ban!`);
             }
             
-            bannedIPs = bannedIPs.filter(b => b.ip !== ip);
-            localStorage.setItem('bannedIPs', JSON.stringify(bannedIPs));
-            updateTables();
-            alert(`IP ${ip} berhasil di-unban!`);
-        };
-        
-        function updateBanTable() {
-            let tbody = document.getElementById('banTableBody');
-            if (!bannedIPs.length) { tbody.innerHTML = '<tr><td colspan="4">No banned IPs</td></tr>'; return; }
-            
-            let html = '';
-            bannedIPs.forEach(b => {
-                html += `
-                    <tr>
-                        <td class="ip-address">${b.ip}</td>
-                        <td>${b.reason}</td>
-                        <td>${b.bannedAt}</td>
-                        <td>
-                            ${currentUser && (currentUser.role === 'owner' || currentUser.role === 'mod') ? 
-                                `<button class="unban-btn" onclick="unbanIP('${b.ip}')">UNBAN</button>` : ''}
-                        </td>
-                    </tr>
-                `;
-            });
-            tbody.innerHTML = html;
-        }
-        
-        // ========== CHAT ==========
-        window.sendChat = function() {
-            if (!currentUser || currentUser.role === 'member') {
-                alert('Hanya mod/owner yang bisa chat');
-                return;
-            }
-            let msg = document.getElementById('chatMsg').value.trim();
-            if (!msg) return;
-            
-            chats.push({ user: currentUser.username, msg: msg, time: new Date().toLocaleTimeString() });
-            localStorage.setItem('chats', JSON.stringify(chats));
-            document.getElementById('chatMsg').value = '';
-            displayChat();
-        };
-        
-        function displayChat() {
-            let box = document.getElementById('chatMessages');
-            if (!chats.length) { box.innerHTML = ''; return; }
-            let html = '';
-            chats.slice(-10).forEach(c => {
-                html += `<div><b>${c.user}:</b> ${c.msg}</div>`;
-            });
-            box.innerHTML = html;
-        }
-        
-        // ========== UPLOAD BUILD ==========
-        window.uploadBuild = function() {
-            if (!currentUser) { alert('Login dulu!'); return; }
-            
-            if (bannedIPs.some(b => b.ip === clientIP)) {
-                alert('IP Anda telah di-banned! Tidak bisa upload.');
-                return;
+            function unbanIP(ip) {
+                if (!currentUser || (currentUser.role !== 'owner' && currentUser.role !== 'mod')) {
+                    alert('Hanya moderator/owner yang bisa unban!');
+                    return;
+                }
+                bannedIPs = bannedIPs.filter(b => b.ip !== ip);
+                localStorage.setItem('bannedIPs', JSON.stringify(bannedIPs));
+                updateTables();
+                alert(`IP ${ip} berhasil di-unban!`);
             }
             
-            let name = document.getElementById('buildName').value.trim();
-            let price = parseInt(document.getElementById('buildPrice').value) || 0;
-            let desc = document.getElementById(
+            // ========== CHAT ==========
+            function sendChat() {
+                if (!currentUser || currentUser.role === 'member') {
+                    alert('Hanya mod/owner yang bisa chat');
+                    return;
+                }
+                let msg = document.getElementById('chatMsg').value.trim();
+                if (!msg) return;
+                chats.push({ user: currentUser.username, msg: msg, time: new Date().toLocaleTimeString() });
+                localStorage.setItem('chats', JSON.stringify(chats));
+                document.getElementById('chatMsg').value = '';
+                displayChat();
+            }
+            
+            function displayChat() {
+                let box = document.getElementById('chatMessages');
+                if (!chats.length) { box.innerHTML = ''; return; }
+                let
