@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OXYX ADMIN PANEL - IP TRACKER</title>
+    
+    <!-- ANTI DEVTOOLS -->
+    <script>
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+                e.preventDefault();
+                alert('🔒 Akses ditolak!');
+            }
+        });
+        document.addEventListener('contextmenu', e => e.preventDefault());
+    </script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        body { background: #0a0a0a; color: white; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        h1 { color: gold; text-align: center; margin-bottom: 20px; }
+        .card { background: #1a1a2a; border: 2px solid gold; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; }
+        .stat-card { background: #2a2a3a; border: 2px solid gold; border-radius: 5px; padding: 15px; text-align: center; }
+        .stat-number { font-size: 2em; color: gold; font-weight: bold; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: gold; color: black; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #333; }
+        tr:hover { background: #2a2a3a; }
+        .ip-address { color: #00ff00; font-family: monospace; }
+        .device-id { color: #ffaa00; font-family: monospace; font-size: 0.9em; }
+        .badge { padding: 3px 8px; border-radius: 3px; font-size: 0.8em; }
+        .badge.online { background: #00aa00; }
+        .badge.offline { background: #666; }
+        .warning { color: #ff4444; }
+        
+        .filter-section { display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
+        .filter-btn { padding: 10px 20px; background: #2a2a3a; border: 2px solid gold; border-radius: 5px; color: white; cursor: pointer; }
+        .filter-btn.active { background: gold; color: black; }
+        
+        .back-link { text-align: center; margin-top: 20px; }
+        .back-link a { color: gold; text-decoration: none; }
+        .back-link a:hover { text-decoration: underline; }
+        
+        .footer { text-align: center; color: #666; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>👑 OXYX ADMIN PANEL - IP TRACKER</h1>
+        
+        <!-- STATS CARD -->
+        <div class="card">
+            <h2>📊 LIVE STATISTICS</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalMembers">0</div>
+                    <div>Total Members</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="onlineNow">0</div>
+                    <div>Online Now</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalLogins">0</div>
+                    <div>Total Logins</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalIPs">0</div>
+                    <div>Unique IPs</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- FILTERS -->
+        <div class="filter-section">
+            <button class="filter-btn active" onclick="filterMembers('all', this)">📋 ALL MEMBERS</button>
+            <button class="filter-btn" onclick="filterMembers('online', this)">🟢 ONLINE</button>
+            <button class="filter-btn" onclick="filterMembers('offline', this)">⚫ OFFLINE</button>
+            <button class="filter-btn" onclick="filterMembers('suspicious', this)">⚠️ SUSPICIOUS</button>
+        </div>
+        
+        <!-- MEMBERS TABLE -->
+        <div class="card">
+            <h2>📋 MEMBER DATABASE (IP & DEVICE TRACKING)</h2>
+            <div style="overflow-x: auto;">
+                <table id="membersTable">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>IP Address</th>
+                            <th>Device ID</th>
+                            <th>First Seen</th>
+                            <th>Last Seen</th>
+                            <th>Logins</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="membersBody">
+                        <tr><td colspan="8" style="text-align:center;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- SUSPICIOUS ACTIVITIES -->
+        <div class="card">
+            <h2>⚠️ SUSPICIOUS ACTIVITIES</h2>
+            <div style="overflow-x: auto;">
+                <table id="suspiciousTable">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>IP Address</th>
+                            <th>Device ID</th>
+                            <th>Reason</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="suspiciousBody">
+                        <tr><td colspan="5" style="text-align:center;">No suspicious activities</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="back-link">
+            <a href="index.html">← Kembali ke Marketplace</a>
+        </div>
+        
+        <div class="footer">
+            OXYX ADMIN PANEL • Hanya untuk Owner • Real-time IP Tracking
+        </div>
+    </div>
+    
+    <script>
+        // ========== LOAD DATA ==========
+        let members = JSON.parse(localStorage.getItem('members')) || [];
+        let builds = JSON.parse(localStorage.getItem('builds')) || [];
+        let bannedUsers = JSON.parse(localStorage.getItem('bannedUsers')) || [];
+        let currentFilter = 'all';
+        
+        // Suspicious activities log
+        let suspiciousLog = JSON.parse(localStorage.getItem('suspiciousLog')) || [];
+        
+        // ========== UPDATE STATS ==========
+        function updateStats() {
+            const now = Date.now();
+            const fiveMinutesAgo = now - 5 * 60000;
+            
+            const online = members.filter(m => new Date(m.lastSeen).getTime() > fiveMinutesAgo).length;
+            const totalLogins = members.reduce((sum, m) => sum + (m.loginCount || 0), 0);
+            const uniqueIPs = [...new Set(members.map(m => m.ip))].length;
+            
+            document.getElementById('totalMembers').textContent = members.length;
+            document.getElementById('onlineNow').textContent = online;
+            document.getElementById('totalLogins').textContent = totalLogins;
+            document.getElementById('totalIPs').textContent = uniqueIPs;
+        }
+        
+        // ========== CHECK SUSPICIOUS ==========
+        function checkSuspicious() {
+            suspiciousLog = [];
+            
+            // Check multiple accounts from same IP
+            const ipGroups = {};
+            members.forEach(m => {
+                if (!ipGroups[m.ip]) ipGroups[m.ip] = [];
+                ipGroups[m.ip].push(m.username);
+            });
+            
+            Object.keys(ipGroups).forEach(ip => {
+                if (ipGroups[ip].length > 3) {
+                    suspiciousLog.push({
+                        username: ipGroups[ip].join(', '),
+                        ip: ip,
+                        reason: `Multiple accounts (${ipGroups[ip].length}) from same IP`,
+                        time: new Date().toLocaleString()
+                    });
+                }
+            });
+            
+            // Check VPN/proxy (IP dari datacenter)
+            const vpnIPs = ['localhost']; // Bisa ditambah database IP VPN
+            members.forEach(m => {
+                if (vpnIPs.includes(m.ip)) {
+                    suspiciousLog.push({
+                        username: m.username,
+                        ip: m.ip,
+                        reason: 'Possible VPN/Proxy detected',
+                        time: m.lastSeen
+                    });
+                }
+            });
+            
+            localStorage.setItem('suspiciousLog', JSON.stringify(suspiciousLog));
+            displaySuspicious();
+        }
+        
+        // ========== DISPLAY MEMBERS ==========
+        function filterMembers(filter, btn) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            displayMembers();
+        }
+        
+        function displayMembers() {
+            const tbody = document.getElementById('membersBody');
+            const now = Date.now();
+            const fiveMinutesAgo = now - 5 * 60000;
+            
+            let filtered = members;
+            
+            if (currentFilter === 'online') {
+                filtered = members.filter(m => new Date(m.lastSeen).getTime() > fiveMinutesAgo);
+            } else if (currentFilter === 'offline') {
+                filtered = members.filter(m => new Date(m.lastSeen).getTime() <= fiveMinutesAgo);
+            } else if (currentFilter === 'suspicious') {
+                displaySuspicious();
+                return;
+            }
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No members found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = filtered.map(m => {
+                const isOnline = new Date(m.lastSeen).getTime() > fiveMinutesAgo;
+                const isBanned = bannedUsers.some(b => b.username === m.username);
+                const statusColor = isOnline ? '🟢 Online' : '⚫ Offline';
+                
+                return `
+                    <tr>
+                        <td><b>${m.username}</b> ${isBanned ? '<span class="badge" style="background:#ff4444;">BANNED</span>' : ''}</td>
+                        <td><span class="ip-address">${m.ip || 'Unknown'}</span></td>
+                        <td><span class="device-id">${(m.deviceId || 'Unknown').substring(0, 20)}...</span></td>
+                        <td>${new Date(m.firstSeen).toLocaleString()}</td>
+                        <td>${new Date(m.lastSeen).toLocaleString()}</td>
+                        <td>${m.loginCount || 1}x</td>
+                        <td><span class="badge ${isOnline ? 'online' : 'offline'}">${statusColor}</span></td>
+                        <td>
+                            <button onclick="trackIP('${m.ip}')" style="padding:3px 8px; background:#0088ff;">📍 Track</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        function displaySuspicious() {
+            const tbody = document.getElementById('suspiciousBody');
+            
+            if (suspiciousLog.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No suspicious activities</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = suspiciousLog.map(s => `
+                <tr>
+                    <td>${s.username}</td>
+                    <td><span class="ip-address">${s.ip}</span></td>
+                    <td class="warning">⚠️</td>
+                    <td>${s.reason}</td>
+                    <td>${s.time}</td>
+                </tr>
+            `).join('');
+            
+            document.getElementById('membersBody').innerHTML = '<tr><td colspan="8" style="text-align:center;">View suspicious tab</td></tr>';
+        }
+        
+        // ========== TRACK IP ==========
+        function trackIP(ip) {
+            const usersFromIP = members.filter(m => m.ip === ip).map(m => m.username);
+            alert(`📍 IP ${ip}\n\nDigunakan oleh:\n${usersFromIP.join('\n')}`);
+        }
+        
+        // ========== CHECK ADMIN ACCESS ==========
+        function checkAdminAccess() {
+            const lastAdmin = JSON.parse(localStorage.getItem('lastAdminLogin'));
+            if (!lastAdmin) {
+                alert('❌ Akses ditolak! Hanya owner yang bisa membuka halaman ini.');
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // ========== INIT ==========
+        function init() {
+            checkAdminAccess();
+            updateStats();
+            checkSuspicious();
+            displayMembers();
+            
+            // Auto refresh every 10 seconds
+            setInterval(() => {
+                members = JSON.parse(localStorage.getItem('members')) || [];
+                builds = JSON.parse(localStorage.getItem('builds')) || [];
+                bannedUsers = JSON.parse(localStorage.getItem('bannedUsers')) || [];
+                updateStats();
+                displayMembers();
+            }, 10000);
+        }
+        
+        init();
+    </script>
+</body>
+</html>
