@@ -3,467 +3,497 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OXYX MARKET - BUILD A BOAT</title>
-    
-    <!-- ANTI DEVTOOLS SUPER -->
-    <script>
-        // Blok semua shortcut
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'F12' || 
-                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-                (e.ctrlKey && e.shiftKey && e.key === 'J') ||
-                (e.ctrlKey && e.key === 'u') ||
-                (e.ctrlKey && e.key === 's') ||
-                (e.ctrlKey && e.key === 'p')) {
-                e.preventDefault();
-                alert('🔒 Akses developer tools diblokir!');
-                return false;
-            }
-        });
-        
-        // Blok right click
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-            alert('🔒 Right click diblokir!');
-            return false;
-        });
-    </script>
-    
+    <title>OXYX MARKET - FIXED</title>
+    <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
-        body { background: #0a0a0a; color: white; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        h1 { color: #b87cff; text-align: center; margin-bottom: 20px; }
-        .card { background: #1a1a2a; border: 2px solid #9f4dff; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
         
-        /* DEVICE INFO */
-        .device-info { background: #0a0a1a; padding: 15px; border-radius: 5px; font-family: monospace; }
-        .device-id { color: #00ff00; word-break: break-all; }
-        .ip-address { color: #ffaa00; }
+        body {
+            background: #0a0a0a;
+            color: white;
+            padding: 20px;
+        }
         
-        /* STATS */
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 15px 0; }
-        .stat-card { background: #2a2a3a; border: 2px solid #9f4dff; border-radius: 5px; padding: 15px; text-align: center; }
-        .stat-number { font-size: 2em; color: gold; font-weight: bold; }
-        .stat-label { color: #b07cff; }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
         
-        /* LOGIN SECTION */
-        .login-section { display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap; }
-        .login-section input { flex: 1; padding: 12px; background: #2a2a3a; border: 2px solid #9f4dff; border-radius: 5px; color: white; }
-        button { padding: 12px 25px; background: #9f4dff; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; }
-        button:hover { background: #b87cff; }
-        .logout-btn { background: #aa0000; }
-        .logout-btn:hover { background: #ff0000; }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
         
-        /* ADMIN LINK */
-        .admin-link { text-align: center; margin: 10px 0; }
-        .admin-link a { color: gold; text-decoration: none; font-weight: bold; }
-        .admin-link a:hover { text-decoration: underline; }
+        h1 {
+            color: #b300ff;
+            font-size: 3em;
+        }
         
-        /* BAN INFO */
-        .ban-info { background: #3a1a1a; border: 2px solid #ff4444; border-radius: 5px; padding: 15px; margin: 10px 0; text-align: center; }
+        .discord-links {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
         
-        /* USER INFO */
-        .user-info { background: #1a1a2a; border: 2px solid gold; border-radius: 10px; padding: 15px; margin: 15px 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-        .role-badge { background: gold; color: black; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
+        .discord-btn {
+            padding: 10px 20px;
+            background: #5865F2;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
         
-        /* CHAT */
-        .chat-box { background: #0a0a1a; border: 2px solid #9f4dff; border-radius: 5px; padding: 15px; height: 200px; overflow-y: auto; margin: 15px 0; }
-        .chat-message { padding: 8px; margin: 5px 0; background: #2a2a3a; border-radius: 5px; }
+        .card {
+            background: #1a1a2a;
+            border: 2px solid #b300ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .device-info {
+            background: #0a0a1a;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .device-id {
+            color: #00ff00;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        
+        .auth-section {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .auth-section input {
+            flex: 1;
+            padding: 12px;
+            background: #2a2a3a;
+            border: 2px solid #b300ff;
+            border-radius: 5px;
+            color: white;
+        }
+        
+        button {
+            padding: 12px 25px;
+            background: #b300ff;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background: #d400ff;
+        }
+        
+        .user-info {
+            background: #1a1a2a;
+            border: 2px solid gold;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .role-badge {
+            background: gold;
+            color: black;
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+        
+        .chat-box {
+            background: #0a0a1a;
+            border: 2px solid #b300ff;
+            border-radius: 5px;
+            padding: 15px;
+            height: 150px;
+            overflow-y: auto;
+            margin: 10px 0;
+        }
+        
+        .chat-message {
+            padding: 5px;
+            border-bottom: 1px solid #333;
+        }
+        
         .owner-text { color: gold; }
         .mod-text { color: #00ff00; }
         
-        /* UPLOAD FORM */
-        .form-group { margin: 15px 0; }
-        .form-group label { display: block; color: #b07cff; margin-bottom: 5px; }
-        .form-group input, .form-group textarea { width: 100%; padding: 12px; background: #2a2a3a; border: 2px solid #9f4dff; border-radius: 5px; color: white; }
-        .price-note { color: #ffaa00; font-size: 0.9em; margin-top: 5px; }
+        .form-group {
+            margin: 15px 0;
+        }
         
-        /* MARKETPLACE */
-        .filter-section { display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
-        .filter-btn { background: #2a2a3a; border: 2px solid #9f4dff; }
-        .filter-btn.active { background: #9f4dff; }
-        .build-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
-        .build-card { background: #2a2a3a; border: 2px solid #9f4dff; border-radius: 5px; padding: 15px; }
-        .build-card.premium { border-color: gold; box-shadow: 0 0 15px gold; }
-        .build-price { color: gold; font-size: 1.2em; margin: 10px 0; }
-        .delete-btn { width: 100%; padding: 10px; background: #aa0000; border: none; border-radius: 5px; color: white; margin-top: 5px; }
-        .delete-btn:hover { background: #ff0000; }
-        .hidden { display: none !important; }
-        .footer { text-align: center; color: #666; margin-top: 30px; }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: #2a2a3a;
+            border: 2px solid #b300ff;
+            border-radius: 5px;
+            color: white;
+        }
+        
+        .marketplace-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .build-card {
+            background: #2a2a3a;
+            border: 2px solid #b300ff;
+            border-radius: 5px;
+            padding: 15px;
+        }
+        
+        .build-price {
+            color: gold;
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        
+        .download-btn {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            background: #00aa00;
+        }
+        
+        .delete-btn {
+            width: 100%;
+            padding: 10px;
+            background: #aa0000;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .footer {
+            text-align: center;
+            color: #666;
+            margin-top: 30px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>⚡ OXYX MARKET - BUILD A BOAT ⚡</h1>
-        
-        <!-- DEVICE INFO -->
+        <div class="header">
+            <h1>⚡ OXYX MARKET ⚡</h1>
+        </div>
+
+        <div class="discord-links">
+            <a href="#" class="discord-btn">MAIN SERVER</a>
+            <a href="#" class="discord-btn">TRADE SERVER</a>
+            <a href="#" class="discord-btn">BUILDER SERVER</a>
+        </div>
+
         <div class="card">
-            <h2>📱 DEVICE INFORMATION</h2>
+            <h2>🔐 DEVICE FINGERPRINT</h2>
             <div class="device-info">
-                <p>Device ID: <span class="device-id" id="deviceId">Loading...</span></p>
-                <p>IP Address: <span class="ip-address" id="ipAddress">Loading...</span></p>
+                <div>🖥️ Device ID: <span class="device-id" id="deviceId">Loading...</span></div>
+                <div>📍 IP Address: <span id="ipAddress">Detecting...</span></div>
             </div>
         </div>
-        
-        <!-- LIVE STATS -->
+
         <div class="card">
-            <h2>📊 LIVE MEMBER STATS</h2>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalMembers">0</div>
-                    <div class="stat-label">Total Members</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="onlineNow">0</div>
-                    <div class="stat-label">Online Now</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="totalBuilds">0</div>
-                    <div class="stat-label">Total Builds</div>
-                </div>
+            <h2>🔐 MEMBER ACCESS</h2>
+            
+            <div class="auth-section">
+                <input type="text" id="memberUsername" placeholder="Enter username">
+                <button onclick="loginMember()">LOGIN</button>
             </div>
-        </div>
-        
-        <!-- LOGIN SECTION -->
-        <div class="card">
-            <h2>🔐 LOGIN</h2>
-            <div class="login-section">
-                <input type="text" id="username" placeholder="Enter username">
-                <button onclick="login()">LOGIN</button>
-            </div>
-            <div class="login-section">
-                <input type="text" id="adminUser" placeholder="Admin username">
+            
+            <div class="auth-section">
+                <input type="text" id="adminUser" placeholder="Admin">
                 <input type="password" id="adminPass" placeholder="Password">
-                <button onclick="adminLogin()">ADMIN LOGIN</button>
+                <button onclick="loginAdmin()">ADMIN</button>
             </div>
             
-            <!-- ADMIN LINK (HANYA UNTUK OWNER) -->
-            <div id="adminLink" class="admin-link hidden">
-                <a href="admin-panel.html" target="_blank">🔐 BUKA ADMIN PANEL (LIHAT IP MEMBER)</a>
-            </div>
-            
-            <div id="banMessage" class="ban-info hidden"></div>
             <div id="userInfo" class="user-info hidden">
                 <span id="displayName"></span>
                 <span class="role-badge" id="displayRole"></span>
-                <button class="logout-btn" onclick="logout()">LOGOUT</button>
+                <button onclick="logout()">LOGOUT</button>
             </div>
         </div>
-        
-        <!-- MOD CHAT -->
-        <div id="modChat" class="card hidden">
-            <h2>💬 MODERATOR CHAT</h2>
+
+        <div id="chatSection" class="card hidden">
+            <h2>💬 MOD CHAT</h2>
             <div class="chat-box" id="chatMessages"></div>
             <div style="display: flex; gap: 10px;">
-                <input type="text" id="chatMsg" placeholder="Type message..." style="flex:1; padding:12px; background:#2a2a3a; border:2px solid #9f4dff; border-radius:5px; color:white;">
+                <input type="text" id="chatInput" placeholder="Type..." style="flex: 1; padding: 10px; background:#2a2a3a; border:2px solid #b300ff; color:white;">
                 <button onclick="sendChat()">SEND</button>
             </div>
         </div>
-        
-        <!-- UPLOAD BUILD -->
+
         <div id="uploadSection" class="card hidden">
-            <h2>📤 UPLOAD BUILD (Build A Boat)</h2>
+            <h2>📤 UPLOAD BUILD</h2>
             <div class="form-group">
-                <label>Build Name</label>
-                <input type="text" id="buildName" placeholder="e.g., Flying Dragon Ship">
+                <label>Title</label>
+                <input type="text" id="buildTitle">
             </div>
             <div class="form-group">
-                <label>Price (Robux) - Premium minimal 100</label>
-                <input type="number" id="buildPrice" min="0" value="0">
-                <div class="price-note">💎 Premium: 100+ Robux | 🆓 Free: 0 Robux</div>
+                <label>Game</label>
+                <select id="buildGame">
+                    <option>Blox Fruits</option>
+                    <option>GPO</option>
+                    <option>Build A Boat</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Price</label>
+                <input type="text" id="buildPrice">
             </div>
             <div class="form-group">
                 <label>Description</label>
-                <textarea id="buildDesc" rows="3" placeholder="Describe your build..."></textarea>
+                <textarea id="buildDesc"></textarea>
             </div>
             <div class="form-group">
-                <label>Build File (.build)</label>
+                <label>File (.build)</label>
                 <input type="file" id="buildFile" accept=".build">
             </div>
-            <button onclick="uploadBuild()">PUBLISH BUILD</button>
+            <button onclick="uploadBuild()">UPLOAD</button>
         </div>
-        
-        <!-- MARKETPLACE -->
+
         <div class="card">
-            <h2>🏪 MARKETPLACE (Build A Boat)</h2>
-            <div class="filter-section">
-                <button class="filter-btn active" onclick="filterBuilds('all', this)">📋 ALL</button>
-                <button class="filter-btn" onclick="filterBuilds('free', this)">🆓 FREE (0)</button>
-                <button class="filter-btn" onclick="filterBuilds('premium', this)">💎 PREMIUM (100+)</button>
-                <button class="filter-btn" onclick="filterBuilds('my', this)">👤 MY BUILDS</button>
+            <h2>🏪 MARKETPLACE</h2>
+            <div style="display: flex; gap: 10px; margin: 15px 0;">
+                <button onclick="filterBuilds('All')">ALL</button>
+                <button onclick="filterBuilds('Blox Fruits')">BLOX</button>
+                <button onclick="filterBuilds('GPO')">GPO</button>
+                <button onclick="filterBuilds('Build A Boat')">BOAT</button>
+                <button onclick="filterBuilds('My Builds')">MY</button>
             </div>
-            <div class="build-grid" id="marketplace"></div>
+            <div class="marketplace-grid" id="marketplace"></div>
         </div>
-        
+
         <div class="footer">
-            OXYX MARKET • Build A Boat Only • 1 Owner • 1 Moderator • Anti DevTools
+            <p>OXYX MARKET • 1 Device Only • Real Tracking</p>
         </div>
     </div>
-    
+
     <script>
-        // ========== DATA STORAGE ==========
+        // ========== DATA REAL ==========
         let currentUser = null;
-        let currentFilter = 'all';
-        let deviceId = '';
-        let clientIP = 'Unknown';
-        let loginAttempts = 0;
+        let currentFilter = 'All';
+        let deviceId = 'unknown';
+        let clientIP = 'unknown';
         
-        // Default users
-        let users = {
-            owner: { password: 'owner_oxyx_2026', role: 'owner', ip: null, deviceId: null },
-            mod1: { password: 'mod1_builder_2026', role: 'moderator', ip: null, deviceId: null }
-        };
-        
-        // Members database (IP tracking)
-        let members = JSON.parse(localStorage.getItem('members')) || [];
-        
-        // Banned users
-        let bannedUsers = JSON.parse(localStorage.getItem('bannedUsers')) || [];
-        
-        // Builds
-        let builds = JSON.parse(localStorage.getItem('builds')) || [
-            {
-                id: 1,
-                name: "Golden Dragon Ship",
-                price: 150,
-                desc: "Epic golden dragon ship",
-                fileName: "golden_dragon.build",
-                seller: "owner",
-                uploadedAt: new Date().toISOString()
-            }
+        let builds = [
+            { id: 1, title: "Dragon Sword", game: "Blox Fruits", price: "Free", desc: "Auto farm", file: "dragon.build", seller: "owner" },
+            { id: 2, title: "Sea King", game: "GPO", price: "$5", desc: "Farm sea king", file: "sea.build", seller: "mod1" }
         ];
         
-        // Chats
-        let chats = JSON.parse(localStorage.getItem('chats')) || [];
-        
-        // ========== INIT ==========
-        async function init() {
-            // Generate device ID
-            deviceId = 'DEVICE-' + Math.random().toString(36).substring(2) + Date.now().toString(36);
-            document.getElementById('deviceId').textContent = deviceId;
-            
-            // Get IP
+        let chats = [
+            { user: "owner", role: "owner", msg: "Welcome!" }
+        ];
+
+        // ========== FINGERPRINT REAL ==========
+        async function initFingerprint() {
             try {
+                const fp = await FingerprintJS.load();
+                const result = await fp.get();
+                deviceId = result.visitorId;
+                document.getElementById('deviceId').textContent = deviceId;
+                
                 const res = await fetch('https://api.ipify.org?format=json');
                 const data = await res.json();
                 clientIP = data.ip;
                 document.getElementById('ipAddress').textContent = clientIP;
             } catch (e) {
-                document.getElementById('ipAddress').textContent = 'localhost';
-            }
-            
-            // Update stats
-            updateStats();
-            
-            // Display
-            showBuilds();
-            showChat();
-        }
-        
-        // ========== STATS ==========
-        function updateStats() {
-            document.getElementById('totalMembers').textContent = members.length;
-            document.getElementById('totalBuilds').textContent = builds.length;
-            
-            // Online now (members who logged in last 5 minutes)
-            const fiveMinutesAgo = Date.now() - 5 * 60000;
-            const online = members.filter(m => new Date(m.lastSeen).getTime() > fiveMinutesAgo).length;
-            document.getElementById('onlineNow').textContent = online;
-        }
-        
-        // ========== LOGIN ==========
-        function login() {
-            const username = document.getElementById('username').value.trim();
-            if (!username) {
-                alert('❌ Masukkan username!');
-                return;
-            }
-            
-            // Check if banned
-            if (bannedUsers.some(u => u.username === username)) {
-                alert('❌ User ini telah di-ban!');
-                return;
-            }
-            
-            // Record member login
-            const existingMember = members.find(m => m.username === username);
-            if (existingMember) {
-                existingMember.lastSeen = new Date().toISOString();
-                existingMember.ip = clientIP;
-                existingMember.deviceId = deviceId;
-                existingMember.loginCount++;
-            } else {
-                members.push({
-                    username: username,
-                    ip: clientIP,
-                    deviceId: deviceId,
-                    firstSeen: new Date().toISOString(),
-                    lastSeen: new Date().toISOString(),
-                    loginCount: 1
-                });
-            }
-            localStorage.setItem('members', JSON.stringify(members));
-            
-            currentUser = {
-                username: username,
-                role: 'member'
-            };
-            
-            loginSuccess();
-            updateStats();
-        }
-        
-        function adminLogin() {
-            const username = document.getElementById('adminUser').value.trim();
-            const password = document.getElementById('adminPass').value.trim();
-            
-            // Check admin credentials
-            if (username === 'owner' && password === users.owner.password) {
-                currentUser = {
-                    username: 'owner',
-                    role: 'owner'
-                };
-                
-                // Show admin link
-                document.getElementById('adminLink').classList.remove('hidden');
-                
-                // Record admin login
-                const adminData = {
-                    username: 'owner',
-                    ip: clientIP,
-                    deviceId: deviceId,
-                    timestamp: new Date().toISOString()
-                };
-                localStorage.setItem('lastAdminLogin', JSON.stringify(adminData));
-                
-                loginSuccess();
-            } else if (username === 'mod1' && password === users.mod1.password) {
-                currentUser = {
-                    username: 'mod1',
-                    role: 'moderator'
-                };
-                loginSuccess();
-            } else {
-                alert('❌ Login gagal!');
+                console.log('Error:', e);
             }
         }
-        
-        function loginSuccess() {
+
+        // ========== AUTH REAL ==========
+        window.loginMember = function() {
+            const username = document.getElementById('memberUsername').value.trim();
+            if (!username) return alert('Enter username!');
+            
+            currentUser = { username: username, role: 'member' };
             document.getElementById('userInfo').classList.remove('hidden');
-            document.getElementById('displayName').textContent = `👤 ${currentUser.username}`;
-            document.getElementById('displayRole').textContent = currentUser.role.toUpperCase();
+            document.getElementById('displayName').textContent = `🔥 ${username}`;
+            document.getElementById('displayRole').textContent = 'MEMBER';
             document.getElementById('uploadSection').classList.remove('hidden');
-            
-            if (currentUser.role === 'owner' || currentUser.role === 'moderator') {
-                document.getElementById('modChat').classList.remove('hidden');
-            }
-            
-            alert(`✅ Selamat datang ${currentUser.username}!`);
+            alert(`✅ Welcome ${username}!`);
         }
-        
-        function logout() {
+
+        window.loginAdmin = function() {
+            const user = document.getElementById('adminUser').value;
+            const pass = document.getElementById('adminPass').value;
+            
+            if (user === 'owner' && pass === 'owner_oxyx_2026') {
+                currentUser = { username: 'owner', role: 'owner' };
+                document.getElementById('userInfo').classList.remove('hidden');
+                document.getElementById('displayName').textContent = '👑 owner';
+                document.getElementById('displayRole').textContent = 'OWNER';
+                document.getElementById('uploadSection').classList.remove('hidden');
+                document.getElementById('chatSection').classList.remove('hidden');
+                alert('✅ Welcome OWNER!');
+            } 
+            else if ((user === 'mod1' || user === 'mod2') && pass === 'mod123') {
+                currentUser = { username: user, role: 'moderator' };
+                document.getElementById('userInfo').classList.remove('hidden');
+                document.getElementById('displayName').textContent = `🛡️ ${user}`;
+                document.getElementById('displayRole').textContent = 'MODERATOR';
+                document.getElementById('uploadSection').classList.remove('hidden');
+                document.getElementById('chatSection').classList.remove('hidden');
+                alert(`✅ Welcome ${user}!`);
+            }
+            else {
+                alert('❌ Wrong credentials!');
+            }
+        }
+
+        window.logout = function() {
             currentUser = null;
             document.getElementById('userInfo').classList.add('hidden');
             document.getElementById('uploadSection').classList.add('hidden');
-            document.getElementById('modChat').classList.add('hidden');
-            document.getElementById('adminLink').classList.add('hidden');
+            document.getElementById('chatSection').classList.add('hidden');
             alert('👋 Logged out');
         }
-        
+
         // ========== CHAT ==========
-        function sendChat() {
-            if (!currentUser || (currentUser.role !== 'owner' && currentUser.role !== 'moderator')) {
-                alert('❌ Hanya owner/moderator yang bisa chat!');
-                return;
+        window.sendChat = function() {
+            if (!currentUser || currentUser.role === 'member') {
+                return alert('Only mods can chat!');
             }
             
-            const msg = document.getElementById('chatMsg').value.trim();
+            const msg = document.getElementById('chatInput').value.trim();
             if (!msg) return;
             
-            chats.push({
-                id: Date.now(),
-                user: currentUser.username,
-                role: currentUser.role,
-                msg: msg,
-                time: new Date().toLocaleTimeString()
+            chats.push({ 
+                user: currentUser.username, 
+                role: currentUser.role, 
+                msg: msg 
             });
             
-            localStorage.setItem('chats', JSON.stringify(chats));
-            document.getElementById('chatMsg').value = '';
-            showChat();
+            displayChat();
+            document.getElementById('chatInput').value = '';
         }
-        
-        function showChat() {
+
+        function displayChat() {
             const box = document.getElementById('chatMessages');
-            if (chats.length === 0) {
-                box.innerHTML = '<p style="color:#666;">Belum ada chat</p>';
-                return;
-            }
-            
-            box.innerHTML = chats.map(c => `
-                <div class="chat-message">
-                    <span class="${c.role}-text">${c.role === 'owner' ? '👑' : '🛡️'} ${c.user}:</span>
-                    ${c.msg}
-                    <small style="color:#666; float:right;">${c.time}</small>
-                </div>
-            `).join('');
-            box.scrollTop = box.scrollHeight;
+            box.innerHTML = chats.map(c => 
+                `<div class="chat-message">
+                    <span class="${c.role}-text">${c.role === 'owner' ? '👑' : '🛡️'} ${c.user}:</span> ${c.msg}
+                </div>`
+            ).join('');
         }
-        
+
         // ========== UPLOAD ==========
-        function uploadBuild() {
-            if (!currentUser) {
-                alert('❌ Login dulu!');
-                return;
-            }
+        window.uploadBuild = function() {
+            if (!currentUser) return alert('Login first!');
             
-            const name = document.getElementById('buildName').value.trim();
-            const price = parseInt(document.getElementById('buildPrice').value);
+            const title = document.getElementById('buildTitle').value.trim();
+            const game = document.getElementById('buildGame').value;
+            const price = document.getElementById('buildPrice').value.trim();
             const desc = document.getElementById('buildDesc').value.trim();
             const file = document.getElementById('buildFile').files[0];
             
-            if (!name || !desc || !file) {
-                alert('❌ Isi semua field!');
-                return;
-            }
-            
-            if (!file.name.toLowerCase().endsWith('.build')) {
-                alert('❌ File harus .build!');
-                return;
-            }
+            if (!title || !desc || !file) return alert('Fill all!');
             
             builds.push({
                 id: Date.now(),
-                name: name,
+                title: title,
+                game: game,
                 price: price,
                 desc: desc,
-                fileName: file.name,
-                seller: currentUser.username,
-                uploadedAt: new Date().toISOString()
+                file: file.name,
+                seller: currentUser.username
             });
             
-            localStorage.setItem('builds', JSON.stringify(builds));
-            updateStats();
-            
-            document.getElementById('buildName').value = '';
-            document.getElementById('buildPrice').value = '0';
-            document.getElementById('buildDesc').value = '';
-            document.getElementById('buildFile').value = '';
-            
-            alert('✅ Build berhasil diupload!');
-            showBuilds();
+            alert('✅ Uploaded!');
+            displayMarketplace();
         }
-        
-        // ========== DELETE ==========
-        function deleteBuild(id, seller) {
-            if (!currentUser) {
-                alert('❌ Login dulu!');
+
+        // ========== DOWNLOAD ==========
+        window.downloadBuild = function(id, filename) {
+            alert(`📥 Downloading ${filename}...`);
+        }
+
+        window.deleteBuild = function(id) {
+            if (!currentUser) return alert('Login first!');
+            
+            const build = builds.find(b => b.id === id);
+            if (!build) return;
+            
+            if (currentUser.role !== 'owner' && currentUser.role !== 'moderator' && build.seller !== currentUser.username) {
+                return alert('No permission!');
+            }
+            
+            builds = builds.filter(b => b.id !== id);
+            alert('✅ Deleted!');
+            displayMarketplace();
+        }
+
+        // ========== FILTER ==========
+        window.filterBuilds = function(filter) {
+            currentFilter = filter;
+            displayMarketplace();
+        }
+
+        function displayMarketplace() {
+            let filtered = builds;
+            
+            if (currentFilter !== 'All' && currentFilter !== 'My Builds') {
+                filtered = builds.filter(b => b.game === currentFilter);
+            } else if (currentFilter === 'My Builds') {
+                if (!currentUser) {
+                    document.getElementById('marketplace').innerHTML = '<p>Login first</p>';
+                    return;
+                }
+                filtered = builds.filter(b => b.seller === currentUser.username);
+            }
+            
+            if (filtered.length === 0) {
+                document.getElementById('marketplace').innerHTML = '<p>No builds</p>';
                 return;
             }
             
-            if (currentUser.role === 'owner' || currentUser.role === 'moderator' || seller === currentUser.username) {
-                if (!confirm('Yakin ingin menghapus build ini?')) return;
+            let html = '';
+            filtered.forEach(b => {
+                const canDelete = currentUser && (currentUser.role === 'owner' || currentUser.role === 'moderator' || b.seller === currentUser.username);
                 
-                builds = builds.filter(b => b.id !== id);
-                localStorage.setItem('builds', JSON.stringify(build
+                html += `
+                    <div class="build-card">
+                        <h3>${b.title}</h3>
+                        <div>${b.game}</div>
+                        <div class="build-price">💰 ${b.price}</div>
+                        <p>${b.desc}</p>
+                        <div>📦 ${b.file}</div>
+                        <div>Seller: ${b.seller}</div>
+                        <button class="download-btn" onclick="downloadBuild(${b.id}, '${b.file}')">DOWNLOAD</button>
+                        ${canDelete ? `<button class="delete-btn" onclick="deleteBuild(${b.id})">DELETE</button>` : ''}
+                    </div>
+                `;
+            });
+            
+            document.getElementById('marketplace').innerHTML = html;
+        }
+
+        // ========== INIT ==========
+        initFingerprint();
+        displayChat();
+        displayMarketplace();
+    </script>
+</body>
+</html>
