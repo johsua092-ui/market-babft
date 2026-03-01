@@ -1,61 +1,137 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>OXYX MARKET</title>
-<!-- Pastikan CSS sudah terhubung -->
-<link rel="stylesheet" href="app.css" />
+<title>Chatbot Sederhana</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+  }
+
+  .chat-container {
+    max-width: 600px;
+    margin: 0 auto;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .chat-box {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    background-color: #fafafa;
+  }
+
+  .chat-box p {
+    margin: 8px 0;
+  }
+
+  .user {
+    color: blue;
+  }
+
+  .bot {
+    color: green;
+  }
+
+  .chat-form {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+  }
+
+  #user-input {
+    flex: 1;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  button {
+    padding: 8px 16px;
+    margin-left: 8px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #45a049;
+  }
+</style>
 </head>
 <body>
-  <!-- Background chains -->
-  <div class="chain-bg"></div>
-  <div class="chain-vertical"></div>
-  <div class="chain-diagonal"></div>
-  <div class="chain-links"></div>
-  <div class="corner-chain top-right"></div>
-  <div class="corner-chain bottom-left"></div>
 
-  <div class="container">
-    <!-- Header -->
-    <div class="header">
-      <h1>⚡ OXYX MARKET ⚡</h1>
-    </div>
+<h2>Chatbot Sederhana</h2>
 
-    <!-- Discord Links -->
-    <div class="discord-container">
-      <a href="https://discord.gg/autobuild" target="_blank" rel="noopener noreferrer" class="discord-btn">🔮 MAIN SERVER</a>
-      <a href="https://discord.gg/boatbuilderhub" target="_blank" rel="noopener noreferrer" class="discord-btn">⚡ TRADE SERVER</a>
-      <a href="https://discord.gg/builders" target="_blank" rel="noopener noreferrer" class="discord-btn">🎮 BUILDER SERVER</a>
-    </div>
+<div class="chat-container">
+  <div id="chat" class="chat-box"></div>
+  <form id="chat-form" class="chat-form">
+    <input type="text" id="user-input" placeholder="Ketik pesan..." autocomplete="off" />
+    <button type="submit">Kirim</button>
+  </form>
+</div>
 
-    <!-- Login Member / Admin -->
-    <div id="auth-section"></div>
+<script>
+  const chatBox = document.getElementById('chat');
+  const chatForm = document.getElementById('chat-form');
+  const userInput = document.getElementById('user-input');
 
-    <!-- User Info -->
-    <div id="user-info"></div>
+  // Fungsi untuk menambahkan pesan ke chat
+  function addMessage(sender, message) {
+    const p = document.createElement('p');
+    p.className = sender;
+    p.textContent = message;
+    chatBox.appendChild(p);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
 
-    <!-- Moderator Chat -->
-    <div id="moderator-chat"></div>
+  // Respon otomatis dari bot
+  function getBotResponse(message) {
+    const msg = message.toLowerCase();
+    if (msg.includes('halo')) {
+      return 'Halo! Ada yang bisa saya bantu?';
+    } else if (msg.includes('apa kabar')) {
+      return 'Saya baik, terima kasih!';
+    } else if (msg.includes('bye')) {
+      return 'Sampai jumpa!';
+    } else {
+      return 'Maaf, saya tidak mengerti.';
+    }
+  }
 
-    <!-- Owner & Moderator Panel -->
-    <div id="moderator-panel"></div>
+  // Event submit form
+  chatForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const message = userInput.value.trim();
+    if (message === '') return;
 
-    <!-- Blacklist Management -->
-    <div id="blacklist-section"></div>
+    // Tampilkan pesan pengguna
+    addMessage('user', message);
 
-    <!-- Upload Build -->
-    <div id="upload-section"></div>
+    // Respon dari bot
+    const response = getBotResponse(message);
+    setTimeout(() => {
+      addMessage('bot', response);
+    }, 500);
 
-    <!-- Marketplace -->
-    <div id="marketplace"></div>
+    userInput.value = '';
+    userInput.focus();
+  });
+</script>
 
-    <!-- Footer -->
-    <div class="footer">
-      <p>&copy; 2024 OXYX MARKET</p>
-    </div>
-  </div>
-
-<script src="app.js"></script>
 </body>
 </html>
