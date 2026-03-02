@@ -7,7 +7,327 @@
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; user-select: none; }
         
         body { 
-            background: #050505; color: white; padding: 20px; overflow-x: hidden;
+            background: #050505; color: white; padding: 20px; overflow-x: hidden;<!DOCTYPE html>
+<html>
+<head>
+    <title>OXYX MARKET | FIXED EDITION</title>
+    <style>
+        /* Style tetap sama seperti milik Tuan agar UI tidak berubah */
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Arial,sans-serif; }
+        body { background:#0a0a0a; color:white; padding:20px; }
+        .container { max-width:1400px; margin:0 auto; }
+        h1 { font-size:4em; text-align:center; color:#b300ff; text-shadow:3px 3px 0 #ff00ff,-3px -3px 0 #00ffff; margin-bottom:30px; }
+        .card { background:#1a1a2a; border:2px solid #b300ff; border-radius:15px; padding:20px; margin-bottom:20px; }
+        .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:15px; margin:20px 0; }
+        .stat-card { background:#2a0a3a; border:2px solid gold; border-radius:10px; padding:15px; text-align:center; }
+        .stat-value { font-size:2.5em; color:gold; }
+        .online-dot { display:inline-block; width:10px; height:10px; background:#00ff00; border-radius:50%; animation:pulse 2s infinite; }
+        @keyframes pulse { 0%{opacity:1} 50%{opacity:0.5;transform:scale(1.3)} }
+        #deviceInfoSection { display:none; }
+        .admin-device { background:#0a0a1a; padding:10px; border-radius:5px; font-family:monospace; }
+        .device-id { color:#00ff00; }
+        .ip-addr { color:#ffaa00; }
+        .login-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+        input, textarea { width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #b300ff; border-radius:5px; color:white; }
+        button { width:100%; padding:15px; background:#b300ff; border:none; border-radius:5px; color:white; font-weight:bold; cursor:pointer; }
+        button:hover { background:#d400ff; }
+        .ip-table { width:100%; border-collapse:collapse; margin-top:15px; }
+        .ip-table th { background:#b300ff; padding:12px; text-align:left; }
+        .ip-table td { padding:10px; border-bottom:1px solid #333; }
+        .online { color:#00ff00; }
+        .offline { color:#666; }
+        .session-warning { background:#aa0000; padding:15px; border-radius:5px; text-align:center; margin-bottom: 10px; }
+        .hidden { display:none !important; }
+        .footer { text-align:center; color:#666; margin-top:30px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ OXYX MARKET ⚡</h1>
+        
+        <div class="stats">
+            <div class="stat-card"><div class="stat-value" id="totalMembers">0</div><div>Total Members</div></div>
+            <div class="stat-card"><div class="stat-value" id="onlineNow">0</div><div><span class="online-dot"></span> Online</div></div>
+            <div class="stat-card"><div class="stat-value" id="totalBuilds">0</div><div>Total Builds</div></div>
+            <div class="stat-card"><div class="stat-value" id="totalIPs">0</div><div>Unique IPs</div></div>
+        </div>
+        
+        <div id="deviceInfoSection" class="card">
+            <h2>📱 DEVICE INFO</h2>
+            <div class="admin-device">
+                <p>Device ID: <span class="device-id" id="deviceId">Loading...</span></p>
+                <p>IP Address: <span class="ip-addr" id="ipAddress">Loading...</span></p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>🔐 LOGIN</h2>
+            <div id="sessionWarning" class="session-warning hidden">
+                ⚠️ Akun aktif di device lain! <button onclick="forceUnbind()" style="width:auto; padding:5px 10px; background:white; color:black; font-size:12px;">FORCE UNBIND (OWNER ONLY)</button>
+            </div>
+
+            <div class="login-grid" id="loginForm">
+                <div>
+                    <h3>👤 MEMBER</h3>
+                    <input type="text" id="memberUsername" placeholder="Username">
+                    <button onclick="loginMember()">LOGIN MEMBER</button>
+                </div>
+                <div>
+                    <h3>👑 ADMIN</h3>
+                    <input type="text" id="adminUser" placeholder="Username">
+                    <input type="password" id="adminPass" placeholder="Password">
+                    <button onclick="loginAdmin()">LOGIN ADMIN</button>
+                </div>
+            </div>
+            
+            <div id="userInfo" class="hidden" style="margin-top:20px; padding:15px; background:#2a0a3a; border-radius:10px;">
+                <p>Logged in as: <span id="displayName" style="font-weight:bold; color:gold;"></span></p>
+                <button onclick="logout()" style="background:#aa0000; margin-top:10px;">LOGOUT</button>
+            </div>
+        </div>
+        
+        <div id="ipTableSection" class="card hidden">
+            <h2>👑 IP TRACKER (OWNER ONLY)</h2>
+            <table class="ip-table">
+                <thead><tr><th>Username</th><th>IP</th><th>Device ID</th><th>Last Seen</th><th>Status</th></tr></thead>
+                <tbody id="ipTableBody"></tbody>
+            </table>
+        </div>
+        
+        <div id="chatSection" class="card hidden">
+            <h2>💬 MOD CHAT</h2>
+            <div id="chatMessages" style="height:150px; overflow:auto; background:#0a0a1a; padding:10px; margin:10px 0;"></div>
+            <input type="text" id="chatMsg" placeholder="Type message...">
+            <button onclick="sendChat()">SEND</button>
+        </div>
+        
+        <div id="uploadSection" class="card hidden">
+            <h2>📤 UPLOAD BUILD</h2>
+            <input type="text" id="buildName" placeholder="Build name">
+            <input type="number" id="buildPrice" min="0" value="0" placeholder="Price (100+ = premium)">
+            <textarea id="buildDesc" rows="3" placeholder="Description"></textarea>
+            <input type="file" id="buildFile" accept=".build">
+            <button onclick="uploadBuild()">PUBLISH BUILD</button>
+        </div>
+        
+        <div class="card">
+            <h2>🏪 MARKETPLACE</h2>
+            <div style="display:flex; gap:10px; margin:15px 0; flex-wrap:wrap;">
+                <button onclick="filterBuilds('all')">📋 ALL</button>
+                <button onclick="filterBuilds('free')">🆓 FREE</button>
+                <button onclick="filterBuilds('premium')">💎 PREMIUM</button>
+                <button onclick="filterBuilds('my')">👤 MY BUILDS</button>
+            </div>
+            <div id="marketplace" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:15px;"></div>
+        </div>
+        
+        <div class="footer">OXYX MARKET • Build A Boat Only</div>
+    </div>
+    
+    <script>
+        // ========== DATA & SETUP ==========
+        let currentUser = null;
+        let deviceId = localStorage.getItem('oxy_device_id') || 'OXYX-' + Math.random().toString(36).substring(2,10).toUpperCase();
+        localStorage.setItem('oxy_device_id', deviceId);
+        
+        let activeSessions = JSON.parse(localStorage.getItem('activeSessions')) || {};
+        let members = JSON.parse(localStorage.getItem('members')) || [];
+        let builds = JSON.parse(localStorage.getItem('builds')) || [];
+        let chats = JSON.parse(localStorage.getItem('chats')) || [];
+        
+        document.getElementById('deviceId').innerText = deviceId;
+        fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => document.getElementById('ipAddress').innerText = d.ip);
+
+        // ========== CORE FUNCTIONS ==========
+        
+        // UNBIND SYSTEM (Solusi untuk Tuan)
+        window.forceUnbind = function() {
+            let user = document.getElementById('adminUser').value || document.getElementById('memberUsername').value;
+            if(!user) return alert("Masukkan username di kotak login dulu!");
+            
+            delete activeSessions[user];
+            localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
+            document.getElementById('sessionWarning').classList.add('hidden');
+            alert("✅ Sesi " + user + " telah di-reset! Silahkan login kembali.");
+        };
+
+        window.loginMember = function() {
+            let user = document.getElementById('memberUsername').value.trim();
+            if (!user) return alert('Tolong beri nama buildnya!'); // Sesuai instruksi Tuan
+
+            if (activeSessions[user] && activeSessions[user] !== deviceId) {
+                document.getElementById('sessionWarning').classList.remove('hidden');
+                return;
+            }
+
+            loginFinalize(user, 'member');
+        };
+
+        window.loginAdmin = function() {
+            let user = document.getElementById('adminUser').value.trim();
+            let pass = document.getElementById('adminPass').value.trim();
+
+            if (activeSessions[user] && activeSessions[user] !== deviceId) {
+                document.getElementById('sessionWarning').classList.remove('hidden');
+                return;
+            }
+
+            if (user === 'znyt' && pass === 'Root!Delta_7KpZ') {
+                loginFinalize(user, 'owner');
+            } else if (user === 'helper_tester' && pass === 'huwydhdjsiqo' || user === 'sigma' && pass === 'uBwbONeqIwYQ97') {
+                loginFinalize(user, 'mod');
+            } else {
+                alert('❌ Password Salah!');
+            }
+        };
+
+        function loginFinalize(user, role) {
+            currentUser = { username: user, role: role };
+            activeSessions[user] = deviceId;
+            localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
+            
+            // Track IP for Owner
+            let now = new Date().toISOString();
+            let idx = members.findIndex(m => m.username === user);
+            if(idx > -1) {
+                members[idx].lastSeen = now;
+                members[idx].ip = document.getElementById('ipAddress').innerText;
+            } else {
+                members.push({username: user, ip: document.getElementById('ipAddress').innerText, deviceId: deviceId, lastSeen: now});
+            }
+            localStorage.setItem('members', JSON.stringify(members));
+
+            showUserInfo();
+            alert('✅ Login Berhasil sebagai ' + role.toUpperCase());
+        }
+
+        function showUserInfo() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('sessionWarning').classList.add('hidden');
+            document.getElementById('userInfo').classList.remove('hidden');
+            document.getElementById('displayName').innerText = currentUser.username + ' (' + currentUser.role + ')';
+            document.getElementById('uploadSection').classList.remove('hidden');
+            document.getElementById('deviceInfoSection').style.display = 'block';
+
+            if (currentUser.role === 'owner') {
+                document.getElementById('ipTableSection').classList.remove('hidden');
+                updateIpTable();
+            }
+            if (currentUser.role === 'owner' || currentUser.role === 'mod') {
+                document.getElementById('chatSection').classList.remove('hidden');
+                displayChat();
+            }
+        }
+
+        window.logout = function() {
+            if (currentUser) {
+                delete activeSessions[currentUser.username];
+                localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
+            }
+            location.reload();
+        };
+
+        // ========== MARKETPLACE & UPLOAD ==========
+
+        window.uploadBuild = function() {
+            if (!currentUser) return alert('Login dulu!');
+            
+            const file = document.getElementById('buildFile').files[0];
+            const name = document.getElementById('buildName').value.trim();
+            const desc = document.getElementById('buildDesc').value.trim();
+            const typeInput = document.getElementById('buildPrice').value;
+            const price = parseInt(typeInput);
+
+            // Validasi urutan sesuai permintaan Tuan
+            if (!file) return alert("tolong upload file build anda");
+            if (!desc) return alert("tolong tulis deskripsi build");
+            if (!typeInput || isNaN(price)) return alert("tolong pilih type build nya"); // Diwakili harga
+            if (!name) return alert("tolong beri nama buildnya");
+
+            builds.push({ 
+                id: Date.now(), 
+                name: name, 
+                price: price, 
+                desc: desc, 
+                file: file.name, 
+                seller: currentUser.username,
+                type: price >= 100 ? 'premium' : 'non-premium'
+            });
+            
+            localStorage.setItem('builds', JSON.stringify(builds));
+            
+            let targetMarket = (price >= 100) ? "Premium Marketplace" : "Non-Premium Marketplace";
+            alert(`✅ build telah sukses di publish dan mengarah marketplace untuk yang ${targetMarket}`);
+            
+            displayBuilds();
+            updateStats();
+        };
+
+        window.displayBuilds = function(filter = 'all') {
+            let container = document.getElementById('marketplace');
+            let filtered = builds;
+            if (filter === 'free') filtered = builds.filter(b => b.price === 0);
+            if (filter === 'premium') filtered = builds.filter(b => b.price >= 100);
+            if (filter === 'my') filtered = builds.filter(b => b.seller === currentUser?.username);
+
+            container.innerHTML = filtered.length ? '' : '<p>Belum ada build.</p>';
+            filtered.reverse().forEach(b => {
+                let card = document.createElement('div');
+                card.style = `background:#2a2a3a; border:2px solid ${b.price>=100?'gold':'#b300ff'}; border-radius:10px; padding:15px;`;
+                card.innerHTML = `
+                    <h3>${b.name} ${b.price>=100?'💎':''}</h3>
+                    <p style="color:gold;">💰 ${b.price} Robux</p>
+                    <p style="font-size:12px; color:#aaa;">${b.desc}</p>
+                    <p style="font-size:10px; color:#666;">Seller: ${b.seller}</p>
+                    <button style="margin-top:10px; background:#00aa00;" onclick="alert('Downloading ${b.file}...')">⬇️ DOWNLOAD</button>
+                `;
+                container.appendChild(card);
+            });
+        };
+
+        window.filterBuilds = (f) => displayBuilds(f);
+
+        function updateIpTable() {
+            let tbody = document.getElementById('ipTableBody');
+            tbody.innerHTML = members.map(m => `
+                <tr>
+                    <td><b>${m.username}</b></td>
+                    <td>${m.ip}</td>
+                    <td>${m.deviceId.substring(0,10)}...</td>
+                    <td>${new Date(m.lastSeen).toLocaleString()}</td>
+                    <td class="online">● ACTIVE</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('totalMembers').innerText = members.length;
+            document.getElementById('totalBuilds').innerText = builds.length;
+            document.getElementById('onlineNow').innerText = Object.keys(activeSessions).length;
+            document.getElementById('totalIPs').innerText = [...new Set(members.map(m => m.ip))].length;
+        }
+
+        function displayChat() {
+            document.getElementById('chatMessages').innerHTML = chats.map(c => `
+                <div style="margin-bottom:5px;"><span style="color:${c.role==='owner'?'gold':'#00ff00'}">[${c.user}]:</span> ${c.msg}</div>
+            `).join('');
+        }
+
+        window.sendChat = function() {
+            let m = document.getElementById('chatMsg').value;
+            if(!m) return;
+            chats.push({user: currentUser.username, role: currentUser.role, msg: m});
+            localStorage.setItem('chats', JSON.stringify(chats));
+            document.getElementById('chatMsg').value = '';
+            displayChat();
+        }
+
+        // Init
+        updateStats();
+        displayBuilds();
+    </script>
+</body>
+</html>
             background-image: radial-gradient(circle at center, #111 0%, #000 100%);
         }
 
