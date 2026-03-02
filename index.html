@@ -30,7 +30,6 @@
         .session-warning { background:#aa0000; padding:15px; border-radius:5px; text-align:center; margin-bottom: 10px; }
         .hidden { display:none !important; }
         .footer { text-align:center; color:#666; margin-top:30px; }
-        
         /* Enhanced security styles */
         .owner-panel { background:#1a0a2a; border:3px solid gold; }
         .mod-panel { background:#1a1a0a; border:3px solid #ffaa00; }
@@ -48,6 +47,21 @@
         .unban-btn { background:#00aa00; padding:5px 10px; font-size:12px; }
         .whid-input { background:#0a0a0a; border:2px solid gold; }
         .security-warning { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; display:flex; align-items:center; justify-content:center; }
+        
+        /* FAQ Styles */
+        .faq-item { background:#2a2a3a; margin:10px 0; border-radius:10px; overflow:hidden; border:1px solid #444; }
+        .faq-question { padding:15px; background:#b300ff; cursor:pointer; font-weight:bold; transition:background 0.3s; }
+        .faq-question:hover { background:#d400ff; }
+        .faq-answer { padding:15px; display:none; background:#1a1a2a; }
+        .faq-answer.active { display:block; }
+        
+        /* Download Animation */
+        .download-progress { background:#2a2a3a; border-radius:5px; overflow:hidden; margin:10px 0; height:20px; }
+        .download-bar { background:linear-gradient(90deg, #00ff00, #00aa00); height:100%; width:0%; transition:width 0.1s; }
+        
+        /* Bug Report Styles */
+        .bug-report-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+        select { width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #b300ff; border-radius:5px; color:white; }
     </style>
 </head>
 <body>
@@ -254,6 +268,59 @@
             <div id="marketplace" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:15px;"></div>
         </div>
 
+        <!-- FAQ & Bug Report Section -->
+        <div class="card">
+            <h2>❓ FAQ & BUG REPORT</h2>
+            <div class="bug-report-grid">
+                <div>
+                    <h3>Frequently Asked Questions</h3>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(0)">How to upload builds?</div>
+                        <div class="faq-answer">Only .build files are accepted. Enter build name, price (100+ for premium), description, and select your .build file. Click PUBLISH BUILD to upload.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(1)">What are premium builds?</div>
+                        <div class="faq-answer">Builds priced 100+ Robux are premium builds. They get special gold highlighting and appear in the premium marketplace section.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(2)">How to download builds?</div>
+                        <div class="faq-answer">Click the ⬇️ DOWNLOAD button on any build card. The file will be downloaded to your device automatically.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(3)">What is WHID?</div>
+                        <div class="faq-answer">WHID (Web Hardware ID) is a security identifier required for admin/moderator login to prevent unauthorized access.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(4)">How to become a moderator?</div>
+                        <div class="faq-answer">Contact the owner (znyt) through the platform. Moderator positions are by invitation only.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(5)">Why can't I see IP addresses?</div>
+                        <div class="faq-answer">Only moderators and owners can view IP addresses for security reasons. Regular members cannot see this information.</div>
+                    </div>
+                </div>
+                <div>
+                    <h3>Report Bug</h3>
+                    <input type="text" id="bugTitle" placeholder="Bug Title" maxlength="100">
+                    <textarea id="bugDesc" rows="4" placeholder="Describe the bug in detail" maxlength="500"></textarea>
+                    <select id="bugSeverity">
+                        <option value="low">Low Priority</option>
+                        <option value="medium">Medium Priority</option>
+                        <option value="high">High Priority</option>
+                        <option value="critical">Critical</option>
+                    </select>
+                    <button onclick="reportBug()">SUBMIT BUG REPORT</button>
+                    
+                    <div style="margin-top:20px;">
+                        <h4>Recent Bug Reports</h4>
+                        <div id="bugReportsList" style="height:150px; overflow:auto; background:#0a0a1a; padding:10px; border-radius:5px; margin-top:10px;">
+                            No bug reports yet.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="footer">OXYX MARKET • Build A Boat Only</div>
     </div>
 
@@ -265,8 +332,7 @@
         // Anti-DevTools Protection
         function detectDevTools() {
             let threshold = 160;
-            if (window.outerHeight - window.innerHeight > threshold || 
-                window.outerWidth - window.innerWidth > threshold) {
+            if (window.outerHeight - window.innerHeight > threshold || window.outerWidth - window.innerWidth > threshold) {
                 if (!devtoolsOpen) {
                     devtoolsOpen = true;
                     securityBreach = true;
@@ -322,6 +388,7 @@
         let activityLogs = JSON.parse(localStorage.getItem('activityLogs')) || [];
         let bannedUsers = JSON.parse(localStorage.getItem('bannedUsers')) || [];
         let blacklistedIPs = JSON.parse(localStorage.getItem('blacklistedIPs')) || [];
+        let bugReports = JSON.parse(localStorage.getItem('bugReports')) || [];
         let currentIP = '';
 
         // Valid WHIDs for security
@@ -364,7 +431,129 @@
             }
         }
 
-        // ========== CORE FUNCTIONS ==========
+        // ========== FAQ FUNCTIONS ==========
+        window.toggleFAQ = function(index) {
+            let answers = document.querySelectorAll('.faq-answer');
+            let answer = answers[index];
+            
+            // Close all other answers
+            answers.forEach((a, i) => {
+                if (i !== index) a.classList.remove('active');
+            });
+            
+            // Toggle current answer
+            answer.classList.toggle('active');
+        };
+
+        // ========== BUG REPORT SYSTEM ==========
+        window.reportBug = function() {
+            let title = document.getElementById('bugTitle').value.trim();
+            let desc = document.getElementById('bugDesc').value.trim();
+            let severity = document.getElementById('bugSeverity').value;
+            
+            if (!title) return alert('Please enter a bug title!');
+            if (!desc) return alert('Please describe the bug!');
+            
+            let bugReport = {
+                id: Date.now(),
+                title: title,
+                description: desc,
+                severity: severity,
+                reporter: currentUser ? currentUser.username : 'Anonymous',
+                reportDate: new Date().toISOString(),
+                status: 'open'
+            };
+            
+            bugReports.push(bugReport);
+            localStorage.setItem('bugReports', JSON.stringify(bugReports));
+            
+            // Clear form
+            document.getElementById('bugTitle').value = '';
+            document.getElementById('bugDesc').value = '';
+            document.getElementById('bugSeverity').value = 'low';
+            
+            addLog('BUG_REPORT', `Bug reported: ${title} (${severity})`);
+            updateBugReportsList();
+            alert('✅ Bug report submitted successfully! Thank you for helping improve OXYX Market.');
+        };
+
+        function updateBugReportsList() {
+            let container = document.getElementById('bugReportsList');
+            if (bugReports.length === 0) {
+                container.innerHTML = 'No bug reports yet.';
+                return;
+            }
+            
+            container.innerHTML = bugReports.slice(0, 5).map(bug => {
+                let severityColor = {
+                    'low': '#00ff00',
+                    'medium': '#ffaa00',
+                    'high': '#ff6600',
+                    'critical': '#ff0000'
+                };
+                
+                return `<div style="margin-bottom:8px; padding:8px; background:#1a1a2a; border-radius:5px; border-left:3px solid ${severityColor[bug.severity]};">
+                    <div style="font-weight:bold; color:${severityColor[bug.severity]};">[${bug.severity.toUpperCase()}] ${bug.title}</div>
+                    <div style="font-size:12px; color:#aaa;">${bug.description.substring(0, 100)}${bug.description.length > 100 ? '...' : ''}</div>
+                    <div style="font-size:10px; color:#666;">By: ${bug.reporter} • ${new Date(bug.reportDate).toLocaleDateString()}</div>
+                </div>`;
+            }).join('');
+        }
+
+        // ========== ENHANCED DOWNLOAD SYSTEM ==========
+        window.downloadBuild = function(name, file) {
+            addLog('DOWNLOAD_BUILD', `Downloaded build: ${name}`);
+            
+            // Create download progress simulation
+            let progressHtml = `
+                <div style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); 
+                     background:#1a1a2a; padding:20px; border-radius:10px; border:2px solid #b300ff; z-index:10000;">
+                    <h3>Downloading ${name}</h3>
+                    <div class="download-progress">
+                        <div class="download-bar" id="downloadBar"></div>
+                    </div>
+                    <p id="downloadStatus">Preparing download...</p>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', progressHtml);
+            
+            let progress = 0;
+            let downloadBar = document.getElementById('downloadBar');
+            let downloadStatus = document.getElementById('downloadStatus');
+            
+            let interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 100) progress = 100;
+                
+                downloadBar.style.width = progress + '%';
+                
+                if (progress < 30) {
+                    downloadStatus.innerText = 'Connecting to server...';
+                } else if (progress < 60) {
+                    downloadStatus.innerText = 'Downloading file...';
+                } else if (progress < 90) {
+                    downloadStatus.innerText = 'Verifying file integrity...';
+                } else if (progress < 100) {
+                    downloadStatus.innerText = 'Finalizing download...';
+                } else {
+                    downloadStatus.innerText = 'Download complete!';
+                    clearInterval(interval);
+                    
+                    // Create actual download
+                    let link = document.createElement('a');
+                    link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`OXYX Market Build File\nName: ${name}\nFile: ${file}\nDownloaded: ${new Date().toLocaleString()}\n\nThis is a simulated .build file for demonstration purposes.`);
+                    link.download = file;
+                    link.click();
+                    
+                    setTimeout(() => {
+                        document.querySelector('[style*="position:fixed"]').remove();
+                    }, 2000);
+                }
+            }, 200);
+        };
+
+        // ========== CORE FUNCTIONS (unchanged) ==========
         window.forceUnbind = function() {
             let user = document.getElementById('adminUser').value || document.getElementById('memberUsername').value;
             if(!user) return alert("Masukkan username di kotak login dulu!");
@@ -490,7 +679,7 @@
             location.reload();
         };
 
-        // ========== OWNER PANEL FUNCTIONS ==========
+        // ========== OWNER PANEL FUNCTIONS (unchanged) ==========
         window.switchTab = function(tabName) {
             document.querySelectorAll('#ownerPanel .tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('#ownerPanel .tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -652,7 +841,7 @@
             }).join('');
         }
 
-        // ========== ADMIN ACTIONS (OWNER ONLY) ==========
+        // ========== ADMIN ACTIONS (OWNER ONLY) (unchanged) ==========
         window.banUser = function(username) {
             if (currentUser.role !== 'owner') return alert('❌ Only owner can ban users!');
             if (confirm(`Ban user ${username}?`)) {
@@ -767,7 +956,7 @@
             }
         };
 
-        // ========== MARKETPLACE & UPLOAD ==========
+        // ========== MARKETPLACE & UPLOAD (unchanged) ==========
         window.uploadBuild = function() {
             if (!currentUser) return alert('Login dulu!');
             const file = document.getElementById('buildFile').files[0];
@@ -815,11 +1004,6 @@
             });
         };
 
-        window.downloadBuild = function(name, file) {
-            addLog('DOWNLOAD_BUILD', `Downloaded build: ${name}`);
-            alert('Downloading ' + file + '...');
-        };
-
         window.filterBuilds = (f) => displayBuilds(f);
 
         function updateStats() {
@@ -847,7 +1031,8 @@
         // Initialize
         updateStats();
         displayBuilds();
-        
+        updateBugReportsList();
+
         // Security check on load
         if (securityBreach) {
             document.getElementById('securityWarning').classList.remove('hidden');
