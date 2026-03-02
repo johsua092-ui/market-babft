@@ -1382,4 +1382,378 @@
             let ip = document.getElementById('modBlacklistIP').value.trim();
             if (!ip) return alert('Please enter an IP address!');
             
-            let reason = prompt('Reason for blacklisting
+            let reason = prompt('Reason for blacklisting 
+                                window.modAddToBlacklist = function() {
+            if (currentUser.role !== 'mod') return alert('❌ Access denied!');
+            let ip = document.getElementById('modBlacklistIP').value.trim();
+            if (!ip) return alert('Please enter an IP address!');
+            
+            let reason = prompt('Reason for blacklisting:') || 'Moderator manual addition';
+            blacklistedIPs.push({
+                ip: ip,
+                dateAdded: new Date().toISOString(),
+                reason: reason,
+                addedBy: currentUser.username
+            });
+            localStorage.setItem('blacklistedIPs', JSON.stringify(blacklistedIPs));
+            document.getElementById('modBlacklistIP').value = '';
+            addLog('MOD_BLACKLIST_IP', `Moderator manually blacklisted IP: ${ip}`);
+            updateModBlacklist();
+            alert(`✅ IP ${ip} added to blacklist!`);
+        };
+
+        window.addToBlacklist = function() {
+            if (currentUser.role !== 'owner') return alert('❌ Only owner can manage blacklist!');
+            let ip = document.getElementById('blacklistIP').value.trim();
+            if (!ip) return alert('Please enter an IP address!');
+            
+            let reason = prompt('Reason for blacklisting:') || 'Manual addition';
+            blacklistedIPs.push({
+                ip: ip,
+                dateAdded: new Date().toISOString(),
+                reason: reason,
+                addedBy: currentUser.username
+            });
+            localStorage.setItem('blacklistedIPs', JSON.stringify(blacklistedIPs));
+            document.getElementById('blacklistIP').value = '';
+            addLog('BLACKLIST_IP', `Manually blacklisted IP: ${ip}`);
+            updateBlacklist();
+            alert(`✅ IP ${ip} added to blacklist!`);
+        };
+
+        window.removeFromBlacklist = function(ip) {
+            if (currentUser.role !== 'owner') return alert('❌ Only owner can manage blacklist!');
+            if (confirm(`Remove IP ${ip} from blacklist?`)) {
+                blacklistedIPs = blacklistedIPs.filter(item => item.ip !== ip);
+                localStorage.setItem('blacklistedIPs', JSON.stringify(blacklistedIPs));
+                addLog('UNBLACKLIST_IP', `Removed IP from blacklist: ${ip}`);
+                updateBlacklist();
+                alert(`✅ IP ${ip} removed from blacklist!`);
+            }
+        };
+
+        window.investigateIP = function(ip) {
+            if (currentUser.role !== 'owner') return alert('❌ Only owner can investigate IPs!');
+            let users = members.filter(m => m.ip === ip);
+            let details = users.map(u => `${u.username} (${u.role}) - Last seen: ${new Date(u.lastSeen).toLocaleString()}`).join('\n');
+            alert(`IP Investigation: ${ip}\n\nUsers:\n${details}`);
+            addLog('IP_INVESTIGATION', `Investigated IP ${ip} with ${users.length} users`);
+        };
+
+        window.clearLogs = function() {
+            if (currentUser.role !== 'owner') return alert('❌ Only owner can clear logs!');
+            if (confirm('Clear all activity logs?')) {
+                activityLogs = [];
+                localStorage.setItem('activityLogs', JSON.stringify(activityLogs));
+                updateActivityLogs();
+                addLog('CLEAR_LOGS', 'Activity logs cleared');
+            }
+        };
+
+        // ========== MODERATOR TOOLS ==========
+        window.resetModPassword = function() {
+            if (currentUser.role !== 'owner') return alert('❌ Only owner can reset moderator passwords!');
+            
+            let modUser = document.getElementById('modSelect').value;
+            let newPass = document.getElementById('newModPass').value.trim();
+            
+            if (!modUser || !newPass) return alert('Please select moderator and enter new password!');
+            if (newPass.length < 8) return alert('Password must be at least 8 characters!');
+            
+            if (confirm(`Reset password for moderator ${modUser}?`)) {
+                modPasswords[modUser] = newPass;
+                localStorage.setItem('modPasswords', JSON.stringify(modPasswords));
+                
+                // Force logout the moderator
+                if (activeSessions[modUser]) {
+                    delete activeSessions[modUser];
+                    localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
+                }
+                
+                document.getElementById('newModPass').value = '';
+                addLog('RESET_MOD_PASSWORD', `Reset password for moderator: ${modUser}`);
+                alert(`✅ Password reset for ${modUser}! They will need to login again.`);
+            }
+        };
+
+        // ========== ENHANCED BUILD UPLOAD ==========
+        window.uploadBuild = function() {
+            if (!currentUser) return alert('Login dulu!');
+            
+            const file = document.getElementById('buildFile').files[0];
+            const image = document.getElementById('buildImage').files[0];
+            const name = document.getElementById('buildName').value.trim();
+            const desc = document.getElementById('buildDesc').value.trim();
+            const typeInput = document.getElementById('buildPrice').value;
+            const price = parseInt(typeInput);
+
+            if (!file) return alert("Tolong upload file build anda");
+            if (file.name.split('.').pop().toLowerCase() !== 'build') return alert("Hanya file .build yang diperbolehkan!");
+            if (!desc) return alert("Tolong tulis deskripsi build");
+            if (!typeInput || isNaN(price)) return alert("Tolong pilih type build nya");
+            if (!name) return alert("Tolong beri nama buildnya");
+
+            let imageData = null;
+            if (image) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imageData = e.target.result;
+                    saveBuild();
+                };
+                reader.readAsDataURL(image);
+            } else {
+                saveBuild();
+            }
+
+            function saveBuild() {
+                builds.push({ 
+                    id: Date.now(), 
+                    name: name, 
+                    price: price, 
+                    desc: desc, 
+                    file: file.name, 
+                    seller: currentUser.username,
+                    type: price >= 100 ? 'premium' : 'non-premium',
+                    image: imageData,
+                    uploadDate: new Date().toISOString()
+                });
+                localStorage.setItem('builds', JSON.stringify(builds));
+                
+                // Clear form
+                document.getElementById('buildName').value = '';
+                document.getElementById('buildPrice').value = '0';
+                document.getElementById('buildDesc').value = '';
+                document.getElementById('buildFile').value = '';
+                document.getElementById('buildImage').value = '';
+                document.getElementById('imagePreview').innerHTML = '';
+                
+                let targetMarket = (price >= 100) ? "Premium Marketplace" : "Non-Premium Marketplace";
+                addLog('UPLOAD_BUILD', `Uploaded build: ${name} (${price} Robux)`);
+                alert(`✅ Build telah sukses di publish dan mengarah marketplace untuk yang ${targetMarket}`);
+                displayBuilds();
+                updateStats();
+            }
+        };
+
+        // Image preview functionality
+        document.getElementById('buildImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imagePreview').innerHTML = 
+                        `<img src="${e.target.result}" class="build-preview" alt="Build Preview">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        window.displayBuilds = function(filter = 'all') {
+            let container = document.getElementById('marketplace');
+            let filtered = builds;
+            if (filter === 'free') filtered = builds.filter(b => b.price === 0);
+            if (filter === 'premium') filtered = builds.filter(b => b.price >= 100);
+            if (filter === 'my') filtered = builds.filter(b => b.seller === currentUser?.username);
+
+            container.innerHTML = filtered.length ? '' : '<p>Belum ada build.</p>';
+            filtered.reverse().forEach(b => {
+                let card = document.createElement('div');
+                card.className = `build-card ${b.price >= 100 ? 'premium-build' : ''}`;
+                
+                let imageHtml = b.image ? 
+                    `<img src="${b.image}" class="build-preview" alt="${b.name}">` : 
+                    '<div style="height:150px; background:#333; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#666;">No Preview</div>';
+                
+                card.innerHTML = `
+                    ${imageHtml}
+                    <h3>${b.name} ${b.price>=100?'💎':''}</h3>
+                    <p style="color:gold;">💰 ${b.price} Robux</p>
+                    <p style="font-size:12px; color:#aaa; margin:10px 0;">${b.desc}</p>
+                    <p style="font-size:10px; color:#666;">Seller: ${b.seller}</p>
+                    <p style="font-size:10px; color:#666;">Uploaded: ${new Date(b.uploadDate).toLocaleDateString()}</p>
+                    <button style="margin-top:15px; background:#00aa00; width:100%;" onclick="downloadBuild('${b.name}', '${b.file}')">⬇️ DOWNLOAD</button>
+                `;
+                container.appendChild(card);
+            });
+        };
+
+        window.downloadBuild = function(name, file) {
+            addLog('DOWNLOAD_BUILD', `Downloaded build: ${name}`);
+            
+            // Create download link simulation
+            const link = document.createElement('a');
+            link.href = '#';
+            link.download = file;
+            link.click();
+            
+            alert(`Downloading ${file}...`);
+        };
+
+        window.filterBuilds = (f) => displayBuilds(f);
+
+        function updateStats() {
+            document.getElementById('totalMembers').innerText = members.length;
+            document.getElementById('totalBuilds').innerText = builds.length;
+            document.getElementById('onlineNow').innerText = Object.keys(activeSessions).length;
+        }
+
+        function displayChat() {
+            let messagesDiv = document.getElementById('chatMessages');
+            messagesDiv.innerHTML = chats.map(c => 
+                `<div class="chat-message">
+                    <span style="color:${c.role==='owner'?'gold':c.role==='mod'?'#ffaa00':'#00ff00'}">[${c.user}]:</span> 
+                    ${c.msg}
+                    <span style="float:right; font-size:10px; color:#666;">${new Date(c.timestamp).toLocaleTimeString()}</span>
+                </div>`
+            ).join('');
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        window.sendChat = function() {
+            let m = document.getElementById('chatMsg').value.trim();
+            if(!m) return;
+            
+            chats.push({
+                user: currentUser.username, 
+                role: currentUser.role, 
+                msg: m,
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('chats', JSON.stringify(chats));
+            document.getElementById('chatMsg').value = '';
+            addLog('CHAT_MESSAGE', `Sent chat message`);
+            displayChat();
+        }
+
+        // Enter key support for chat
+        document.getElementById('chatMsg').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendChat();
+            }
+        });
+
+        // ========== FAQ FUNCTIONS ==========
+        window.toggleFAQ = function(index) {
+            let answers = document.querySelectorAll('.faq-answer');
+            let answer = answers[index];
+            
+            // Close all other answers
+            answers.forEach((a, i) => {
+                if (i !== index) a.classList.remove('active');
+            });
+            
+            // Toggle current answer
+            answer.classList.toggle('active');
+        };
+
+        // ========== BUG REPORT SYSTEM ==========
+        window.reportBug = function() {
+            let title = document.getElementById('bugTitle').value.trim();
+            let desc = document.getElementById('bugDesc').value.trim();
+            let severity = document.getElementById('bugSeverity').value;
+            
+            if (!title) return alert('Please enter a bug title!');
+            if (!desc) return alert('Please describe the bug!');
+            
+            let bugReport = {
+                id: Date.now(),
+                title: title,
+                description: desc,
+                severity: severity,
+                reporter: currentUser ? currentUser.username : 'Anonymous',
+                reportDate: new Date().toISOString(),
+                status: 'open'
+            };
+            
+            bugReports.push(bugReport);
+            localStorage.setItem('bugReports', JSON.stringify(bugReports));
+            
+            // Clear form
+            document.getElementById('bugTitle').value = '';
+            document.getElementById('bugDesc').value = '';
+            document.getElementById('bugSeverity').value = 'low';
+            
+            addLog('BUG_REPORT', `Bug reported: ${title} (${severity})`);
+            alert('✅ Bug report submitted successfully! Thank you for helping improve OXYX Market.');
+        };
+
+        // ========== INITIALIZATION ==========
+        function initializeApp() {
+            updateStats();
+            displayBuilds();
+            
+            // Security check on load
+            if (securityBreach) {
+                document.getElementById('securityWarning').classList.remove('hidden');
+            }
+            
+            // Add some sample data if empty (for demo purposes)
+            if (builds.length === 0) {
+                builds.push({
+                    id: 1,
+                    name: "Shadow Destroyer",
+                    price: 150,
+                    desc: "Ultimate destroyer ship with shadow powers",
+                    file: "shadow_destroyer.build",
+                    seller: "SampleUser",
+                    type: "premium",
+                    image: null,
+                    uploadDate: new Date().toISOString()
+                });
+                builds.push({
+                    id: 2,
+                    name: "Basic Boat",
+                    price: 0,
+                    desc: "Simple boat for beginners",
+                    file: "basic_boat.build",
+                    seller: "Helper",
+                    type: "non-premium",
+                    image: null,
+                    uploadDate: new Date().toISOString()
+                });
+                localStorage.setItem('builds', JSON.stringify(builds));
+            }
+            
+            displayBuilds();
+            updateStats();
+        }
+
+        // Start the application
+        initializeApp();
+
+        // Auto-save session data every 30 seconds
+        setInterval(() => {
+            if (currentUser) {
+                let idx = members.findIndex(m => m.username === currentUser.username);
+                if (idx > -1) {
+                    members[idx].lastSeen = new Date().toISOString();
+                    localStorage.setItem('members', JSON.stringify(members));
+                }
+            }
+        }, 30000);
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            if (chatClearTimer) {
+                clearInterval(chatClearTimer);
+            }
+        });
+
+        // Add some visual effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add loading animation
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // Console warning for security
+        console.log('%cSTOP!', 'color: red; font-size: 50px; font-weight: bold;');
+        console.log('%cThis is a browser feature intended for developers. If someone told you to copy-paste something here, it is a scam and will give them access to your account.', 'color: red; font-size: 16px;');
+        console.log('%cOXYX MARKET - Unauthorized access is prohibited', 'color: #b300ff; font-size: 14px; font-weight: bold;');
+
+    </script>
+</body>
+</html>
+
+                            
