@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>OXYX MARKET | BABFT</title>
+    <title>OXYX MARKET | OWNER FIXED</title>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Arial,sans-serif; }
         body { background:#0a0a0a; color:white; padding:20px; }
@@ -37,8 +37,9 @@
         <div id="ownerPanel" class="card hidden">
             <h2 style="color:gold;">👑 OWNER FORENSIC MONITOR</h2>
             <div style="margin:10px 0; display:flex; gap:10px;">
-                <button onclick="exportData()" style="background:gold; color:black; font-size:12px; padding:10px;">📤 SYNC: GET CODE (LAPTOP)</button>
-                <button onclick="importData()" style="background:#00ff00; color:black; font-size:12px; padding:10px;">📥 SYNC: PASTE CODE (HP)</button>
+                <button onclick="exportData()" style="background:gold; color:black; font-size:11px;">📤 SYNC: GET CODE</button>
+                <button onclick="importData()" style="background:#00ff00; color:black; font-size:11px;">📥 SYNC: PASTE CODE</button>
+                <button onclick="clearLogs()" style="background:red; font-size:11px;">🗑️ CLEAR LOGS</button>
             </div>
             <table class="tracker-table">
                 <thead><tr><th>User</th><th>IP Address</th><th>Device ID</th><th>Last Activity</th></tr></thead>
@@ -75,9 +76,9 @@
     </div>
 
     <script>
-        let currentUser = null;
-        let builds = JSON.parse(localStorage.getItem('oxy_v6_builds')) || [];
-        let logs = JSON.parse(localStorage.getItem('oxy_v6_logs')) || [];
+        let currentUser = JSON.parse(sessionStorage.getItem('oxy_session')) || null;
+        let builds = JSON.parse(localStorage.getItem('oxy_v7_builds')) || [];
+        let logs = JSON.parse(localStorage.getItem('oxy_v7_logs')) || [];
         let fetchedIP = "Detecting...";
 
         const myDID = btoa(navigator.userAgent).substring(0, 12).toUpperCase();
@@ -90,23 +91,14 @@
         }
         getIP();
 
-        // --- FITUR SYNC (SOLUSI MASALAH TUAN) ---
-        function exportData() {
-            const data = { builds: builds, logs: logs };
-            const code = btoa(JSON.stringify(data));
-            prompt("COPY KODE INI DAN PASTE DI HP TUAN:", code);
-        }
-
-        function importData() {
-            const code = prompt("PASTE KODE SYNC DARI LAPTOP:");
-            if(code) {
-                const decoded = JSON.parse(atob(code));
-                localStorage.setItem('oxy_v6_builds', JSON.stringify(decoded.builds));
-                localStorage.setItem('oxy_v6_logs', JSON.stringify(decoded.logs));
-                alert("✅ DATA SINKRON! Halaman akan dimuat ulang.");
-                location.reload();
+        // Cek Sesi Saat Halaman Dibuka
+        window.onload = function() {
+            if(currentUser) {
+                showDashboard();
             }
-        }
+            refreshMarket();
+            updateStats();
+        };
 
         async function handleLogin() {
             const u = document.getElementById('userIn').value.trim();
@@ -119,16 +111,26 @@
             else if ((u === 'helper_tester' && p === 'huwydhdjsiqo') || (u === 'sigma' && p === 'uBwbONeqIwYQ97')) currentUser = { name: u, role: 'mod' };
             else currentUser = { name: u, role: 'member' };
 
+            sessionStorage.setItem('oxy_session', JSON.stringify(currentUser));
+            
             logs.push({ name: u, ip: fetchedIP, did: myDID, time: new Date().toLocaleString(), role: currentUser.role });
-            localStorage.setItem('oxy_v6_logs', JSON.stringify(logs));
+            localStorage.setItem('oxy_v7_logs', JSON.stringify(logs));
 
+            showDashboard();
+            alert("✅ Login Sukses!");
+        }
+
+        function showDashboard() {
             document.getElementById('loginCard').classList.add('hidden');
             document.getElementById('uploadCard').classList.remove('hidden');
+            document.getElementById('greetUser').innerText = `📤 WELCOME, ${currentUser.name.toUpperCase()}`;
+            
             if(currentUser.role === 'owner') {
                 document.getElementById('ownerPanel').classList.remove('hidden');
                 refreshTracker();
             }
-            refreshMarket(); updateStats();
+            refreshMarket();
+            updateStats();
         }
 
         function publishBuild() {
@@ -138,25 +140,22 @@
             const name = document.getElementById('f_name').value.trim();
             const photo = document.getElementById('f_photo').files[0];
 
-            if(!file) return alert("tolong upload file build anda");
-            if(!desc) return alert("tolong tulis deskripsi build");
-            if(!type) return alert("tolong pilih type build nya");
-            if(!name) return alert("tolong beri nama buildnya");
+            if(!file || !desc || !type || !name) return alert("Lengkapi semua data!");
 
             const reader = new FileReader();
             reader.onload = (e) => {
                 builds.push({ id: Date.now(), owner: currentUser.name, name: name, desc: desc, type: type, file: file.name, img: photo ? e.target.result : null });
-                localStorage.setItem('oxy_v6_builds', JSON.stringify(builds));
-                alert(`✅ Terpublish ke ${type}!`);
+                localStorage.setItem('oxy_v7_builds', JSON.stringify(builds));
+                alert("✅ Build Published!");
                 refreshMarket(); updateStats();
             };
             if(photo) reader.readAsDataURL(photo); else reader.onload({target:{result:null}});
         }
 
         function deleteBuild(id) {
-            if(confirm("Hapus build?")) {
+            if(confirm("Hapus build ini?")) {
                 builds = builds.filter(b => b.id !== id);
-                localStorage.setItem('oxy_v6_builds', JSON.stringify(builds));
+                localStorage.setItem('oxy_v7_builds', JSON.stringify(builds));
                 refreshMarket(); updateStats();
             }
         }
@@ -174,8 +173,8 @@
                             <p style="font-size:11px; color:#ccc;">${b.desc}</p>
                             <p style="font-size:10px; color:#888;">By: ${b.owner}</p>
                             <div style="display:flex; gap:10px; margin-top:10px;">
-                                <button style="padding:8px; font-size:12px; background:#00aa00;">DOWNLOAD</button>
-                                ${canDelete ? `<button style="padding:8px; font-size:12px; background:#aa0000;" onclick="deleteBuild(${b.id})">DELETE</button>` : ''}
+                                <button style="padding:8px; font-size:11px; background:#00aa00;">DOWNLOAD</button>
+                                ${canDelete ? `<button style="padding:8px; font-size:11px; background:#aa0000;" onclick="deleteBuild(${b.id})">DELETE</button>` : ''}
                             </div>
                         </div>
                     </div>
@@ -193,11 +192,32 @@
             document.getElementById('s_users').innerText = [...new Set(logs.map(l => l.name))].length;
             document.getElementById('s_builds').innerText = builds.length;
             const now = Date.now();
-            document.getElementById('s_online').innerText = logs.filter(l => (now - new Date(l.time).getTime()) < 300000).length;
+            document.getElementById('s_online').innerText = logs.filter(l => (now - new Date(l.time).getTime()) < 600000).length;
         }
 
-        function logout() { location.reload(); }
-        refreshMarket(); updateStats();
+        function exportData() {
+            const code = btoa(JSON.stringify({builds, logs}));
+            prompt("COPY CODE UNTUK SYNC KE HP:", code);
+        }
+
+        function importData() {
+            const code = prompt("PASTE CODE SYNC DISINI:");
+            if(code) {
+                const d = JSON.parse(atob(code));
+                localStorage.setItem('oxy_v7_builds', JSON.stringify(d.builds));
+                localStorage.setItem('oxy_v7_logs', JSON.stringify(d.logs));
+                location.reload();
+            }
+        }
+
+        function clearLogs() {
+            if(confirm("Hapus semua log forensic?")) {
+                localStorage.setItem('oxy_v7_logs', JSON.stringify([]));
+                location.reload();
+            }
+        }
+
+        function logout() { sessionStorage.removeItem('oxy_session'); location.reload(); }
     </script>
 </body>
 </html>
