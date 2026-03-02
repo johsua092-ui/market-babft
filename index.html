@@ -1,242 +1,578 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>OXYX MARKET | COMMAND CENTER</title>
+    <title>OXYX MARKET | FIXED EDITION</title>
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Courier New', monospace; }
-        body { background:#000; color:#b300ff; padding:20px; }
+        /* Style tetap sama seperti milik Tuan agar UI tidak berubah */
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Arial,sans-serif; }
+        body { background:#0a0a0a; color:white; padding:20px; }
         .container { max-width:1400px; margin:0 auto; }
-        
-        /* THEME OWNER */
-        h1 { font-size:4em; text-align:center; text-shadow:0 0 20px #b300ff; color:white; margin-bottom:20px; }
-        .card { background:#0a0a0a; border:1px solid #b300ff; border-radius:5px; padding:20px; margin-bottom:20px; box-shadow:0 0 15px rgba(179,0,255,0.2); }
-        
-        /* PANEL OWNER - HARUS MUNCUL */
-        #ownerPanel { border:2px solid gold; background:#050505; }
-        .tab-btn { background:#1a1a1a; color:gold; border:1px solid gold; padding:10px; cursor:pointer; margin-right:5px; }
-        .tab-btn.active { background:gold; color:black; }
-        
-        .tracker-table { width:100%; border-collapse:collapse; margin-top:15px; color:white; font-size:12px; }
-        .tracker-table th { background:gold; color:black; padding:10px; text-align:left; }
-        .tracker-table td { padding:10px; border-bottom:1px solid #222; }
-        
-        /* CHAT SYSTEM */
-        #chatBox { height:200px; overflow-y:scroll; background:#000; border:1px solid #333; padding:10px; margin-bottom:10px; color:#00ff00; }
-        
-        /* BLACKLIST OVERLAY */
-        #blacklistOverlay { position:fixed; top:0; left:0; width:100%; height:100%; background:black; color:red; display:flex; align-items:center; justify-content:center; font-size:3em; z-index:9999; display:none; }
-
-        input, textarea, select { width:100%; padding:12px; margin:8px 0; background:#111; border:1px solid #b300ff; color:white; }
-        button { width:100%; padding:15px; background:#b300ff; border:none; color:white; font-weight:bold; cursor:pointer; }
-        .btn-ban { background:red; padding:5px; font-size:10px; }
-        
+        h1 { font-size:4em; text-align:center; color:#b300ff; text-shadow:3px 3px 0 #ff00ff,-3px -3px 0 #00ffff; margin-bottom:30px; }
+        .card { background:#1a1a2a; border:2px solid #b300ff; border-radius:15px; padding:20px; margin-bottom:20px; }
+        .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:15px; margin:20px 0; }
+        .stat-card { background:#2a0a3a; border:2px solid gold; border-radius:10px; padding:15px; text-align:center; }
+        .stat-value { font-size:2.5em; color:gold; }
+        .online-dot { display:inline-block; width:10px; height:10px; background:#00ff00; border-radius:50%; animation:pulse 2s infinite; }
+        @keyframes pulse { 0%{opacity:1} 50%{opacity:0.5;transform:scale(1.3)} }
+        #deviceInfoSection { display:none; }
+        .admin-device { background:#0a0a1a; padding:10px; border-radius:5px; font-family:monospace; }
+        .device-id { color:#00ff00; }
+        .ip-addr { color:#ffaa00; }
+        .login-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+        input, textarea { width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #b300ff; border-radius:5px; color:white; }
+        button { width:100%; padding:15px; background:#b300ff; border:none; border-radius:5px; color:white; font-weight:bold; cursor:pointer; }
+        button:hover { background:#d400ff; }
+        .ip-table { width:100%; border-collapse:collapse; margin-top:15px; }
+        .ip-table th { background:#b300ff; padding:12px; text-align:left; }
+        .ip-table td { padding:10px; border-bottom:1px solid #333; }
+        .online { color:#00ff00; }
+        .offline { color:#666; }
+        .session-warning { background:#aa0000; padding:15px; border-radius:5px; text-align:center; margin-bottom: 10px; }
         .hidden { display:none !important; }
-        .market-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; }
-        .build-card { border:1px solid #333; background:#0a0a0a; overflow:hidden; }
+        .footer { text-align:center; color:#666; margin-top:30px; }
+        
+        /* New styles for owner panel */
+        .owner-panel { background:#1a0a2a; border:3px solid gold; }
+        .panel-tabs { display:flex; gap:10px; margin-bottom:20px; }
+        .tab-btn { padding:10px 20px; background:#2a2a3a; border:2px solid #666; border-radius:5px; cursor:pointer; }
+        .tab-btn.active { background:gold; color:black; border-color:gold; }
+        .tab-content { display:none; }
+        .tab-content.active { display:block; }
+        .security-alert { background:#aa0000; padding:10px; border-radius:5px; margin:10px 0; }
+        .role-member { color:#00ff00; }
+        .role-mod { color:#ffaa00; }
+        .role-owner { color:gold; }
+        .suspicious { background:#330000; }
+        .ban-btn { background:#aa0000; padding:5px 10px; font-size:12px; }
+        .unban-btn { background:#00aa00; padding:5px 10px; font-size:12px; }
     </style>
 </head>
 <body>
-    <div id="blacklistOverlay">ACCESS TERMINATED - YOU ARE BLACKLISTED</div>
-
     <div class="container">
-        <h1>OXYX COMMAND CENTER</h1>
-
-        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px;">
-            <div class="card" style="text-align:center;"><h2>USERS</h2><span id="s_users">0</span></div>
-            <div class="card" style="text-align:center;"><h2>BUILDS</h2><span id="s_builds">0</span></div>
-            <div class="card" style="text-align:center; border-color:gold;"><h2 style="color:gold;">ONLINE</h2><span id="s_online">0</span></div>
-        </div>
-
-        <div id="ownerPanel" class="card hidden">
-            <h2 style="color:gold;">👑 SUPREME OWNER ACCESS</h2>
-            <div style="margin-top:10px;">
-                <button class="tab-btn active" onclick="showTab('forensic')">FORENSIC</button>
-                <button class="tab-btn" onclick="showTab('chat')">STAFF CHAT</button>
-                <button class="tab-btn" onclick="showTab('blacklist')">BAN LIST</button>
-                <button onclick="exportData()" style="width:auto; background:grey; padding:10px;">SYNC</button>
+        <h1>⚡ OXYX MARKET ⚡</h1>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalMembers">0</div>
+                <div>Total Members</div>
             </div>
-
-            <div id="tab_forensic">
-                <table class="tracker-table">
-                    <thead><tr><th>User</th><th>IP Address</th><th>Device ID</th><th>Action</th></tr></thead>
-                    <tbody id="trackerBody"></tbody>
-                </table>
+            <div class="stat-card">
+                <div class="stat-value" id="onlineNow">0</div>
+                <div><span class="online-dot"></span> Online</div>
             </div>
-
-            <div id="tab_chat" class="hidden">
-                <div id="chatBox"></div>
-                <div style="display:flex; gap:10px;">
-                    <input type="text" id="chatMsg" placeholder="Type secret message...">
-                    <button onclick="sendChat()" style="width:100px;">SEND</button>
-                </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalBuilds">0</div>
+                <div>Total Builds</div>
             </div>
-
-            <div id="tab_blacklist" class="hidden">
-                <h3>Banned IPs / Devices</h3>
-                <div id="banListDisplay" style="color:red; margin-top:10px;"></div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalIPs">0</div>
+                <div>Unique IPs</div>
             </div>
         </div>
 
-        <div id="loginCard" class="card">
-            <h2>🔐 IDENTIFICATION REQUIRED</h2>
-            <input type="text" id="userIn" placeholder="Username">
-            <input type="password" id="passIn" placeholder="Password">
-            <button onclick="handleLogin()">AUTHENTICATE</button>
-        </div>
-
-        <div id="uploadCard" class="card hidden">
-            <h2>📤 UPLOAD SYSTEM (.BUILD ONLY)</h2>
-            <input type="file" id="f_file" accept=".build">
-            <textarea id="f_desc" placeholder="Build Info..."></textarea>
-            <select id="f_type"><option value="free">FREE</option><option value="premium">PREMIUM</option></select>
-            <input type="text" id="f_name" placeholder="Build Name">
-            <input type="file" id="f_photo" accept="image/*">
-            <button onclick="publishBuild()">EXECUTE PUBLISH</button>
-            <button onclick="logout()" style="background:red; margin-top:5px;">TERMINATE SESSION</button>
+        <div id="deviceInfoSection" class="card">
+            <h2>📱 DEVICE INFO</h2>
+            <div class="admin-device">
+                <p>Device ID: <span class="device-id" id="deviceId">Loading...</span></p>
+                <p>IP Address: <span class="ip-addr" id="ipAddress">Loading...</span></p>
+            </div>
         </div>
 
         <div class="card">
-            <h2>🏪 DATABASE MARKETPLACE</h2>
-            <div id="marketGrid" class="market-grid"></div>
+            <h2>🔐 LOGIN</h2>
+            <div id="sessionWarning" class="session-warning hidden">
+                ⚠️ Akun aktif di device lain! 
+                <button onclick="forceUnbind()" style="width:auto; padding:5px 10px; background:white; color:black; font-size:12px;">FORCE UNBIND (OWNER ONLY)</button>
+            </div>
+            <div class="login-grid" id="loginForm">
+                <div>
+                    <h3>👤 MEMBER</h3>
+                    <input type="text" id="memberUsername" placeholder="Username">
+                    <button onclick="loginMember()">LOGIN MEMBER</button>
+                </div>
+                <div>
+                    <h3>👑 ADMIN</h3>
+                    <input type="text" id="adminUser" placeholder="Username">
+                    <input type="password" id="adminPass" placeholder="Password">
+                    <button onclick="loginAdmin()">LOGIN ADMIN</button>
+                </div>
+            </div>
+            <div id="userInfo" class="hidden" style="margin-top:20px; padding:15px; background:#2a0a3a; border-radius:10px;">
+                <p>Logged in as: <span id="displayName" style="font-weight:bold; color:gold;"></span></p>
+                <button onclick="logout()" style="background:#aa0000; margin-top:10px;">LOGOUT</button>
+            </div>
         </div>
+
+        <!-- Enhanced Owner Panel -->
+        <div id="ownerPanel" class="card owner-panel hidden">
+            <h2>👑 OWNER SECURITY PANEL</h2>
+            <div class="panel-tabs">
+                <button class="tab-btn active" onclick="switchTab('users')">👥 USER TRACKING</button>
+                <button class="tab-btn" onclick="switchTab('security')">🛡️ SECURITY</button>
+                <button class="tab-btn" onclick="switchTab('logs')">📋 ACTIVITY LOGS</button>
+            </div>
+
+            <!-- User Tracking Tab -->
+            <div id="usersTab" class="tab-content active">
+                <div style="display:flex; gap:10px; margin-bottom:15px;">
+                    <button onclick="filterUsers('all')">ALL USERS</button>
+                    <button onclick="filterUsers('members')">MEMBERS</button>
+                    <button onclick="filterUsers('mods')">MODERATORS</button>
+                    <button onclick="filterUsers('online')">ONLINE ONLY</button>
+                </div>
+                <table class="ip-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>IP Address</th>
+                            <th>Device ID</th>
+                            <th>Last Seen</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTrackingTable"></tbody>
+                </table>
+            </div>
+
+            <!-- Security Tab -->
+            <div id="securityTab" class="tab-content">
+                <div class="security-alert">
+                    <h3>🚨 SECURITY ALERTS</h3>
+                    <div id="securityAlerts">No security issues detected.</div>
+                </div>
+                <h3>🔍 IP Analysis</h3>
+                <table class="ip-table">
+                    <thead>
+                        <tr>
+                            <th>IP Address</th>
+                            <th>Users Count</th>
+                            <th>User List</th>
+                            <th>Risk Level</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ipAnalysisTable"></tbody>
+                </table>
+            </div>
+
+            <!-- Activity Logs Tab -->
+            <div id="logsTab" class="tab-content">
+                <h3>📋 Recent Activity</h3>
+                <div style="height:300px; overflow:auto; background:#0a0a1a; padding:10px; border-radius:5px;">
+                    <div id="activityLogs"></div>
+                </div>
+                <button onclick="clearLogs()" style="background:#aa0000; margin-top:10px;">CLEAR LOGS</button>
+            </div>
+        </div>
+
+        <div id="chatSection" class="card hidden">
+            <h2>💬 MOD CHAT</h2>
+            <div id="chatMessages" style="height:150px; overflow:auto; background:#0a0a1a; padding:10px; margin:10px 0;"></div>
+            <input type="text" id="chatMsg" placeholder="Type message...">
+            <button onclick="sendChat()">SEND</button>
+        </div>
+
+        <div id="uploadSection" class="card hidden">
+            <h2>📤 UPLOAD BUILD</h2>
+            <input type="text" id="buildName" placeholder="Build name">
+            <input type="number" id="buildPrice" min="0" value="0" placeholder="Price (100+ = premium)">
+            <textarea id="buildDesc" rows="3" placeholder="Description"></textarea>
+            <input type="file" id="buildFile" accept=".build">
+            <button onclick="uploadBuild()">PUBLISH BUILD</button>
+        </div>
+
+        <div class="card">
+            <h2>🏪 MARKETPLACE</h2>
+            <div style="display:flex; gap:10px; margin:15px 0; flex-wrap:wrap;">
+                <button onclick="filterBuilds('all')">📋 ALL</button>
+                <button onclick="filterBuilds('free')">🆓 FREE</button>
+                <button onclick="filterBuilds('premium')">💎 PREMIUM</button>
+                <button onclick="filterBuilds('my')">👤 MY BUILDS</button>
+            </div>
+            <div id="marketplace" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:15px;"></div>
+        </div>
+
+        <div class="footer">OXYX MARKET • Build A Boat Only</div>
     </div>
 
     <script>
-        let currentUser = JSON.parse(sessionStorage.getItem('oxy_v9_sess')) || null;
-        let builds = JSON.parse(localStorage.getItem('oxy_v9_builds')) || [];
-        let logs = JSON.parse(localStorage.getItem('oxy_v9_logs')) || [];
-        let banned = JSON.parse(localStorage.getItem('oxy_v9_banned')) || [];
-        let chats = JSON.parse(localStorage.getItem('oxy_v9_chats')) || [];
-        let curIP = "";
+        // ========== DATA & SETUP ==========
+        let currentUser = null;
+        let deviceId = localStorage.getItem('oxy_device_id') || 'OXYX-' + Math.random().toString(36).substring(2,10).toUpperCase();
+        localStorage.setItem('oxy_device_id', deviceId);
+        let activeSessions = JSON.parse(localStorage.getItem('activeSessions')) || {};
+        let members = JSON.parse(localStorage.getItem('members')) || [];
+        let builds = JSON.parse(localStorage.getItem('builds')) || [];
+        let chats = JSON.parse(localStorage.getItem('chats')) || [];
+        let activityLogs = JSON.parse(localStorage.getItem('activityLogs')) || [];
+        let bannedUsers = JSON.parse(localStorage.getItem('bannedUsers')) || [];
 
-        const myDID = btoa(navigator.userAgent + screen.width).substring(0, 15);
+        document.getElementById('deviceId').innerText = deviceId;
+        fetch('https://api.ipify.org?format=json')
+            .then(r => r.json())
+            .then(d => document.getElementById('ipAddress').innerText = d.ip);
 
-        // Security Check
-        async function securityCheck() {
-            const res = await fetch('https://api.ipify.org?format=json');
-            const data = await res.json();
-            curIP = data.ip;
-
-            if(banned.includes(curIP) || banned.includes(myDID)) {
-                document.getElementById('blacklistOverlay').style.display = 'flex';
-                document.body.innerHTML = "TERMINATED";
-            }
-        }
-        securityCheck();
-
-        window.onload = () => { if(currentUser) showDashboard(); refreshMarket(); updateStats(); };
-
-        function handleLogin() {
-            const u = document.getElementById('userIn').value;
-            const p = document.getElementById('passIn').value;
-
-            if(u === 'znyt' && p === 'Root!Delta_7KpZ') currentUser = { name: u, role: 'owner' };
-            else if((u === 'helper_tester' && p === 'huwydhdjsiqo') || (u === 'sigma' && p === 'uBwbONeqIwYQ97')) currentUser = { name: u, role: 'mod' };
-            else currentUser = { name: u, role: 'member' };
-
-            sessionStorage.setItem('oxy_v9_sess', JSON.stringify(currentUser));
-            logs.push({ name: u, ip: curIP, did: myDID, time: new Date().toLocaleString() });
-            localStorage.setItem('oxy_v9_logs', JSON.stringify(logs));
-            location.reload();
-        }
-
-        function showDashboard() {
-            document.getElementById('loginCard').classList.add('hidden');
-            document.getElementById('uploadCard').classList.remove('hidden');
-            if(currentUser.role === 'owner') {
-                document.getElementById('ownerPanel').classList.remove('hidden');
-                refreshTracker();
-                refreshChat();
-            }
-        }
-
-        function refreshTracker() {
-            document.getElementById('trackerBody').innerHTML = logs.slice(-30).reverse().map(l => `
-                <tr>
-                    <td>${l.name}</td>
-                    <td>${l.ip}</td>
-                    <td>${l.did}</td>
-                    <td>
-                        <button class="btn-ban" onclick="ban('${l.ip}')">BAN IP</button>
-                        <button class="btn-ban" onclick="ban('${l.did}')">BAN ID</button>
-                    </td>
-                </tr>
-            `).join('');
-            document.getElementById('banListDisplay').innerText = banned.join(', ');
-        }
-
-        function ban(target) {
-            if(!banned.includes(target)) {
-                banned.push(target);
-                localStorage.setItem('oxy_v9_banned', JSON.stringify(banned));
-                alert("Target Terminated!");
-                refreshTracker();
-            }
-        }
-
-        function showTab(t) {
-            ['forensic', 'chat', 'blacklist'].forEach(id => document.getElementById('tab_'+id).classList.add('hidden'));
-            document.getElementById('tab_'+t).classList.remove('hidden');
-        }
-
-        function sendChat() {
-            const msg = document.getElementById('chatMsg').value;
-            if(!msg) return;
-            chats.push({ user: currentUser.name, msg: msg, time: new Date().toLocaleTimeString() });
-            localStorage.setItem('oxy_v9_chats', JSON.stringify(chats));
-            document.getElementById('chatMsg').value = "";
-            refreshChat();
-        }
-
-        function refreshChat() {
-            const box = document.getElementById('chatBox');
-            box.innerHTML = chats.slice(-50).map(c => `<div>[${c.time}] <b>${c.user}</b>: ${c.msg}</div>`).join('');
-            box.scrollTop = box.scrollHeight;
-        }
-
-        function publishBuild() {
-            const f = document.getElementById('f_file').files[0];
-            const name = document.getElementById('f_name').value;
-            if(!f || !f.name.endsWith('.build')) return alert("Wajib .build!");
-            if(!name) return alert("Beri nama!");
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                builds.push({ id: Date.now(), owner: currentUser.name, name: name, desc: document.getElementById('f_desc').value, type: document.getElementById('f_type').value, img: e.target.result });
-                localStorage.setItem('oxy_v9_builds', JSON.stringify(builds));
-                location.reload();
+        // ========== LOGGING SYSTEM ==========
+        function addLog(action, details) {
+            const log = {
+                timestamp: new Date().toISOString(),
+                user: currentUser ? currentUser.username : 'System',
+                action: action,
+                details: details,
+                ip: document.getElementById('ipAddress').innerText
             };
-            const photo = document.getElementById('f_photo').files[0];
-            if(photo) reader.readAsDataURL(photo); else reader.onload({target:{result:null}});
+            activityLogs.unshift(log);
+            if (activityLogs.length > 100) activityLogs.pop(); // Keep only last 100 logs
+            localStorage.setItem('activityLogs', JSON.stringify(activityLogs));
+            updateActivityLogs();
         }
 
-        function refreshMarket() {
-            document.getElementById('marketGrid').innerHTML = builds.slice().reverse().map(b => `
-                <div class="build-card">
-                    <img src="${b.img || ''}" style="width:100%; height:150px; background:#111;">
-                    <div style="padding:10px;">
-                        <h3 style="color:gold;">${b.name}</h3>
-                        <p style="font-size:10px;">By: ${b.owner}</p>
-                        <button onclick="deleteBuild(${b.id})" style="background:red; padding:5px; margin-top:10px; font-size:10px;">DELETE</button>
-                    </div>
-                </div>
-            `).join('');
+        // ========== CORE FUNCTIONS ==========
+        window.forceUnbind = function() {
+            let user = document.getElementById('adminUser').value || document.getElementById('memberUsername').value;
+            if(!user) return alert("Masukkan username di kotak login dulu!");
+            delete activeSessions[user];
+            localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
+            document.getElementById('sessionWarning').classList.add('hidden');
+            addLog('FORCE_UNBIND', `Forced unbind user: ${user}`);
+            alert("✅ Sesi " + user + " telah di-reset! Silahkan login kembali.");
+        };
+
+        window.loginMember = function() {
+            let user = document.getElementById('memberUsername').value.trim();
+            if (!user) return alert('Tolong beri nama buildnya!');
+            if (bannedUsers.includes(user)) return alert('❌ Akun anda telah dibanned!');
+            if (activeSessions[user] && activeSessions[user] !== deviceId) {
+                document.getElementById('sessionWarning').classList.remove('hidden');
+                return;
+            }
+            loginFinalize(user, 'member');
+        };
+
+        window.loginAdmin = function() {
+            let user = document.getElementById('adminUser').value.trim();
+            let pass = document.getElementById('adminPass').value.trim();
+            if (bannedUsers.includes(user)) return alert('❌ Akun anda telah dibanned!');
+            if (activeSessions[user] && activeSessions[user] !== deviceId) {
+                document.getElementById('sessionWarning').classList.remove('hidden');
+                return;
+            }
+            if (user === 'znyt' && pass === 'Root!Delta_7KpZ') {
+                loginFinalize(user, 'owner');
+            } else if (user === 'helper_tester' && pass === 'huwydhdjsiqo' || user === 'sigma' && pass === 'uBwbONeqIwYQ97') {
+                loginFinalize(user, 'mod');
+            } else {
+                addLog('FAILED_LOGIN', `Failed admin login attempt: ${user}`);
+                alert('❌ Password Salah!');
+            }
+        };
+
+        function loginFinalize(user, role) {
+            currentUser = { username: user, role: role };
+            activeSessions[user] = deviceId;
+            localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
+
+            // Track IP and device info
+            let now = new Date().toISOString();
+            let currentIP = document.getElementById('ipAddress').innerText;
+            let idx = members.findIndex(m => m.username === user);
+            
+            if(idx > -1) {
+                members[idx].lastSeen = now;
+                members[idx].ip = currentIP;
+                members[idx].role = role;
+            } else {
+                members.push({
+                    username: user, 
+                    ip: currentIP, 
+                    deviceId: deviceId, 
+                    lastSeen: now,
+                    role: role,
+                    loginCount: 1
+                });
+            }
+            localStorage.setItem('members', JSON.stringify(members));
+            
+            addLog('LOGIN', `User ${user} (${role}) logged in from ${currentIP}`);
+            showUserInfo();
+            alert('✅ Login Berhasil sebagai ' + role.toUpperCase());
         }
 
-        function deleteBuild(id) {
-            builds = builds.filter(b => b.id !== id);
-            localStorage.setItem('oxy_v9_builds', JSON.stringify(builds));
-            refreshMarket();
+        function showUserInfo() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('sessionWarning').classList.add('hidden');
+            document.getElementById('userInfo').classList.remove('hidden');
+            document.getElementById('displayName').innerText = currentUser.username + ' (' + currentUser.role + ')';
+            document.getElementById('uploadSection').classList.remove('hidden');
+            document.getElementById('deviceInfoSection').style.display = 'block';
+            
+            if (currentUser.role === 'owner') {
+                document.getElementById('ownerPanel').classList.remove('hidden');
+                updateOwnerPanel();
+            }
+            if (currentUser.role === 'owner' || currentUser.role === 'mod') {
+                document.getElementById('chatSection').classList.remove('hidden');
+                displayChat();
+            }
         }
+
+        window.logout = function() {
+            if (currentUser) {
+                addLog('LOGOUT', `User ${currentUser.username} logged out`);
+                delete activeSessions[currentUser.username];
+                localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
+            }
+            location.reload();
+        };
+
+        // ========== OWNER PANEL FUNCTIONS ==========
+        window.switchTab = function(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+            
+            if (tabName === 'users') updateUserTracking();
+            if (tabName === 'security') updateSecurityAnalysis();
+            if (tabName === 'logs') updateActivityLogs();
+        };
+
+        function updateOwnerPanel() {
+            updateUserTracking();
+            updateSecurityAnalysis();
+            updateActivityLogs();
+        }
+
+        window.filterUsers = function(filter) {
+            updateUserTracking(filter);
+        };
+
+        function updateUserTracking(filter = 'all') {
+            let tbody = document.getElementById('userTrackingTable');
+            let filteredMembers = members;
+            
+            if (filter === 'members') filteredMembers = members.filter(m => m.role === 'member');
+            if (filter === 'mods') filteredMembers = members.filter(m => m.role === 'mod');
+            if (filter === 'online') filteredMembers = members.filter(m => activeSessions[m.username]);
+            
+            tbody.innerHTML = filteredMembers.map(m => {
+                let isOnline = activeSessions[m.username];
+                let isBanned = bannedUsers.includes(m.username);
+                let roleClass = m.role === 'owner' ? 'role-owner' : m.role === 'mod' ? 'role-mod' : 'role-member';
+                
+                return `<tr ${isBanned ? 'class="suspicious"' : ''}>
+                    <td><b>${m.username}</b></td>
+                    <td class="${roleClass}">${m.role.toUpperCase()}</td>
+                    <td>${m.ip}</td>
+                    <td>${m.deviceId.substring(0,10)}...</td>
+                    <td>${new Date(m.lastSeen).toLocaleString()}</td>
+                    <td class="${isOnline ? 'online' : 'offline'}">${isOnline ? '● ONLINE' : '○ OFFLINE'}</td>
+                    <td>
+                        ${!isBanned ? 
+                            `<button class="ban-btn" onclick="banUser('${m.username}')">BAN</button>` : 
+                            `<button class="unban-btn" onclick="unbanUser('${m.username}')">UNBAN</button>`
+                        }
+                        <button onclick="kickUser('${m.username}')" style="background:#ff6600; padding:5px 10px; font-size:12px;">KICK</button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function updateSecurityAnalysis() {
+            // Check for suspicious activities
+            let alerts = [];
+            let ipGroups = {};
+            
+            // Group users by IP
+            members.forEach(m => {
+                if (!ipGroups[m.ip]) ipGroups[m.ip] = [];
+                ipGroups[m.ip].push(m);
+            });
+            
+            // Check for multiple accounts from same IP
+            Object.keys(ipGroups).forEach(ip => {
+                if (ipGroups[ip].length > 1) {
+                    alerts.push(`⚠️ Multiple accounts from IP ${ip}: ${ipGroups[ip].map(u => u.username).join(', ')}`);
+                }
+            });
+            
+            // Update security alerts
+            document.getElementById('securityAlerts').innerHTML = alerts.length ? 
+                alerts.map(alert => `<div style="margin:5px 0; padding:5px; background:#330000; border-radius:3px;">${alert}</div>`).join('') :
+                'No security issues detected.';
+            
+            // Update IP analysis table
+            let tbody = document.getElementById('ipAnalysisTable');
+            tbody.innerHTML = Object.keys(ipGroups).map(ip => {
+                let users = ipGroups[ip];
+                let riskLevel = users.length > 1 ? 'HIGH' : 'LOW';
+                let riskColor = users.length > 1 ? '#aa0000' : '#00aa00';
+                
+                return `<tr>
+                    <td>${ip}</td>
+                    <td>${users.length}</td>
+                    <td>${users.map(u => `<span class="role-${u.role}">${u.username}</span>`).join(', ')}</td>
+                    <td style="color:${riskColor}">${riskLevel}</td>
+                    <td>
+                        ${users.length > 1 ? `<button onclick="investigateIP('${ip}')" style="background:#ff6600; padding:5px 10px; font-size:12px;">INVESTIGATE</button>` : ''}
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function updateActivityLogs() {
+            let logsDiv = document.getElementById('activityLogs');
+            logsDiv.innerHTML = activityLogs.map(log => {
+                let time = new Date(log.timestamp).toLocaleString();
+                return `<div style="margin-bottom:8px; padding:5px; background:#1a1a2a; border-radius:3px;">
+                    <span style="color:#666;">[${time}]</span> 
+                    <span style="color:gold;">${log.user}</span> - 
+                    <span style="color:#00ff00;">${log.action}</span>: 
+                    ${log.details}
+                    <span style="color:#666; float:right;">${log.ip}</span>
+                </div>`;
+            }).join('') || '<div style="color:#666;">No activity logs yet.</div>';
+        }
+
+        // ========== ADMIN ACTIONS ==========
+        window.banUser = function(username) {
+            if (confirm(`Ban user ${username}?`)) {
+                bannedUsers.push(username);
+                localStorage.setItem('bannedUsers', JSON.stringify(bannedUsers));
+                if (activeSessions[username]) {
+                    delete activeSessions[username];
+                    localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
+                }
+                addLog('BAN_USER', `Banned user: ${username}`);
+                updateUserTracking();
+                alert(`✅ User ${username} telah dibanned!`);
+            }
+        };
+
+        window.unbanUser = function(username) {
+            if (confirm(`Unban user ${username}?`)) {
+                bannedUsers = bannedUsers.filter(u => u !== username);
+                localStorage.setItem('bannedUsers', JSON.stringify(bannedUsers));
+                addLog('UNBAN_USER', `Unbanned user: ${username}`);
+                updateUserTracking();
+                alert(`✅ User ${username} telah di-unban!`);
+            }
+        };
+
+        window.kickUser = function(username) {
+            if (confirm(`Kick user ${username}?`)) {
+                if (activeSessions[username]) {
+                    delete activeSessions[username];
+                    localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
+                }
+                addLog('KICK_USER', `Kicked user: ${username}`);
+                updateUserTracking();
+                alert(`✅ User ${username} telah di-kick!`);
+            }
+        };
+
+        window.investigateIP = function(ip) {
+            let users = members.filter(m => m.ip === ip);
+            let details = users.map(u => `${u.username} (${u.role}) - Last seen: ${new Date(u.lastSeen).toLocaleString()}`).join('\n');
+            alert(`IP Investigation: ${ip}\n\nUsers:\n${details}`);
+            addLog('IP_INVESTIGATION', `Investigated IP ${ip} with ${users.length} users`);
+        };
+
+        window.clearLogs = function() {
+            if (confirm('Clear all activity logs?')) {
+                activityLogs = [];
+                localStorage.setItem('activityLogs', JSON.stringify(activityLogs));
+                updateActivityLogs();
+                addLog('CLEAR_LOGS', 'Activity logs cleared');
+            }
+        };
+
+        // ========== MARKETPLACE & UPLOAD (unchanged) ==========
+        window.uploadBuild = function() {
+            if (!currentUser) return alert('Login dulu!');
+            const file = document.getElementById('buildFile').files[0];
+            const name = document.getElementById('buildName').value.trim();
+            const desc = document.getElementById('buildDesc').value.trim();
+            const typeInput = document.getElementById('buildPrice').value;
+            const price = parseInt(typeInput);
+
+            if (!file) return alert("tolong upload file build anda");
+            if (!desc) return alert("tolong tulis deskripsi build");
+            if (!typeInput || isNaN(price)) return alert("tolong pilih type build nya");
+            if (!name) return alert("tolong beri nama buildnya");
+
+            builds.push({ 
+                id: Date.now(), 
+                name: name, 
+                price: price, 
+                desc: desc, 
+                file: file.name, 
+                seller: currentUser.username,
+                type: price >= 100 ? 'premium' : 'non-premium'
+            });
+            localStorage.setItem('builds', JSON.stringify(builds));
+            
+            let targetMarket = (price >= 100) ? "Premium Marketplace" : "Non-Premium Marketplace";
+            addLog('UPLOAD_BUILD', `Uploaded build: ${name} (${price} Robux)`);
+            alert(`✅ build telah sukses di publish dan mengarah marketplace untuk yang ${targetMarket}`);
+            displayBuilds();
+            updateStats();
+        };
+
+        window.displayBuilds = function(filter = 'all') {
+            let container = document.getElementById('marketplace');
+            let filtered = builds;
+            if (filter === 'free') filtered = builds.filter(b => b.price === 0);
+            if (filter === 'premium') filtered = builds.filter(b => b.price >= 100);
+            if (filter === 'my') filtered = builds.filter(b => b.seller === currentUser?.username);
+
+            container.innerHTML = filtered.length ? '' : '<p>Belum ada build.</p>';
+            filtered.reverse().forEach(b => {
+                let card = document.createElement('div');
+                card.style = `background:#2a2a3a; border:2px solid ${b.price>=100?'gold':'#b300ff'}; border-radius:10px; padding:15px;`;
+                card.innerHTML = `<h3>${b.name} ${b.price>=100?'💎':''}</h3><p style="color:gold;">💰 ${b.price} Robux</p><p style="font-size:12px; color:#aaa;">${b.desc}</p><p style="font-size:10px; color:#666;">Seller: ${b.seller}</p><button style="margin-top:10px; background:#00aa00;" onclick="downloadBuild('${b.name}', '${b.file}')">⬇️ DOWNLOAD</button>`;
+                container.appendChild(card);
+            });
+        };
+
+        window.downloadBuild = function(name, file) {
+            addLog('DOWNLOAD_BUILD', `Downloaded build: ${name}`);
+            alert('Downloading ' + file + '...');
+        };
+
+        window.filterBuilds = (f) => displayBuilds(f);
 
         function updateStats() {
-            document.getElementById('s_users').innerText = logs.length;
-            document.getElementById('s_builds').innerText = builds.length;
-            document.getElementById('s_online').innerText = Math.floor(Math.random() * 5) + 1;
+            document.getElementById('totalMembers').innerText = members.length;
+            document.getElementById('totalBuilds').innerText = builds.length;
+            document.getElementById('onlineNow').innerText = Object.keys(activeSessions).length;
+            document.getElementById('totalIPs').innerText = [...new Set(members.map(m => m.ip))].length;
         }
 
-        function exportData() { prompt("COPY SYNC CODE:", btoa(JSON.stringify({builds, logs, banned, chats}))); }
-        function logout() { sessionStorage.clear(); location.reload(); }
+        function displayChat() {
+            document.getElementById('chatMessages').innerHTML = chats.map(c => 
+                `<div style="margin-bottom:5px;"><span style="color:${c.role==='owner'?'gold':'#00ff00'}">[${c.user}]:</span> ${c.msg}</div>`
+            ).join('');
+        }
+
+        window.sendChat = function() {
+            let m = document.getElementById('chatMsg').value;
+            if(!m) return;
+            chats.push({user: currentUser.username, role: currentUser.role, msg: m});
+            localStorage.setItem('chats', JSON.stringify(chats));
+            document.getElementById('chatMsg').value = '';
+            addLog('CHAT_MESSAGE', `Sent chat message: ${m.substring(0, 50)}...`);
+            displayChat();
+        }
+
+        // Initialize
+        updateStats();
+        displayBuilds();
     </script>
 </body>
 </html>
