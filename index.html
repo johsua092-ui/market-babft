@@ -1,66 +1,419 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>OXYX MARKET | FIXED EDITION</title>
+    <title>OXYX MARKET | SHADOW EDITION</title>
     <style>
-        /* Style tetap sama seperti milik Tuan agar UI tidak berubah */
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Arial,sans-serif; }
-        body { background:#0a0a0a; color:white; padding:20px; }
-        .container { max-width:1400px; margin:0 auto; }
-        h1 { font-size:4em; text-align:center; color:#b300ff; text-shadow:3px 3px 0 #ff00ff,-3px -3px 0 #00ffff; margin-bottom:30px; }
-        .card { background:#1a1a2a; border:2px solid #b300ff; border-radius:15px; padding:20px; margin-bottom:20px; }
-        .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:15px; margin:20px 0; }
-        .stat-card { background:#2a0a3a; border:2px solid gold; border-radius:10px; padding:15px; text-align:center; }
-        .stat-value { font-size:2.5em; color:gold; }
-        .online-dot { display:inline-block; width:10px; height:10px; background:#00ff00; border-radius:50%; animation:pulse 2s infinite; }
-        @keyframes pulse { 0%{opacity:1} 50%{opacity:0.5;transform:scale(1.3)} }
-        #deviceInfoSection { display:none; }
-        .admin-device { background:#0a0a1a; padding:10px; border-radius:5px; font-family:monospace; }
-        .device-id { color:#00ff00; }
-        .ip-addr { color:#ffaa00; }
-        .login-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-        input, textarea { width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #b300ff; border-radius:5px; color:white; }
-        button { width:100%; padding:15px; background:#b300ff; border:none; border-radius:5px; color:white; font-weight:bold; cursor:pointer; }
-        button:hover { background:#d400ff; }
-        .ip-table { width:100%; border-collapse:collapse; margin-top:15px; }
-        .ip-table th { background:#b300ff; padding:12px; text-align:left; }
-        .ip-table td { padding:10px; border-bottom:1px solid #333; }
-        .online { color:#00ff00; }
-        .offline { color:#666; }
-        .session-warning { background:#aa0000; padding:15px; border-radius:5px; text-align:center; margin-bottom: 10px; }
-        .hidden { display:none !important; }
-        .footer { text-align:center; color:#666; margin-top:30px; }
+        /* 3D Shadow Theme inspired by Cid Kagenou */
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
         
-        /* Enhanced security styles */
-        .owner-panel { background:#1a0a2a; border:3px solid gold; }
-        .mod-panel { background:#1a1a0a; border:3px solid #ffaa00; }
-        .panel-tabs { display:flex; gap:10px; margin-bottom:20px; }
-        .tab-btn { padding:10px 20px; background:#2a2a3a; border:2px solid #666; border-radius:5px; cursor:pointer; }
-        .tab-btn.active { background:gold; color:black; border-color:gold; }
+        * { 
+            margin:0; 
+            padding:0; 
+            box-sizing:border-box; 
+            font-family:'Orbitron',monospace; 
+        }
+        
+        body { 
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 50%, #0a0a0a 100%);
+            color:#e0e0e0; 
+            padding:20px; 
+            min-height:100vh;
+            position:relative;
+            overflow-x:hidden;
+        }
+        
+        /* Chain Effects */
+        .chain-left, .chain-right {
+            position: fixed;
+            top: 0;
+            width: 50px;
+            height: 100vh;
+            background: repeating-linear-gradient(
+                0deg,
+                #333 0px,
+                #333 10px,
+                #666 10px,
+                #666 20px
+            );
+            z-index: 1000;
+            opacity: 0.3;
+        }
+        .chain-left { left: 0; }
+        .chain-right { right: 0; }
+        
+        .container { 
+            max-width:1400px; 
+            margin:0 auto; 
+            position:relative;
+            z-index:10;
+        }
+        
+        h1 { 
+            font-size:4.5em; 
+            text-align:center; 
+            background: linear-gradient(45deg, #b300ff, #ff00ff, #00ffff, #b300ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(179,0,255,0.5);
+            margin-bottom:20px;
+            font-weight:900;
+            position:relative;
+        }
+        
+        .powered-by {
+            text-align:center;
+            font-size:0.9em;
+            color:#666;
+            margin-bottom:30px;
+            font-style:italic;
+        }
+        
+        .card { 
+            background: linear-gradient(145deg, #1a1a2a, #2a1a3a);
+            border:2px solid #b300ff; 
+            border-radius:20px; 
+            padding:25px; 
+            margin-bottom:25px;
+            box-shadow: 
+                0 8px 32px rgba(179,0,255,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            position:relative;
+            backdrop-filter: blur(10px);
+        }
+        
+        .card::before {
+            content:'';
+            position:absolute;
+            top:-2px; left:-2px; right:-2px; bottom:-2px;
+            background: linear-gradient(45deg, #b300ff, #ff00ff, #00ffff, #b300ff);
+            border-radius:22px;
+            z-index:-1;
+            opacity:0.7;
+        }
+        
+        .stats { 
+            display:grid; 
+            grid-template-columns:repeat(3,1fr); 
+            gap:20px; 
+            margin:25px 0; 
+        }
+        
+        .stat-card { 
+            background: linear-gradient(145deg, #2a0a3a, #3a1a4a);
+            border:2px solid gold; 
+            border-radius:15px; 
+            padding:20px; 
+            text-align:center;
+            box-shadow: 0 4px 20px rgba(255,215,0,0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-value { 
+            font-size:3em; 
+            color:gold; 
+            font-weight:900;
+            text-shadow: 0 0 20px rgba(255,215,0,0.5);
+        }
+        
+        .online-dot { 
+            display:inline-block; 
+            width:12px; 
+            height:12px; 
+            background:#00ff00; 
+            border-radius:50%; 
+            animation:pulse 2s infinite;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        
+        @keyframes pulse { 
+            0%{opacity:1; transform:scale(1)} 
+            50%{opacity:0.5; transform:scale(1.3)} 
+            100%{opacity:1; transform:scale(1)}
+        }
+        
+        .login-grid { 
+            display:grid; 
+            grid-template-columns:1fr 1fr; 
+            gap:25px; 
+        }
+        
+        input, textarea, select { 
+            width:100%; 
+            padding:15px; 
+            margin:10px 0; 
+            background: linear-gradient(145deg, #2a2a3a, #3a3a4a);
+            border:2px solid #b300ff; 
+            border-radius:10px; 
+            color:#e0e0e0;
+            font-family:'Orbitron',monospace;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, textarea:focus {
+            border-color:#ff00ff;
+            box-shadow: 0 0 20px rgba(255,0,255,0.3);
+            outline:none;
+        }
+        
+        button { 
+            width:100%; 
+            padding:18px; 
+            background: linear-gradient(45deg, #b300ff, #d400ff);
+            border:none; 
+            border-radius:10px; 
+            color:white; 
+            font-weight:bold; 
+            cursor:pointer;
+            font-family:'Orbitron',monospace;
+            transition: all 0.3s ease;
+            text-transform:uppercase;
+            letter-spacing:1px;
+        }
+        
+        button:hover { 
+            background: linear-gradient(45deg, #d400ff, #ff00ff);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(179,0,255,0.4);
+        }
+        
+        .ip-table { 
+            width:100%; 
+            border-collapse:collapse; 
+            margin-top:20px;
+            background: linear-gradient(145deg, #1a1a2a, #2a2a3a);
+            border-radius:10px;
+            overflow:hidden;
+        }
+        
+        .ip-table th { 
+            background: linear-gradient(45deg, #b300ff, #d400ff);
+            padding:15px; 
+            text-align:left;
+            font-weight:bold;
+            text-transform:uppercase;
+            letter-spacing:1px;
+        }
+        
+        .ip-table td { 
+            padding:12px; 
+            border-bottom:1px solid #333;
+            transition: background 0.3s ease;
+        }
+        
+        .ip-table tr:hover td {
+            background: rgba(179,0,255,0.1);
+        }
+        
+        .hidden { display:none !important; }
+        
+        /* Enhanced Security Styles */
+        .owner-panel { 
+            background: linear-gradient(145deg, #1a0a2a, #2a1a3a);
+            border:3px solid gold; 
+        }
+        
+        .mod-panel { 
+            background: linear-gradient(145deg, #1a1a0a, #2a2a1a);
+            border:3px solid #ffaa00; 
+        }
+        
+        .panel-tabs { 
+            display:flex; 
+            gap:15px; 
+            margin-bottom:25px; 
+            flex-wrap:wrap;
+        }
+        
+        .tab-btn { 
+            padding:12px 25px; 
+            background: linear-gradient(145deg, #2a2a3a, #3a3a4a);
+            border:2px solid #666; 
+            border-radius:8px; 
+            cursor:pointer;
+            transition: all 0.3s ease;
+            font-size:0.9em;
+        }
+        
+        .tab-btn.active { 
+            background: linear-gradient(45deg, gold, #ffaa00);
+            color:black; 
+            border-color:gold;
+            font-weight:bold;
+        }
+        
         .tab-content { display:none; }
         .tab-content.active { display:block; }
-        .security-alert { background:#aa0000; padding:10px; border-radius:5px; margin:10px 0; }
-        .role-member { color:#00ff00; }
-        .role-mod { color:#ffaa00; }
-        .role-owner { color:gold; }
-        .suspicious { background:#330000; }
-        .ban-btn { background:#aa0000; padding:5px 10px; font-size:12px; }
-        .unban-btn { background:#00aa00; padding:5px 10px; font-size:12px; }
-        .whid-input { background:#0a0a0a; border:2px solid gold; }
-        .security-warning { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; display:flex; align-items:center; justify-content:center; }
+        
+        /* Chat Styles */
+        .chat-container {
+            height:200px;
+            overflow-y:auto;
+            background: linear-gradient(145deg, #0a0a1a, #1a1a2a);
+            padding:15px;
+            border-radius:10px;
+            margin:15px 0;
+            border:1px solid #333;
+        }
+        
+        .chat-message {
+            margin-bottom:8px;
+            padding:8px;
+            border-radius:5px;
+            background: rgba(179,0,255,0.1);
+        }
+        
+        .countdown {
+            background: linear-gradient(45deg, #aa0000, #ff0000);
+            color:white;
+            padding:10px;
+            border-radius:5px;
+            text-align:center;
+            margin:10px 0;
+            font-weight:bold;
+        }
+        
+        /* Build Preview Styles */
+        .build-preview {
+            max-width:200px;
+            max-height:150px;
+            border-radius:10px;
+            margin:10px 0;
+            border:2px solid #b300ff;
+        }
+        
+        .build-card {
+            background: linear-gradient(145deg, #2a2a3a, #3a3a4a);
+            border:2px solid #b300ff;
+            border-radius:15px;
+            padding:20px;
+            transition: all 0.3s ease;
+        }
+        
+        .build-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(179,0,255,0.3);
+        }
+        
+        .premium-build {
+            border-color:gold;
+            box-shadow: 0 0 20px rgba(255,215,0,0.3);
+        }
+        
+        /* Discord Links */
+        .discord-links {
+            display:flex;
+            gap:15px;
+            justify-content:center;
+            margin:20px 0;
+            flex-wrap:wrap;
+        }
+        
+        .discord-btn {
+            background: linear-gradient(45deg, #5865F2, #7289DA);
+            padding:12px 25px;
+            border-radius:25px;
+            text-decoration:none;
+            color:white;
+            font-weight:bold;
+            transition: all 0.3s ease;
+            display:flex;
+            align-items:center;
+            gap:8px;
+        }
+        
+        .discord-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(88,101,242,0.4);
+        }
+        
+        /* Security Warning */
+        .security-warning { 
+            position:fixed; 
+            top:0; left:0; 
+            width:100%; height:100%; 
+            background:rgba(0,0,0,0.95); 
+            z-index:9999; 
+            display:flex; 
+            align-items:center; 
+            justify-content:center;
+        }
+        
+        .blocked-overlay {
+            background: linear-gradient(45deg, #aa0000, #ff0000);
+            padding:40px;
+            border-radius:20px;
+            text-align:center;
+            box-shadow: 0 0 50px rgba(255,0,0,0.5);
+        }
+        
+        /* FAQ Styles */
+        .faq-item {
+            background: linear-gradient(145deg, #2a2a3a, #3a3a4a);
+            margin:10px 0;
+            border-radius:10px;
+            overflow:hidden;
+        }
+        
+        .faq-question {
+            padding:15px;
+            background: linear-gradient(45deg, #b300ff, #d400ff);
+            cursor:pointer;
+            font-weight:bold;
+        }
+        
+        .faq-answer {
+            padding:15px;
+            display:none;
+        }
+        
+        .faq-answer.active {
+            display:block;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats { grid-template-columns: 1fr; }
+            .login-grid { grid-template-columns: 1fr; }
+            .discord-links { flex-direction: column; align-items: center; }
+            h1 { font-size: 2.5em; }
+        }
     </style>
 </head>
 <body>
+    <!-- Chain Effects -->
+    <div class="chain-left"></div>
+    <div class="chain-right"></div>
+    
+    <!-- Security Warning -->
     <div id="securityWarning" class="security-warning hidden">
-        <div style="background:#aa0000; padding:30px; border-radius:10px; text-align:center;">
+        <div class="blocked-overlay">
             <h2>🚨 SECURITY BREACH DETECTED</h2>
-            <p>Developer tools detected. Access denied for security reasons.</p>
-            <p>This incident has been logged.</p>
+            <p>Unauthorized access attempt blocked.</p>
+            <p id="blockMessage">This incident has been logged.</p>
+            <div id="blockCountdown" class="countdown hidden"></div>
         </div>
     </div>
 
     <div class="container">
         <h1>⚡ OXYX MARKET ⚡</h1>
+        <div class="powered-by">Powered by OxyX • Shadow Edition</div>
+        
+        <!-- Discord Links -->
+        <div class="discord-links">
+            <a href="https://discord.gg/autobuild" class="discord-btn" target="_blank">
+                🎮 Main Server
+            </a>
+            <a href="https://discord.gg/boatbuilderhub" class="discord-btn" target="_blank">
+                🛠️ Support Server
+            </a>
+            <a href="https://discord.gg/boatbuilderhub" class="discord-btn" target="_blank">
+                💬 Support Server 2
+            </a>
+        </div>
         
         <div class="stats">
             <div class="stat-card">
@@ -79,17 +432,17 @@
 
         <div id="deviceInfoSection" class="card">
             <h2>📱 DEVICE INFO</h2>
-            <div class="admin-device">
-                <p>Device ID: <span class="device-id" id="deviceId">Loading...</span></p>
-                <p id="ipDisplay" class="hidden">IP Address: <span class="ip-addr" id="ipAddress">Loading...</span></p>
+            <div style="background:#0a0a1a; padding:15px; border-radius:10px; font-family:monospace;">
+                <p>Device ID: <span style="color:#00ff00;" id="deviceId">Loading...</span></p>
+                <p id="ipDisplay" class="hidden">IP Address: <span style="color:#ffaa00;" id="ipAddress">Loading...</span></p>
             </div>
         </div>
 
         <div class="card">
             <h2>🔐 LOGIN</h2>
-            <div id="sessionWarning" class="session-warning hidden">
+            <div id="sessionWarning" class="hidden" style="background:#aa0000; padding:15px; border-radius:10px; text-align:center; margin-bottom:15px;">
                 ⚠️ Akun aktif di device lain! 
-                <button onclick="forceUnbind()" style="width:auto; padding:5px 10px; background:white; color:black; font-size:12px;">FORCE UNBIND (OWNER ONLY)</button>
+                <button onclick="forceUnbind()" style="width:auto; padding:8px 15px; background:white; color:black; font-size:12px;">FORCE UNBIND (OWNER ONLY)</button>
             </div>
             <div class="login-grid" id="loginForm">
                 <div>
@@ -101,29 +454,29 @@
                     <h3>👑 ADMIN</h3>
                     <input type="text" id="adminUser" placeholder="Username">
                     <input type="password" id="adminPass" placeholder="Password">
-                    <input type="text" id="whidInput" class="whid-input" placeholder="WHID (Required for Admin)" style="margin-top:5px;">
+                    <input type="text" id="whidInput" placeholder="WHID (Required for Admin)" style="background:#0a0a0a; border:2px solid gold;">
                     <button onclick="loginAdmin()">LOGIN ADMIN</button>
                 </div>
             </div>
-            <div id="userInfo" class="hidden" style="margin-top:20px; padding:15px; background:#2a0a3a; border-radius:10px;">
+            <div id="userInfo" class="hidden" style="margin-top:25px; padding:20px; background:linear-gradient(145deg, #2a0a3a, #3a1a4a); border-radius:15px;">
                 <p>Logged in as: <span id="displayName" style="font-weight:bold; color:gold;"></span></p>
-                <button onclick="logout()" style="background:#aa0000; margin-top:10px;">LOGOUT</button>
+                <button onclick="logout()" style="background:linear-gradient(45deg, #aa0000, #ff0000); margin-top:15px;">LOGOUT</button>
             </div>
         </div>
 
         <!-- Owner Panel -->
         <div id="ownerPanel" class="card owner-panel hidden">
-            <h2>👑 OWNER SECURITY PANEL</h2>
+            <h2>👑 OWNER COMMAND CENTER</h2>
             <div class="panel-tabs">
                 <button class="tab-btn active" onclick="switchTab('users')">👥 USER TRACKING</button>
                 <button class="tab-btn" onclick="switchTab('security')">🛡️ SECURITY</button>
                 <button class="tab-btn" onclick="switchTab('logs')">📋 ACTIVITY LOGS</button>
                 <button class="tab-btn" onclick="switchTab('blacklist')">🚫 BLACKLIST</button>
+                <button class="tab-btn" onclick="switchTab('modtools')">🔧 MOD TOOLS</button>
             </div>
 
-            <!-- User Tracking Tab -->
             <div id="usersTab" class="tab-content active">
-                <div style="display:flex; gap:10px; margin-bottom:15px;">
+                <div style="display:flex; gap:15px; margin-bottom:20px; flex-wrap:wrap;">
                     <button onclick="filterUsers('all')">ALL USERS</button>
                     <button onclick="filterUsers('members')">MEMBERS</button>
                     <button onclick="filterUsers('mods')">MODERATORS</button>
@@ -145,9 +498,8 @@
                 </table>
             </div>
 
-            <!-- Security Tab -->
             <div id="securityTab" class="tab-content">
-                <div class="security-alert">
+                <div style="background:#aa0000; padding:15px; border-radius:10px; margin:15px 0;">
                     <h3>🚨 SECURITY ALERTS</h3>
                     <div id="securityAlerts">No security issues detected.</div>
                 </div>
@@ -166,21 +518,19 @@
                 </table>
             </div>
 
-            <!-- Activity Logs Tab -->
             <div id="logsTab" class="tab-content">
                 <h3>📋 Recent Activity</h3>
-                <div style="height:300px; overflow:auto; background:#0a0a1a; padding:10px; border-radius:5px;">
+                <div class="chat-container" style="height:350px;">
                     <div id="activityLogs"></div>
                 </div>
-                <button onclick="clearLogs()" style="background:#aa0000; margin-top:10px;">CLEAR LOGS</button>
+                <button onclick="clearLogs()" style="background:linear-gradient(45deg, #aa0000, #ff0000); margin-top:15px;">CLEAR LOGS</button>
             </div>
 
-            <!-- Blacklist Tab -->
             <div id="blacklistTab" class="tab-content">
                 <h3>🚫 IP Blacklist Management</h3>
-                <div style="margin-bottom:15px;">
+                <div style="margin-bottom:20px;">
                     <input type="text" id="blacklistIP" placeholder="IP Address to blacklist">
-                    <button onclick="addToBlacklist()" style="background:#aa0000;">ADD TO BLACKLIST</button>
+                    <button onclick="addToBlacklist()" style="background:linear-gradient(45deg, #aa0000, #ff0000);">ADD TO BLACKLIST</button>
                 </div>
                 <table class="ip-table">
                     <thead>
@@ -194,18 +544,33 @@
                     <tbody id="blacklistTable"></tbody>
                 </table>
             </div>
+
+            <div id="modtoolsTab" class="tab-content">
+                <h3>🔧 Moderator Management</h3>
+                <div style="margin-bottom:20px;">
+                    <h4>Reset Moderator Password</h4>
+                    <select id="modSelect">
+                        <option value="">Select Moderator</option>
+                        <option value="helper_tester">helper_tester</option>
+                        <option value="sigma">sigma</option>
+                    </select>
+                    <input type="password" id="newModPass" placeholder="New Password">
+                    <button onclick="resetModPassword()">RESET PASSWORD</button>
+                </div>
+            </div>
         </div>
 
         <!-- Moderator Panel -->
         <div id="modPanel" class="card mod-panel hidden">
-            <h2>🛡️ MODERATOR PANEL</h2>
+            <h2>🛡️ MODERATOR CONTROL PANEL</h2>
             <div class="panel-tabs">
                 <button class="tab-btn active" onclick="switchModTab('users')">👥 USER LIST</button>
+                <button class="tab-btn" onclick="switchModTab('blacklist')">🚫 BLACKLIST</button>
                 <button class="tab-btn" onclick="switchModTab('reports')">📋 REPORTS</button>
             </div>
 
             <div id="modUsersTab" class="tab-content active">
-                <h3>👥 Member List (IP Visible)</h3>
+                <h3>👥 Member List</h3>
                 <table class="ip-table">
                     <thead>
                         <tr>
@@ -213,56 +578,156 @@
                             <th>IP Address</th>
                             <th>Last Seen</th>
                             <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="modUserTable"></tbody>
                 </table>
             </div>
 
+            <div id="modBlacklistTab" class="tab-content">
+                <h3>🚫 IP Blacklist (Moderator)</h3>
+                <div style="margin-bottom:20px;">
+                    <input type="text" id="modBlacklistIP" placeholder="IP Address to blacklist">
+                    <button onclick="modAddToBlacklist()" style="background:linear-gradient(45deg, #aa0000, #ff0000);">BLACKLIST IP</button>
+                </div>
+                <table class="ip-table">
+                    <thead>
+                        <tr>
+                            <th>IP Address</th>
+                            <th>Date Added</th>
+                            <th>Added By</th>
+                            <th>Reason</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modBlacklistTable"></tbody>
+                </table>
+            </div>
+
             <div id="modReportsTab" class="tab-content">
                 <h3>📋 Security Reports</h3>
-                <div id="modReports" style="height:200px; overflow:auto; background:#0a0a1a; padding:10px; border-radius:5px;">
-                    No reports available.
+                <div class="chat-container">
+                    <div id="modReports">No reports available.</div>
                 </div>
             </div>
         </div>
 
+        <!-- Enhanced Chat Section -->
         <div id="chatSection" class="card hidden">
-            <h2>💬 MOD CHAT</h2>
-            <div id="chatMessages" style="height:150px; overflow:auto; background:#0a0a1a; padding:10px; margin:10px 0;"></div>
-            <input type="text" id="chatMsg" placeholder="Type message...">
-            <button onclick="sendChat()">SEND</button>
+            <h2>💬 STAFF CHAT</h2>
+            <div id="chatCountdown" class="countdown hidden">
+                Chat will be cleared in: <span id="chatTimer">180:00</span>
+                <button onclick="clearChatNow()" style="margin-left:15px; padding:5px 15px; background:white; color:black;">CLEAR NOW</button>
+            </div>
+            <div class="chat-container">
+                <div id="chatMessages"></div>
+            </div>
+            <input type="text" id="chatMsg" placeholder="Type message..." maxlength="200">
+            <button onclick="sendChat()">SEND MESSAGE</button>
         </div>
 
+        <!-- Enhanced Upload Section -->
         <div id="uploadSection" class="card hidden">
             <h2>📤 UPLOAD BUILD</h2>
-            <input type="text" id="buildName" placeholder="Build name">
+            <input type="text" id="buildName" placeholder="Build name" maxlength="50">
             <input type="number" id="buildPrice" min="0" value="0" placeholder="Price (100+ = premium)">
-            <textarea id="buildDesc" rows="3" placeholder="Description"></textarea>
-            <input type="file" id="buildFile" accept=".build">
+            <textarea id="buildDesc" rows="3" placeholder="Description" maxlength="200"></textarea>
+            <input type="file" id="buildFile" accept=".build" required>
+            <input type="file" id="buildImage" accept="image/*" placeholder="Build Preview Image (Optional)">
+            <div id="imagePreview"></div>
             <button onclick="uploadBuild()">PUBLISH BUILD</button>
         </div>
 
+        <!-- Enhanced Marketplace -->
         <div class="card">
-            <h2>🏪 MARKETPLACE</h2>
-            <div style="display:flex; gap:10px; margin:15px 0; flex-wrap:wrap;">
-                <button onclick="filterBuilds('all')">📋 ALL</button>
-                <button onclick="filterBuilds('free')">🆓 FREE</button>
-                <button onclick="filterBuilds('premium')">💎 PREMIUM</button>
+            <h2>🏪 SHADOW MARKETPLACE</h2>
+            <div style="display:flex; gap:15px; margin:20px 0; flex-wrap:wrap;">
+                <button onclick="filterBuilds('all')">📋 ALL BUILDS</button>
+                <button onclick="filterBuilds('free')">🆓 FREE BUILDS</button>
+                <button onclick="filterBuilds('premium')">💎 PREMIUM BUILDS</button>
                 <button onclick="filterBuilds('my')">👤 MY BUILDS</button>
             </div>
-            <div id="marketplace" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:15px;"></div>
+            <div id="marketplace" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px;"></div>
         </div>
 
-        <div class="footer">OXYX MARKET • Build A Boat Only</div>
+        <!-- FAQ Section -->
+        <div class="card">
+            <h2>❓ FAQ & BUG REPORT</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:25px;">
+                <div>
+                    <h3>Frequently Asked Questions</h3>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(0)">How to upload builds?</div>
+                        <div class="faq-answer">Only .build files are accepted. Add a preview image and description for better visibility.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(1)">What are premium builds?</div>
+                        <div class="faq-answer">Builds priced 100+ Robux are premium builds with special highlighting.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(2)">How to become a moderator?</div>
+                        <div class="faq-answer">Contact the owner through Discord servers for moderator applications.</div>
+                    </div>
+                </div>
+                <div>
+                    <h3>Report Bug</h3>
+                    <input type="text" id="bugTitle" placeholder="Bug Title" maxlength="100">
+                    <textarea id="bugDesc" rows="4" placeholder="Describe the bug in detail" maxlength="500"></textarea>
+                    <select id="bugSeverity">
+                        <option value="low">Low Priority</option>
+                        <option value="medium">Medium Priority</option>
+                        <option value="high">High Priority</option>
+                        <option value="critical">Critical</option>
+                    </select>
+                    <button onclick="reportBug()">SUBMIT BUG REPORT</button>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align:center; color:#666; margin-top:40px; font-size:0.9em;">
+            OXYX MARKET • Shadow Edition • Build A Boat Only<br>
+            <span style="font-size:0.8em;">Powered by OxyX • Enhanced Security System</span>
+        </div>
     </div>
 
     <script>
-        // ========== ANTI-DEVTOOLS & SECURITY ==========
+        // ========== ENHANCED SECURITY & ANTI-DEVTOOLS ==========
         let devtoolsOpen = false;
         let securityBreach = false;
+        let blockedUntil = localStorage.getItem('blockedUntil');
+        let failedAttempts = parseInt(localStorage.getItem('failedAttempts')) || 0;
 
-        // Anti-DevTools Protection
+        // Check if currently blocked
+        if (blockedUntil && new Date() < new Date(blockedUntil)) {
+            showBlockedScreen();
+        }
+
+        function showBlockedScreen() {
+            document.getElementById('securityWarning').classList.remove('hidden');
+            document.getElementById('blockMessage').innerText = 'Access blocked for 24 hours due to security violations.';
+            
+            let countdown = setInterval(() => {
+                let now = new Date();
+                let blocked = new Date(blockedUntil);
+                let diff = blocked - now;
+                
+                if (diff <= 0) {
+                    localStorage.removeItem('blockedUntil');
+                    localStorage.removeItem('failedAttempts');
+                    location.reload();
+                    return;
+                }
+                
+                let hours = Math.floor(diff / (1000 * 60 * 60));
+                let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                let seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                document.getElementById('blockCountdown').classList.remove('hidden');
+                document.getElementById('blockCountdown').innerText = `Unblocked in: ${hours}h ${minutes}m ${seconds}s`;
+            }, 1000);
+        }
+
+        // Enhanced DevTools Detection
         function detectDevTools() {
             let threshold = 160;
             if (window.outerHeight - window.innerHeight > threshold || 
@@ -270,46 +735,46 @@
                 if (!devtoolsOpen) {
                     devtoolsOpen = true;
                     securityBreach = true;
-                    document.getElementById('securityWarning').classList.remove('hidden');
-                    addLog('SECURITY_BREACH', 'DevTools detected - Access blocked');
-                    setTimeout(() => {
-                        window.location.href = 'about:blank';
-                    }, 3000);
+                    handleSecurityBreach('DevTools detected');
                 }
             }
         }
 
-        // Disable right-click, F12, Ctrl+Shift+I, etc.
+        function handleSecurityBreach(reason) {
+            failedAttempts++;
+            localStorage.setItem('failedAttempts', failedAttempts);
+            addLog('SECURITY_BREACH', reason);
+            
+            if (failedAttempts >= 3) {
+                // Block for 24 hours
+                let blockTime = new Date();
+                blockTime.setHours(blockTime.getHours() + 24);
+                localStorage.setItem('blockedUntil', blockTime.toISOString());
+                showBlockedScreen();
+            } else {
+                // Just kick
+                document.getElementById('securityWarning').classList.remove('hidden');
+                document.getElementById('blockMessage').innerText = `Security violation detected. ${3 - failedAttempts} attempts remaining.`;
+                setTimeout(() => {
+                    window.location.href = 'about:blank';
+                }, 3000);
+            }
+        }
+
+        // Disable various developer access methods
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.addEventListener('keydown', function(e) {
             if (e.key === 'F12' || 
                 (e.ctrlKey && e.shiftKey && e.key === 'I') ||
                 (e.ctrlKey && e.shiftKey && e.key === 'J') ||
-                (e.ctrlKey && e.key === 'U')) {
+                (e.ctrlKey && e.key === 'U') ||
+                (e.ctrlKey && e.shiftKey && e.key === 'C')) {
                 e.preventDefault();
-                securityBreach = true;
-                addLog('SECURITY_BREACH', 'Attempted to open DevTools via keyboard');
-                document.getElementById('securityWarning').classList.remove('hidden');
+                handleSecurityBreach('Attempted to open DevTools via keyboard');
             }
         });
 
-        // Check for devtools every 500ms
         setInterval(detectDevTools, 500);
-
-        // Disable console
-        (function() {
-            let devtools = {open: false, orientation: null};
-            setInterval(function() {
-                if (window.outerHeight - window.innerHeight > 160 || window.outerWidth - window.innerWidth > 160) {
-                    if (!devtools.open) {
-                        devtools.open = true;
-                        console.clear();
-                        console.log('%cSECURITY WARNING', 'color: red; font-size: 50px; font-weight: bold;');
-                        console.log('%cThis is a restricted area. Unauthorized access is prohibited.', 'color: red; font-size: 16px;');
-                    }
-                }
-            }, 500);
-        })();
 
         // ========== DATA & SETUP ==========
         let currentUser = null;
@@ -322,13 +787,21 @@
         let activityLogs = JSON.parse(localStorage.getItem('activityLogs')) || [];
         let bannedUsers = JSON.parse(localStorage.getItem('bannedUsers')) || [];
         let blacklistedIPs = JSON.parse(localStorage.getItem('blacklistedIPs')) || [];
+        let bugReports = JSON.parse(localStorage.getItem('bugReports')) || [];
         let currentIP = '';
+        let chatClearTimer = null;
+        let chatTimeLeft = 10800; // 3 hours in seconds
 
-        // Valid WHIDs for security
-        const validWHIDs = {
+        // Enhanced WHID system with password reset capability
+        let validWHIDs = JSON.parse(localStorage.getItem('validWHIDs')) || {
             'znyt': 'WHID-OWNER-7K9P2X8M4N6Q',
             'helper_tester': 'WHID-MOD-3F8H5J2L9R4T',
             'sigma': 'WHID-MOD-6B1N8K3P7W5Z'
+        };
+
+        let modPasswords = JSON.parse(localStorage.getItem('modPasswords')) || {
+            'helper_tester': 'huwydhdjsiqo',
+            'sigma': 'uBwbONeqIwYQ97'
         };
 
         document.getElementById('deviceId').innerText = deviceId;
@@ -338,13 +811,50 @@
                 currentIP = d.ip;
                 document.getElementById('ipAddress').innerText = currentIP;
                 
-                // Check if IP is blacklisted
                 if (blacklistedIPs.some(item => item.ip === currentIP)) {
                     alert('❌ Your IP has been blacklisted. Access denied.');
                     window.location.href = 'about:blank';
                     return;
                 }
             });
+
+        // ========== CHAT TIMER SYSTEM ==========
+        function startChatTimer() {
+            if (currentUser && (currentUser.role === 'owner' || currentUser.role === 'mod')) {
+                document.getElementById('chatCountdown').classList.remove('hidden');
+                
+                chatClearTimer = setInterval(() => {
+                    chatTimeLeft--;
+                    let minutes = Math.floor(chatTimeLeft / 60);
+                    let seconds = chatTimeLeft % 60;
+                    document.getElementById('chatTimer').innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    
+                    if (chatTimeLeft <= 0) {
+                        clearChatAuto();
+                    }
+                }, 1000);
+            }
+        }
+
+        function clearChatAuto() {
+            chats = [];
+            localStorage.setItem('chats', JSON.stringify(chats));
+            displayChat();
+            chatTimeLeft = 10800; // Reset to 3 hours
+            addLog('AUTO_CLEAR_CHAT', 'Chat automatically cleared after 3 hours');
+        }
+
+        window.clearChatNow = function() {
+            if (currentUser && (currentUser.role === 'owner' || currentUser.role === 'mod')) {
+                if (confirm('Clear all chat messages now?')) {
+                    chats = [];
+                    localStorage.setItem('chats', JSON.stringify(chats));
+                    displayChat();
+                    chatTimeLeft = 10800; // Reset timer
+                    addLog('MANUAL_CLEAR_CHAT', `Chat manually cleared by ${currentUser.username}`);
+                }
+            }
+        };
 
         // ========== LOGGING SYSTEM ==========
         function addLog(action, details) {
@@ -357,7 +867,7 @@
                 deviceId: deviceId
             };
             activityLogs.unshift(log);
-            if (activityLogs.length > 200) activityLogs.pop();
+            if (activityLogs.length > 500) activityLogs.pop();
             localStorage.setItem('activityLogs', JSON.stringify(activityLogs));
             if (currentUser && (currentUser.role === 'owner' || currentUser.role === 'mod')) {
                 updateActivityLogs();
@@ -402,10 +912,15 @@
             if (bannedUsers.includes(user)) return alert('❌ Akun anda telah dibanned!');
             if (blacklistedIPs.some(item => item.ip === currentIP)) return alert('❌ Your IP has been blacklisted!');
             
-            // Validate WHID
+            // Enhanced security check for unknown entities
+            if (!validWHIDs[user]) {
+                handleSecurityBreach(`Unknown entity attempted admin login: ${user}`);
+                return;
+            }
+            
             if (!whid || validWHIDs[user] !== whid) {
-                addLog('FAILED_LOGIN', `Invalid WHID for user: ${user}`);
-                return alert('❌ Invalid WHID! Access denied.');
+                handleSecurityBreach(`Invalid WHID for user: ${user}`);
+                return;
             }
             
             if (activeSessions[user] && activeSessions[user] !== deviceId) {
@@ -415,12 +930,10 @@
             
             if (user === 'znyt' && pass === 'Root!Delta_7KpZ') {
                 loginFinalize(user, 'owner');
-            } else if ((user === 'helper_tester' && pass === 'huwydhdjsiqo') || 
-                       (user === 'sigma' && pass === 'uBwbONeqIwYQ97')) {
+            } else if (modPasswords[user] && modPasswords[user] === pass) {
                 loginFinalize(user, 'mod');
             } else {
-                addLog('FAILED_LOGIN', `Failed admin login attempt: ${user}`);
-                alert('❌ Password Salah!');
+                handleSecurityBreach(`Failed admin login attempt: ${user}`);
             }
         };
 
@@ -462,9 +975,11 @@
             document.getElementById('uploadSection').classList.remove('hidden');
             document.getElementById('deviceInfoSection').style.display = 'block';
             
-            // Show IP only for mods and owners
             if (currentUser.role === 'owner' || currentUser.role === 'mod') {
                 document.getElementById('ipDisplay').classList.remove('hidden');
+                document.getElementById('chatSection').classList.remove('hidden');
+                displayChat();
+                startChatTimer();
             }
             
             if (currentUser.role === 'owner') {
@@ -474,11 +989,6 @@
                 document.getElementById('modPanel').classList.remove('hidden');
                 updateModPanel();
             }
-            
-            if (currentUser.role === 'owner' || currentUser.role === 'mod') {
-                document.getElementById('chatSection').classList.remove('hidden');
-                displayChat();
-            }
         }
 
         window.logout = function() {
@@ -487,6 +997,7 @@
                 delete activeSessions[currentUser.username];
                 localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
             }
+            if (chatClearTimer) clearInterval(chatClearTimer);
             location.reload();
         };
 
@@ -512,6 +1023,7 @@
             event.target.classList.add('active');
             
             if (tabName === 'users') updateModUserList();
+            if (tabName === 'blacklist') updateModBlacklist();
         };
 
         function updateOwnerPanel() {
@@ -523,6 +1035,7 @@
 
         function updateModPanel() {
             updateModUserList();
+            updateModBlacklist();
         }
 
         window.filterUsers = function(filter) {
@@ -542,19 +1055,18 @@
             tbody.innerHTML = filteredMembers.map(m => {
                 let isOnline = activeSessions[m.username];
                 let isBanned = bannedUsers.includes(m.username);
-                let roleClass = m.role === 'owner' ? 'role-owner' : m.role === 'mod' ? 'role-mod' : 'role-member';
                 
-                return `<tr ${isBanned ? 'class="suspicious"' : ''}>
+                return `<tr ${isBanned ? 'style="background:rgba(170,0,0,0.2);"' : ''}>
                     <td><b>${m.username}</b></td>
-                    <td class="${roleClass}">${m.role.toUpperCase()}</td>
+                    <td style="color:${m.role === 'owner' ? 'gold' : m.role === 'mod' ? '#ffaa00' : '#00ff00'}">${m.role.toUpperCase()}</td>
                     <td>${m.ip}</td>
                     <td>${m.deviceId.substring(0,10)}...</td>
                     <td>${new Date(m.lastSeen).toLocaleString()}</td>
-                    <td class="${isOnline ? 'online' : 'offline'}">${isOnline ? '● ONLINE' : '○ OFFLINE'}</td>
+                    <td style="color:${isOnline ? '#00ff00' : '#666'}">${isOnline ? '● ONLINE' : '○ OFFLINE'}</td>
                     <td>
                         ${!isBanned ? 
-                            `<button class="ban-btn" onclick="banUser('${m.username}')">BAN</button>` : 
-                            `<button class="unban-btn" onclick="unbanUser('${m.username}')">UNBAN</button>`
+                            `<button onclick="banUser('${m.username}')" style="background:#aa0000; padding:5px 10px; font-size:12px;">BAN</button>` : 
+                            `<button onclick="unbanUser('${m.username}')" style="background:#00aa00; padding:5px 10px; font-size:12px;">UNBAN</button>`
                         }
                         <button onclick="kickUser('${m.username}')" style="background:#ff6600; padding:5px 10px; font-size:12px;">KICK</button>
                         <button onclick="blacklistIP('${m.ip}')" style="background:#660000; padding:5px 10px; font-size:12px;">BLACKLIST IP</button>
@@ -575,7 +1087,10 @@
                     <td><b>${m.username}</b></td>
                     <td>${m.ip}</td>
                     <td>${new Date(m.lastSeen).toLocaleString()}</td>
-                    <td class="${isOnline ? 'online' : 'offline'}">${isOnline ? '● ONLINE' : '○ OFFLINE'}</td>
+                    <td style="color:${isOnline ? '#00ff00' : '#666'}">${isOnline ? '● ONLINE' : '○ OFFLINE'}</td>
+                    <td>
+                        <button onclick="modBlacklistUser('${m.username}', '${m.ip}')" style="background:#aa0000; padding:5px 10px; font-size:12px;">BLACKLIST</button>
+                    </td>
                 </tr>`;
             }).join('');
         }
@@ -598,7 +1113,7 @@
             });
             
             document.getElementById('securityAlerts').innerHTML = alerts.length ? 
-                alerts.map(alert => `<div style="margin:5px 0; padding:5px; background:#330000; border-radius:3px;">${alert}</div>`).join('') :
+                alerts.map(alert => `<div style="margin:5px 0; padding:8px; background:#330000; border-radius:5px;">${alert}</div>`).join('') :
                 'No security issues detected.';
             
             let tbody = document.getElementById('ipAnalysisTable');
@@ -610,7 +1125,7 @@
                 return `<tr>
                     <td>${ip}</td>
                     <td>${users.length}</td>
-                    <td>${users.map(u => `<span class="role-${u.role}">${u.username}</span>`).join(', ')}</td>
+                    <td>${users.map(u => `<span style="color:${u.role === 'owner' ? 'gold' : u.role === 'mod' ? '#ffaa00' : '#00ff00'}">${u.username}</span>`).join(', ')}</td>
                     <td style="color:${riskColor}">${riskLevel}</td>
                     <td>
                         <button onclick="investigateIP('${ip}')" style="background:#ff6600; padding:5px 10px; font-size:12px;">INVESTIGATE</button>
@@ -626,7 +1141,7 @@
             let logsDiv = document.getElementById('activityLogs');
             logsDiv.innerHTML = activityLogs.map(log => {
                 let time = new Date(log.timestamp).toLocaleString();
-                return `<div style="margin-bottom:8px; padding:5px; background:#1a1a2a; border-radius:3px;">
+                return `<div style="margin-bottom:10px; padding:8px; background:rgba(179,0,255,0.1); border-radius:5px;">
                     <span style="color:#666;">[${time}]</span> 
                     <span style="color:gold;">${log.user}</span> - 
                     <span style="color:#00ff00;">${log.action}</span>: 
@@ -652,7 +1167,21 @@
             }).join('');
         }
 
-        // ========== ADMIN ACTIONS (OWNER ONLY) ==========
+        function updateModBlacklist() {
+            if (currentUser.role !== 'mod') return;
+            
+            let tbody = document.getElementById('modBlacklistTable');
+            tbody.innerHTML = blacklistedIPs.map(item => {
+                return `<tr>
+                    <td>${item.ip}</td>
+                    <td>${new Date(item.dateAdded).toLocaleString()}</td>
+                    <td>${item.addedBy}</td>
+                    <td>${item.reason}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        // ========== ADMIN ACTIONS ==========
         window.banUser = function(username) {
             if (currentUser.role !== 'owner') return alert('❌ Only owner can ban users!');
             if (confirm(`Ban user ${username}?`)) {
@@ -704,7 +1233,6 @@
                 });
                 localStorage.setItem('blacklistedIPs', JSON.stringify(blacklistedIPs));
                 
-                // Kick all users from this IP
                 members.filter(m => m.ip === ip).forEach(m => {
                     if (activeSessions[m.username]) {
                         delete activeSessions[m.username];
@@ -717,6 +1245,49 @@
                 updateUserTracking();
                 alert(`✅ IP ${ip} has been blacklisted!`);
             }
+        };
+
+        window.modBlacklistUser = function(username, ip) {
+            if (currentUser.role !== 'mod') return alert('❌ Access denied!');
+            let reason = prompt('Reason for blacklisting this IP:') || 'Moderator action';
+            if (confirm(`Blacklist IP ${ip} (User: ${username})?`)) {
+                blacklistedIPs.push({
+                    ip: ip,
+                    dateAdded: new Date().toISOString(),
+                    reason: reason,
+                    addedBy: currentUser.username
+                });
+                localStorage.setItem('blacklistedIPs', JSON.stringify(blacklistedIPs));
+                
+                if (activeSessions[username]) {
+                    delete activeSessions[username];
+                    localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
+                }
+                
+                addLog('MOD_BLACKLIST_IP', `Moderator ${currentUser.username} blacklisted IP: ${ip} (User: ${username})`);
+                updateModUserList();
+                updateModBlacklist();
+                alert(`✅ IP ${ip} has been blacklisted!`);
+            }
+        };
+
+        window.modAddToBlacklist = function() {
+            if (currentUser.role !== 'mod') return alert('❌ Access denied!');
+            let ip = document.getElementById('modBlacklistIP').value.trim();
+            if (!ip) return alert('Please enter an IP address!');
+            
+            let reason = prompt('Reason for blacklisting:') || 'Moderator manual addition';
+            blacklistedIPs.push({
+                ip: ip,
+                dateAdded: new Date().toISOString(),
+                reason: reason,
+                addedBy: currentUser.username
+            });
+            localStorage.setItem('blacklistedIPs', JSON.stringify(blacklistedIPs));
+            document.getElementById('modBlacklistIP').value = '';
+            addLog('MOD_BLACKLIST_IP', `Moderator manually blacklisted IP: ${ip}`);
+            updateModBlacklist();
+            alert(`✅ IP ${ip} added to blacklist!`);
         };
 
         window.addToBlacklist = function() {
@@ -767,91 +1338,67 @@
             }
         };
 
-        // ========== MARKETPLACE & UPLOAD ==========
+        // ========== MODERATOR TOOLS ==========
+        window.resetModPassword = function() {
+            if (currentUser.role !== 'owner') return alert('❌ Only owner can reset moderator passwords!');
+            
+            let modUser = document.getElementById('modSelect').value;
+            let newPass = document.getElementById('newModPass').value.trim();
+            
+            if (!modUser || !newPass) return alert('Please select moderator and enter new password!');
+            if (newPass.length < 8) return alert('Password must be at least 8 characters!');
+            
+            if (confirm(`Reset password for moderator ${modUser}?`)) {
+                modPasswords[modUser] = newPass;
+                localStorage.setItem('modPasswords', JSON.stringify(modPasswords));
+                
+                // Force logout the moderator
+                if (activeSessions[modUser]) {
+                    delete activeSessions[modUser];
+                    localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
+                }
+                
+                document.getElementById('newModPass').value = '';
+                addLog('RESET_MOD_PASSWORD', `Reset password for moderator: ${modUser}`);
+                alert(`✅ Password reset for ${modUser}! They will need to login again.`);
+            }
+        };
+
+        // ========== ENHANCED BUILD UPLOAD ==========
         window.uploadBuild = function() {
             if (!currentUser) return alert('Login dulu!');
+            
             const file = document.getElementById('buildFile').files[0];
+            const image = document.getElementById('buildImage').files[0];
             const name = document.getElementById('buildName').value.trim();
             const desc = document.getElementById('buildDesc').value.trim();
             const typeInput = document.getElementById('buildPrice').value;
             const price = parseInt(typeInput);
 
-            if (!file) return alert("tolong upload file build anda");
-            if (!desc) return alert("tolong tulis deskripsi build");
-            if (!typeInput || isNaN(price)) return alert("tolong pilih type build nya");
-            if (!name) return alert("tolong beri nama buildnya");
+            if (!file) return alert("Tolong upload file build anda");
+            if (file.name.split('.').pop().toLowerCase() !== 'build') return alert("Hanya file .build yang diperbolehkan!");
+            if (!desc) return alert("Tolong tulis deskripsi build");
+            if (!typeInput || isNaN(price)) return alert("Tolong pilih type build nya");
+            if (!name) return alert("Tolong beri nama buildnya");
 
-            builds.push({ 
-                id: Date.now(), 
-                name: name, 
-                price: price, 
-                desc: desc, 
-                file: file.name, 
-                seller: currentUser.username,
-                type: price >= 100 ? 'premium' : 'non-premium'
-            });
-            localStorage.setItem('builds', JSON.stringify(builds));
-            
-            let targetMarket = (price >= 100) ? "Premium Marketplace" : "Non-Premium Marketplace";
-            addLog('UPLOAD_BUILD', `Uploaded build: ${name} (${price} Robux)`);
-            alert(`✅ build telah sukses di publish dan mengarah marketplace untuk yang ${targetMarket}`);
-            displayBuilds();
-            updateStats();
-        };
+            let imageData = null;
+            if (image) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imageData = e.target.result;
+                    saveBuild();
+                };
+                reader.readAsDataURL(image);
+            } else {
+                saveBuild();
+            }
 
-        window.displayBuilds = function(filter = 'all') {
-            let container = document.getElementById('marketplace');
-            let filtered = builds;
-            if (filter === 'free') filtered = builds.filter(b => b.price === 0);
-            if (filter === 'premium') filtered = builds.filter(b => b.price >= 100);
-            if (filter === 'my') filtered = builds.filter(b => b.seller === currentUser?.username);
-
-            container.innerHTML = filtered.length ? '' : '<p>Belum ada build.</p>';
-            filtered.reverse().forEach(b => {
-                let card = document.createElement('div');
-                card.style = `background:#2a2a3a; border:2px solid ${b.price>=100?'gold':'#b300ff'}; border-radius:10px; padding:15px;`;
-                card.innerHTML = `<h3>${b.name} ${b.price>=100?'💎':''}</h3><p style="color:gold;">💰 ${b.price} Robux</p><p style="font-size:12px; color:#aaa;">${b.desc}</p><p style="font-size:10px; color:#666;">Seller: ${b.seller}</p><button style="margin-top:10px; background:#00aa00;" onclick="downloadBuild('${b.name}', '${b.file}')">⬇️ DOWNLOAD</button>`;
-                container.appendChild(card);
-            });
-        };
-
-        window.downloadBuild = function(name, file) {
-            addLog('DOWNLOAD_BUILD', `Downloaded build: ${name}`);
-            alert('Downloading ' + file + '...');
-        };
-
-        window.filterBuilds = (f) => displayBuilds(f);
-
-        function updateStats() {
-            document.getElementById('totalMembers').innerText = members.length;
-            document.getElementById('totalBuilds').innerText = builds.length;
-            document.getElementById('onlineNow').innerText = Object.keys(activeSessions).length;
-        }
-
-        function displayChat() {
-            document.getElementById('chatMessages').innerHTML = chats.map(c => 
-                `<div style="margin-bottom:5px;"><span style="color:${c.role==='owner'?'gold':'#00ff00'}">[${c.user}]:</span> ${c.msg}</div>`
-            ).join('');
-        }
-
-        window.sendChat = function() {
-            let m = document.getElementById('chatMsg').value;
-            if(!m) return;
-            chats.push({user: currentUser.username, role: currentUser.role, msg: m});
-            localStorage.setItem('chats', JSON.stringify(chats));
-            document.getElementById('chatMsg').value = '';
-            addLog('CHAT_MESSAGE', `Sent chat message`);
-            displayChat();
-        }
-
-        // Initialize
-        updateStats();
-        displayBuilds();
-        
-        // Security check on load
-        if (securityBreach) {
-            document.getElementById('securityWarning').classList.remove('hidden');
-        }
-    </script>
-</body>
-</html>
+            function saveBuild() {
+                builds.push({ 
+                    id: Date.now(), 
+                    name: name, 
+                    price: price, 
+                    desc: desc, 
+                    file: file.name, 
+                    seller: currentUser.username,
+                    type: price >= 100 ? 'premium' : 'non-premium',
