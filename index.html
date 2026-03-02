@@ -1,44 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>OXYX | BABFT MARKETPLACE</title>
+    <title>OXYX MARKET | OWNER ACCESS</title>
     <style>
-        :root { --p-color: #b300ff; --gold: #ffd700; --mod: #00d9ff; --danger: #ff0000; }
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; user-select: none; }
-        
-        body { 
-            background: #050505; color: white; padding: 20px; overflow-x: hidden;<!DOCTYPE html>
-<html>
-<head>
-    <title>OXYX MARKET | FIXED EDITION</title>
-    <style>
-        /* Style tetap sama seperti milik Tuan agar UI tidak berubah */
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Arial,sans-serif; }
-        body { background:#0a0a0a; color:white; padding:20px; }
-        .container { max-width:1400px; margin:0 auto; }
-        h1 { font-size:4em; text-align:center; color:#b300ff; text-shadow:3px 3px 0 #ff00ff,-3px -3px 0 #00ffff; margin-bottom:30px; }
-        .card { background:#1a1a2a; border:2px solid #b300ff; border-radius:15px; padding:20px; margin-bottom:20px; }
-        .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:15px; margin:20px 0; }
-        .stat-card { background:#2a0a3a; border:2px solid gold; border-radius:10px; padding:15px; text-align:center; }
-        .stat-value { font-size:2.5em; color:gold; }
-        .online-dot { display:inline-block; width:10px; height:10px; background:#00ff00; border-radius:50%; animation:pulse 2s infinite; }
-        @keyframes pulse { 0%{opacity:1} 50%{opacity:0.5;transform:scale(1.3)} }
-        #deviceInfoSection { display:none; }
-        .admin-device { background:#0a0a1a; padding:10px; border-radius:5px; font-family:monospace; }
-        .device-id { color:#00ff00; }
-        .ip-addr { color:#ffaa00; }
-        .login-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-        input, textarea { width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #b300ff; border-radius:5px; color:white; }
-        button { width:100%; padding:15px; background:#b300ff; border:none; border-radius:5px; color:white; font-weight:bold; cursor:pointer; }
-        button:hover { background:#d400ff; }
-        .ip-table { width:100%; border-collapse:collapse; margin-top:15px; }
-        .ip-table th { background:#b300ff; padding:12px; text-align:left; }
-        .ip-table td { padding:10px; border-bottom:1px solid #333; }
-        .online { color:#00ff00; }
-        .offline { color:#666; }
-        .session-warning { background:#aa0000; padding:15px; border-radius:5px; text-align:center; margin-bottom: 10px; }
+        body { background:#050505; color:white; padding:20px; }
+        .container { max-width:1200px; margin:0 auto; }
+        
+        h1 { font-size:3.5em; text-align:center; color:#b300ff; text-shadow:0 0 20px #b300ff; margin-bottom:30px; }
+        .card { background:#11111a; border:1px solid #333; border-radius:12px; padding:20px; margin-bottom:20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        /* MONITORING GRID */
+        .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:15px; margin-bottom:20px; }
+        .stat-card { background:#1a1a2a; border-left:4px solid #b300ff; padding:15px; border-radius:5px; }
+        .stat-value { font-size:1.8em; color:white; font-weight:bold; }
+        
+        /* TRACKER TABLE */
+        .tracker-table { width:100%; border-collapse:collapse; margin-top:10px; font-size: 13px; }
+        .tracker-table th { text-align:left; color:#b300ff; padding:10px; border-bottom:2px solid #333; }
+        .tracker-table td { padding:12px; border-bottom:1px solid #222; }
+        .id-text { color:#00ff00; font-family:monospace; }
+        .ip-text { color:#ffaa00; font-family:monospace; }
+
+        /* FORM */
+        input, textarea, select { width:100%; padding:12px; margin:8px 0; background:#0a0a0a; border:1px solid #444; border-radius:5px; color:white; }
+        .btn-oxy { width:100%; padding:15px; background:#b300ff; border:none; border-radius:5px; color:white; font-weight:bold; cursor:pointer; transition:0.3s; }
+        .btn-oxy:hover { background:#d400ff; box-shadow: 0 0 15px #b300ff; }
+        
         .hidden { display:none !important; }
-        .footer { text-align:center; color:#666; margin-top:30px; }
+        .product-card { background:#1a1a2a; border-radius:10px; overflow:hidden; border:1px solid #333; }
+        .product-img { width:100%; height:150px; object-fit:cover; background:#000; }
     </style>
 </head>
 <body>
@@ -46,490 +37,171 @@
         <h1>⚡ OXYX MARKET ⚡</h1>
         
         <div class="stats">
-            <div class="stat-card"><div class="stat-value" id="totalMembers">0</div><div>Total Members</div></div>
-            <div class="stat-card"><div class="stat-value" id="onlineNow">0</div><div><span class="online-dot"></span> Online</div></div>
-            <div class="stat-card"><div class="stat-value" id="totalBuilds">0</div><div>Total Builds</div></div>
-            <div class="stat-card"><div class="stat-value" id="totalIPs">0</div><div>Unique IPs</div></div>
+            <div class="stat-card"><div class="stat-value" id="countMembers">0</div><div>Total Users</div></div>
+            <div class="stat-card"><div class="stat-value" id="countBuilds">0</div><div>Builds Listed</div></div>
+            <div class="stat-card"><div class="stat-value" id="myIP">Loading...</div><div>Your Current IP</div></div>
         </div>
-        
-        <div id="deviceInfoSection" class="card">
-            <h2>📱 DEVICE INFO</h2>
-            <div class="admin-device">
-                <p>Device ID: <span class="device-id" id="deviceId">Loading...</span></p>
-                <p>IP Address: <span class="ip-addr" id="ipAddress">Loading...</span></p>
-            </div>
-        </div>
-        
-        <div class="card">
-            <h2>🔐 LOGIN</h2>
-            <div id="sessionWarning" class="session-warning hidden">
-                ⚠️ Akun aktif di device lain! <button onclick="forceUnbind()" style="width:auto; padding:5px 10px; background:white; color:black; font-size:12px;">FORCE UNBIND (OWNER ONLY)</button>
-            </div>
 
-            <div class="login-grid" id="loginForm">
-                <div>
-                    <h3>👤 MEMBER</h3>
-                    <input type="text" id="memberUsername" placeholder="Username">
-                    <button onclick="loginMember()">LOGIN MEMBER</button>
-                </div>
-                <div>
-                    <h3>👑 ADMIN</h3>
-                    <input type="text" id="adminUser" placeholder="Username">
-                    <input type="password" id="adminPass" placeholder="Password">
-                    <button onclick="loginAdmin()">LOGIN ADMIN</button>
-                </div>
-            </div>
-            
-            <div id="userInfo" class="hidden" style="margin-top:20px; padding:15px; background:#2a0a3a; border-radius:10px;">
-                <p>Logged in as: <span id="displayName" style="font-weight:bold; color:gold;"></span></p>
-                <button onclick="logout()" style="background:#aa0000; margin-top:10px;">LOGOUT</button>
-            </div>
-        </div>
-        
-        <div id="ipTableSection" class="card hidden">
-            <h2>👑 IP TRACKER (OWNER ONLY)</h2>
-            <table class="ip-table">
-                <thead><tr><th>Username</th><th>IP</th><th>Device ID</th><th>Last Seen</th><th>Status</th></tr></thead>
-                <tbody id="ipTableBody"></tbody>
+        <div id="trackerSection" class="card hidden">
+            <h2 style="color: #b300ff; margin-bottom:10px;">📡 LIVE FORENSIC TRACKER</h2>
+            <table class="tracker-table">
+                <thead>
+                    <tr><th>User</th><th>IP Address</th><th>Device Fingerprint (ID)</th><th>Last Active</th></tr>
+                </thead>
+                <tbody id="trackerBody"></tbody>
             </table>
         </div>
-        
-        <div id="chatSection" class="card hidden">
-            <h2>💬 MOD CHAT</h2>
-            <div id="chatMessages" style="height:150px; overflow:auto; background:#0a0a1a; padding:10px; margin:10px 0;"></div>
-            <input type="text" id="chatMsg" placeholder="Type message...">
-            <button onclick="sendChat()">SEND</button>
+
+        <div id="uploadCard" class="card hidden">
+            <h2>📤 PUBLISH NEW BUILD</h2>
+            <label>1. Build File (.build)</label>
+            <input type="file" id="uFile" accept=".build">
+            
+            <label>2. Build Description</label>
+            <textarea id="uDesc" placeholder="Describe your masterpiece..."></textarea>
+            
+            <label>3. Market Type</label>
+            <select id="uType">
+                <option value="">-- Select Type --</option>
+                <option value="free">Non-Premium (Free)</option>
+                <option value="premium">Premium (Robux)</option>
+            </select>
+
+            <label>4. Build Name</label>
+            <input type="text" id="uName" placeholder="Enter build name">
+
+            <label>5. Build Photo (Optional)</label>
+            <input type="file" id="uPhoto" accept="image/*">
+
+            <button class="btn-oxy" onclick="processUpload()">PUBLISH BUILD</button>
         </div>
-        
-        <div id="uploadSection" class="card hidden">
-            <h2>📤 UPLOAD BUILD</h2>
-            <input type="text" id="buildName" placeholder="Build name">
-            <input type="number" id="buildPrice" min="0" value="0" placeholder="Price (100+ = premium)">
-            <textarea id="buildDesc" rows="3" placeholder="Description"></textarea>
-            <input type="file" id="buildFile" accept=".build">
-            <button onclick="uploadBuild()">PUBLISH BUILD</button>
+
+        <div class="card" id="loginCard">
+            <h2>🔐 ACCESS GATE</h2>
+            <input type="text" id="lUser" placeholder="Username">
+            <input type="password" id="lPass" placeholder="Password">
+            <button class="btn-oxy" onclick="auth()">LOGIN</button>
         </div>
-        
+
         <div class="card">
-            <h2>🏪 MARKETPLACE</h2>
-            <div style="display:flex; gap:10px; margin:15px 0; flex-wrap:wrap;">
-                <button onclick="filterBuilds('all')">📋 ALL</button>
-                <button onclick="filterBuilds('free')">🆓 FREE</button>
-                <button onclick="filterBuilds('premium')">💎 PREMIUM</button>
-                <button onclick="filterBuilds('my')">👤 MY BUILDS</button>
-            </div>
-            <div id="marketplace" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:15px;"></div>
+            <h2>🏪 CURRENT MARKET</h2>
+            <div id="marketGrid" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px; margin-top:15px;"></div>
         </div>
-        
-        <div class="footer">OXYX MARKET • Build A Boat Only</div>
     </div>
-    
+
     <script>
-        // ========== DATA & SETUP ==========
-        let currentUser = null;
-        let deviceId = localStorage.getItem('oxy_device_id') || 'OXYX-' + Math.random().toString(36).substring(2,10).toUpperCase();
-        localStorage.setItem('oxy_device_id', deviceId);
+        let dbBuilds = JSON.parse(localStorage.getItem('oxy_builds')) || [];
+        let dbUsers = JSON.parse(localStorage.getItem('oxy_users')) || [];
+        let userSess = null;
+
+        // Generate Device ID
+        const getDID = () => btoa(navigator.userAgent + screen.width).substring(0, 12).toUpperCase();
         
-        let activeSessions = JSON.parse(localStorage.getItem('activeSessions')) || {};
-        let members = JSON.parse(localStorage.getItem('members')) || [];
-        let builds = JSON.parse(localStorage.getItem('builds')) || [];
-        let chats = JSON.parse(localStorage.getItem('chats')) || [];
-        
-        document.getElementById('deviceId').innerText = deviceId;
-        fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => document.getElementById('ipAddress').innerText = d.ip);
+        // Get IP
+        fetch('https://api.ipify.org?format=json')
+            .then(r => r.json())
+            .then(d => { document.getElementById('myIP').innerText = d.ip; window.curIP = d.ip; });
 
-        // ========== CORE FUNCTIONS ==========
-        
-        // UNBIND SYSTEM (Solusi untuk Tuan)
-        window.forceUnbind = function() {
-            let user = document.getElementById('adminUser').value || document.getElementById('memberUsername').value;
-            if(!user) return alert("Masukkan username di kotak login dulu!");
-            
-            delete activeSessions[user];
-            localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
-            document.getElementById('sessionWarning').classList.add('hidden');
-            alert("✅ Sesi " + user + " telah di-reset! Silahkan login kembali.");
-        };
+        function auth() {
+            const u = document.getElementById('lUser').value;
+            const p = document.getElementById('lPass').value;
 
-        window.loginMember = function() {
-            let user = document.getElementById('memberUsername').value.trim();
-            if (!user) return alert('Tolong beri nama buildnya!'); // Sesuai instruksi Tuan
-
-            if (activeSessions[user] && activeSessions[user] !== deviceId) {
-                document.getElementById('sessionWarning').classList.remove('hidden');
-                return;
-            }
-
-            loginFinalize(user, 'member');
-        };
-
-        window.loginAdmin = function() {
-            let user = document.getElementById('adminUser').value.trim();
-            let pass = document.getElementById('adminPass').value.trim();
-
-            if (activeSessions[user] && activeSessions[user] !== deviceId) {
-                document.getElementById('sessionWarning').classList.remove('hidden');
-                return;
-            }
-
-            if (user === 'znyt' && pass === 'Root!Delta_7KpZ') {
-                loginFinalize(user, 'owner');
-            } else if (user === 'helper_tester' && pass === 'huwydhdjsiqo' || user === 'sigma' && pass === 'uBwbONeqIwYQ97') {
-                loginFinalize(user, 'mod');
+            if(u === 'znyt' && p === 'Root!Delta_7KpZ') {
+                userSess = { name: u, role: 'owner' };
+                document.getElementById('trackerSection').classList.remove('hidden');
+                refreshTracker();
             } else {
-                alert('❌ Password Salah!');
+                userSess = { name: u, role: 'member' };
             }
-        };
 
-        function loginFinalize(user, role) {
-            currentUser = { username: user, role: role };
-            activeSessions[user] = deviceId;
-            localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
-            
-            // Track IP for Owner
-            let now = new Date().toISOString();
-            let idx = members.findIndex(m => m.username === user);
-            if(idx > -1) {
-                members[idx].lastSeen = now;
-                members[idx].ip = document.getElementById('ipAddress').innerText;
-            } else {
-                members.push({username: user, ip: document.getElementById('ipAddress').innerText, deviceId: deviceId, lastSeen: now});
-            }
-            localStorage.setItem('members', JSON.stringify(members));
+            // Simpan data user untuk tracker
+            const entry = { name: u, ip: window.curIP || '0.0.0.0', did: getDID(), time: new Date().toLocaleString() };
+            dbUsers.push(entry);
+            localStorage.setItem('oxy_users', JSON.stringify(dbUsers));
 
-            showUserInfo();
-            alert('✅ Login Berhasil sebagai ' + role.toUpperCase());
-        }
-
-        function showUserInfo() {
-            document.getElementById('loginForm').classList.add('hidden');
-            document.getElementById('sessionWarning').classList.add('hidden');
-            document.getElementById('userInfo').classList.remove('hidden');
-            document.getElementById('displayName').innerText = currentUser.username + ' (' + currentUser.role + ')';
-            document.getElementById('uploadSection').classList.remove('hidden');
-            document.getElementById('deviceInfoSection').style.display = 'block';
-
-            if (currentUser.role === 'owner') {
-                document.getElementById('ipTableSection').classList.remove('hidden');
-                updateIpTable();
-            }
-            if (currentUser.role === 'owner' || currentUser.role === 'mod') {
-                document.getElementById('chatSection').classList.remove('hidden');
-                displayChat();
-            }
-        }
-
-        window.logout = function() {
-            if (currentUser) {
-                delete activeSessions[currentUser.username];
-                localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
-            }
-            location.reload();
-        };
-
-        // ========== MARKETPLACE & UPLOAD ==========
-
-        window.uploadBuild = function() {
-            if (!currentUser) return alert('Login dulu!');
-            
-            const file = document.getElementById('buildFile').files[0];
-            const name = document.getElementById('buildName').value.trim();
-            const desc = document.getElementById('buildDesc').value.trim();
-            const typeInput = document.getElementById('buildPrice').value;
-            const price = parseInt(typeInput);
-
-            // Validasi urutan sesuai permintaan Tuan
-            if (!file) return alert("tolong upload file build anda");
-            if (!desc) return alert("tolong tulis deskripsi build");
-            if (!typeInput || isNaN(price)) return alert("tolong pilih type build nya"); // Diwakili harga
-            if (!name) return alert("tolong beri nama buildnya");
-
-            builds.push({ 
-                id: Date.now(), 
-                name: name, 
-                price: price, 
-                desc: desc, 
-                file: file.name, 
-                seller: currentUser.username,
-                type: price >= 100 ? 'premium' : 'non-premium'
-            });
-            
-            localStorage.setItem('builds', JSON.stringify(builds));
-            
-            let targetMarket = (price >= 100) ? "Premium Marketplace" : "Non-Premium Marketplace";
-            alert(`✅ build telah sukses di publish dan mengarah marketplace untuk yang ${targetMarket}`);
-            
-            displayBuilds();
+            document.getElementById('loginCard').classList.add('hidden');
+            document.getElementById('uploadCard').classList.remove('hidden');
+            alert("Welcome, " + u);
             updateStats();
-        };
+        }
 
-        window.displayBuilds = function(filter = 'all') {
-            let container = document.getElementById('marketplace');
-            let filtered = builds;
-            if (filter === 'free') filtered = builds.filter(b => b.price === 0);
-            if (filter === 'premium') filtered = builds.filter(b => b.price >= 100);
-            if (filter === 'my') filtered = builds.filter(b => b.seller === currentUser?.username);
+        function processUpload() {
+            const file = document.getElementById('uFile').files[0];
+            const desc = document.getElementById('uDesc').value;
+            const type = document.getElementById('uType').value;
+            const name = document.getElementById('uName').value;
+            const photo = document.getElementById('uPhoto').files[0];
 
-            container.innerHTML = filtered.length ? '' : '<p>Belum ada build.</p>';
-            filtered.reverse().forEach(b => {
-                let card = document.createElement('div');
-                card.style = `background:#2a2a3a; border:2px solid ${b.price>=100?'gold':'#b300ff'}; border-radius:10px; padding:15px;`;
-                card.innerHTML = `
-                    <h3>${b.name} ${b.price>=100?'💎':''}</h3>
-                    <p style="color:gold;">💰 ${b.price} Robux</p>
-                    <p style="font-size:12px; color:#aaa;">${b.desc}</p>
-                    <p style="font-size:10px; color:#666;">Seller: ${b.seller}</p>
-                    <button style="margin-top:10px; background:#00aa00;" onclick="alert('Downloading ${b.file}...')">⬇️ DOWNLOAD</button>
-                `;
-                container.appendChild(card);
-            });
-        };
+            // Validasi Urutan sesuai instruksi
+            if(!file) return alert("tolong upload file build anda");
+            if(!desc) return alert("tolong tulis deskripsi build");
+            if(!type) return alert("tolong pilih type build nya");
+            if(!name) return alert("tolong beri nama buildnya");
 
-        window.filterBuilds = (f) => displayBuilds(f);
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const buildObj = {
+                    id: Date.now(),
+                    name: name,
+                    desc: desc,
+                    type: type,
+                    fileName: file.name,
+                    imgData: photo ? e.target.result : null
+                };
+                dbBuilds.push(buildObj);
+                localStorage.setItem('oxy_builds', JSON.stringify(dbBuilds));
+                
+                alert(`✅ build telah sukses di publish dan mengarah marketplace untuk yang ${type === 'premium' ? 'Premium' : 'Non-Premium'}`);
+                location.reload();
+            }
 
-        function updateIpTable() {
-            let tbody = document.getElementById('ipTableBody');
-            tbody.innerHTML = members.map(m => `
+            if(photo) reader.readAsDataURL(photo);
+            else {
+                // Jika tidak ada foto, langsung simpan
+                const buildObj = { id: Date.now(), name: name, desc: desc, type: type, fileName: file.name, imgData: null };
+                dbBuilds.push(buildObj);
+                localStorage.setItem('oxy_builds', JSON.stringify(dbBuilds));
+                alert("✅ Build sukses di publish tanpa foto.");
+                location.reload();
+            }
+        }
+
+        function refreshTracker() {
+            const tbody = document.getElementById('trackerBody');
+            tbody.innerHTML = dbUsers.slice(-10).reverse().map(u => `
                 <tr>
-                    <td><b>${m.username}</b></td>
-                    <td>${m.ip}</td>
-                    <td>${m.deviceId.substring(0,10)}...</td>
-                    <td>${new Date(m.lastSeen).toLocaleString()}</td>
-                    <td class="online">● ACTIVE</td>
+                    <td><b>${u.name}</b></td>
+                    <td class="ip-text">${u.ip}</td>
+                    <td class="id-text">${u.did}</td>
+                    <td>${u.time}</td>
                 </tr>
             `).join('');
         }
 
-        function updateStats() {
-            document.getElementById('totalMembers').innerText = members.length;
-            document.getElementById('totalBuilds').innerText = builds.length;
-            document.getElementById('onlineNow').innerText = Object.keys(activeSessions).length;
-            document.getElementById('totalIPs').innerText = [...new Set(members.map(m => m.ip))].length;
-        }
-
-        function displayChat() {
-            document.getElementById('chatMessages').innerHTML = chats.map(c => `
-                <div style="margin-bottom:5px;"><span style="color:${c.role==='owner'?'gold':'#00ff00'}">[${c.user}]:</span> ${c.msg}</div>
+        function renderMarket() {
+            const grid = document.getElementById('marketGrid');
+            grid.innerHTML = dbBuilds.map(b => `
+                <div class="product-card">
+                    <img src="${b.imgData || 'https://via.placeholder.com/300x150/111/fff?text=No+Image'}" class="product-img">
+                    <div style="padding:15px;">
+                        <h3 style="color:#b300ff;">${b.name}</h3>
+                        <p style="font-size:12px; color:#888; margin:5px 0;">${b.desc}</p>
+                        <div style="font-size:10px; color:#aaa;">File: ${b.fileName}</div>
+                        <div style="margin-top:10px; font-weight:bold; color:${b.type==='premium'?'gold':'#00ff00'}">
+                            ${b.type.toUpperCase()}
+                        </div>
+                    </div>
+                </div>
             `).join('');
         }
 
-        window.sendChat = function() {
-            let m = document.getElementById('chatMsg').value;
-            if(!m) return;
-            chats.push({user: currentUser.username, role: currentUser.role, msg: m});
-            localStorage.setItem('chats', JSON.stringify(chats));
-            document.getElementById('chatMsg').value = '';
-            displayChat();
+        function updateStats() {
+            document.getElementById('countMembers').innerText = dbUsers.length;
+            document.getElementById('countBuilds').innerText = dbBuilds.length;
         }
 
-        // Init
+        renderMarket();
         updateStats();
-        displayBuilds();
-    </script>
-</body>
-</html>
-            background-image: radial-gradient(circle at center, #111 0%, #000 100%);
-        }
-
-        /* UI ANIMATION & 3D */
-        .card-3d {
-            background: rgba(15, 15, 25, 0.95); border: 1px solid #333; border-radius: 15px;
-            padding: 25px; margin-bottom: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.8);
-            transform: perspective(1000px) rotateX(1deg); transition: 0.4s;
-        }
-        .card-3d:hover { border-color: var(--p-color); transform: perspective(1000px) rotateX(0deg) scale(1.01); }
-
-        h1 { font-size: 4em; text-align: center; text-shadow: 0 0 20px var(--p-color); margin-bottom: 20px; }
-        h2 { color: var(--p-color); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px; }
-
-        input, select, textarea {
-            width: 100%; padding: 12px; margin: 8px 0; background: #0a0a0a;
-            border: 1px solid #444; border-radius: 8px; color: white; outline: none;
-        }
-        input:focus { border-color: var(--p-color); box-shadow: 0 0 10px var(--p-color); }
-
-        .btn-main {
-            width: 100%; padding: 15px; background: var(--p-color); border: none;
-            border-radius: 8px; color: white; font-weight: bold; cursor: pointer; transition: 0.3s;
-        }
-        .btn-main:hover { background: #8e00cc; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(179,0,255,0.3); }
-
-        .hidden { display: none !important; }
-
-        /* BLOCK SCREEN */
-        #banOverlay {
-            position: fixed; top:0; left:0; width:100%; height:100%;
-            background: black; z-index: 10000; display: none;
-            flex-direction: column; align-items: center; justify-content: center; text-align: center;
-        }
-
-        .status-badge { padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: bold; }
-        .bg-owner { background: var(--gold); color: black; }
-        .bg-mod { background: var(--mod); color: black; }
-    </style>
-</head>
-<body oncontextmenu="return false;">
-
-    <div id="banOverlay">
-        <h1 style="color: red; font-size: 4em;">ACCESS TERMINATED</h1>
-        <p id="banReason" style="font-size: 1.5em; margin-top: 20px; color: white;">UNAUTHORIZED DEVICE DETECTED</p>
-    </div>
-
-    <div class="container" style="max-width: 1000px; margin: 0 auto;">
-        <h1>OXYX MARKET</h1>
-
-        <div id="marketView" class="card-3d">
-            <h2>🛒 BABFT MARKETPLACE</h2>
-            <p style="color: #666;">Welcome to the Shadow Market. Submit your build below.</p>
-        </div>
-
-        <div id="publishForm" class="card-3d">
-            <h2>📤 PUBLISH BUILD</h2>
-            <label>File Build (.build)</label>
-            <input type="file" id="buildFile" accept=".build">
-            
-            <input type="text" id="buildName" placeholder="Nama Build">
-            <textarea id="buildDesc" placeholder="Deskripsi Build..."></textarea>
-            
-            <select id="buildType">
-                <option value="">-- Pilih Tipe Build --</option>
-                <option value="non-premium">Non-Premium (Free)</option>
-                <option value="premium">Premium (Robux)</option>
-            </select>
-            
-            <button class="btn-main" onclick="validatePublish()">PUBLISH BUILD</button>
-        </div>
-
-        <div id="loginCard" class="card-3d">
-            <h2>🔐 STAFF ACCESS</h2>
-            <input type="text" id="staffUser" placeholder="Codename">
-            <input type="password" id="staffPass" placeholder="Masterkey / Modkey">
-            <button class="btn-main" style="background: var(--gold); color: black;" onclick="handleStaffAuth()">LOGIN STAFF</button>
-        </div>
-
-        <div id="ownerPanel" class="card-3d hidden" style="border: 2px solid var(--gold);">
-            <h2 style="color: var(--gold);">👑 OWNER SUPREMACY CONTROL</h2>
-            <div style="margin-top: 20px;">
-                <h3>IP & WHID TRACKER (LIVE)</h3>
-                <div id="trackerData" style="font-family: monospace; background: #000; padding: 10px; margin-top: 10px; font-size: 12px;">
-                    </div>
-                <div style="margin-top: 15px; display: flex; gap: 10px;">
-                    <input type="text" id="targetBan" placeholder="Input IP/HWID to Ban">
-                    <button onclick="banAction('ADD')" style="background: red;" class="btn-main">BAN IP</button>
-                    <button onclick="banAction('DEL')" style="background: green;" class="btn-main">UNBAN IP</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // CONFIG & SECURITY
-        const OWNER_HWID = "oxyX Britania9920";
-        localStorage.setItem('oxy_fp', OWNER_HWID);
-        const currentWHID = generateWHID();
-
-        // Database Simulasi (Seharusnya di JSONBin)
-        let staffSlots = JSON.parse(localStorage.getItem('oxy_slots')) || {
-            masterkey: null, // Key ini hanya untuk 1 orang
-            mod1: null,
-            mod2: null
-        };
-
-        function generateWHID() {
-            const canvas = document.createElement('canvas');
-            const gl = canvas.getContext('webgl');
-            const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-            const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-            return btoa(renderer + screen.width + navigator.userAgent).substring(0, 16);
-        }
-
-        // 1. VALIDASI PUBLISH
-        function validatePublish() {
-            const file = document.getElementById('buildFile').files[0];
-            const name = document.getElementById('buildName').value.trim();
-            const desc = document.getElementById('buildDesc').value.trim();
-            const type = document.getElementById('buildType').value;
-
-            if (!file) return alert("⚠️ Tolong upload file build anda!");
-            if (!name) return alert("⚠️ Tolong beri nama buildnya!");
-            if (!desc) return alert("⚠️ Tolong tulis deskripsi build!");
-            if (!type) return alert("⚠️ Tolong pilih type build nya!");
-
-            const market = (type === 'premium') ? "Premium Marketplace" : "Non-Premium Marketplace";
-            alert(`✅ Build "${name}" telah sukses di-publish dan mengarah ke ${market}.`);
-        }
-
-        // 2. STAFF AUTH & WHID SLOT LOCK
-        function handleStaffAuth() {
-            const u = document.getElementById('staffUser').value.trim();
-            const p = document.getElementById('staffPass').value.trim();
-
-            // LOGIN OWNER (Jalur Khusus Tuan)
-            if (u === 'znyt' && p === 'Root!Delta_7KpZ') {
-                if (OWNER_HWID === "oxyX Britania9920") {
-                    document.getElementById('ownerPanel').classList.remove('hidden');
-                    document.getElementById('loginCard').classList.add('hidden');
-                    startTracker();
-                    return alert("Welcome back, Master Britania.");
-                } else {
-                    return blockUser("PENCURIAN IDENTITAS OWNER TERDETEKSI");
-                }
-            }
-
-            // MASTERKEY SLOT (1 ORANG SAJA)
-            if (p === 'MASTER-OXYX-2024') {
-                if (staffSlots.masterkey === null) {
-                    staffSlots.masterkey = currentWHID;
-                    localStorage.setItem('oxy_slots', JSON.stringify(staffSlots));
-                    alert("Slot Masterkey Terdaftar pada WHID ini.");
-                    loginAsMod("Master Staff");
-                } else if (staffSlots.masterkey === currentWHID) {
-                    loginAsMod("Master Staff");
-                } else {
-                    blockUser("MASTERKEY LIMIT REACHED: PIHAK ASING TERDETEKSI");
-                }
-            }
-
-            // MODERATOR (MOD 1 & 2)
-            if (p === 'MOD1-KEY') {
-                if (!staffSlots.mod1) { staffSlots.mod1 = currentWHID; localStorage.setItem('oxy_slots', JSON.stringify(staffSlots)); }
-                if (staffSlots.mod1 === currentWHID) loginAsMod("Moderator 1"); else blockUser("Bukan HWID Mod 1");
-            }
-        }
-
-        function loginAsMod(role) {
-            document.getElementById('loginCard').classList.add('hidden');
-            alert(`Login Sukses sebagai ${role}`);
-        }
-
-        function blockUser(reason) {
-            document.getElementById('banOverlay').style.display = 'flex';
-            document.getElementById('banReason').innerText = reason;
-        }
-
-        // 3. TRACKER & BAN (OWNER ONLY)
-        async function startTracker() {
-            const res = await fetch('https://ipapi.co/json/');
-            const data = await res.json();
-            document.getElementById('trackerData').innerHTML = `
-                IP: <span style="color:lime">${data.ip}</span> | 
-                LOC: ${data.city} | 
-                ISP: ${data.org} | 
-                WHID: <span style="color:cyan">${currentWHID}</span>
-            `;
-        }
-
-        // ANTI DEV TOOLS PURGE
-        setInterval(() => {
-            const before = new Date().getTime();
-            debugger;
-            const after = new Date().getTime();
-            if (after - before > 100) {
-                blockUser("DEV TOOLS DETECTED: PERANGKAT DIBLACKLIST");
-                // Di sini Tuan bisa menambahkan fungsi ban IP otomatis
-            }
-        }, 100);
-
     </script>
 </body>
 </html>
