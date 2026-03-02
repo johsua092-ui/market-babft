@@ -1,118 +1,128 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>OXYX | FORENSIC MONITOR</title>
+    <title>OXYX | ULTRA-WATCH SYSTEM</title>
     <style>
         :root { --p-color: #b300ff; --danger: #ff0000; }
-        body { background: #050505; color: white; font-family: 'Consolas', monospace; padding: 20px; }
-        .monitor-card { 
-            background: #0a0a14; border: 1px solid #222; border-radius: 10px; padding: 20px;
-            box-shadow: 0 0 30px rgba(0,0,0,1); margin-bottom: 20px;
+        body { background: #000; color: #fff; font-family: 'Courier New', monospace; padding: 20px; text-transform: uppercase; }
+        .monitor { background: #050505; border: 1px solid #333; padding: 20px; border-radius: 5px; box-shadow: 0 0 20px rgba(179, 0, 255, 0.2); }
+        .log-entry { border-bottom: 1px solid #111; padding: 10px 0; font-size: 12px; }
+        .status-vpn { color: var(--danger); font-weight: bold; }
+        .status-safe { color: #00ff00; }
+        #blockScreen { 
+            position: fixed; top:0; left:0; width:100%; height:100%; 
+            background: #000; color: red; z-index: 10000; display: none;
+            flex-direction: column; align-items: center; justify-content: center; text-align: center;
         }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #1a1a1a; font-size: 12px; }
-        th { color: var(--p-color); text-transform: uppercase; }
-        .ip-highlight { color: #00ff00; font-weight: bold; }
-        .device-id { color: #00d9ff; font-size: 10px; }
-        .isp-tag { color: #ffa500; font-style: italic; }
-        .live-pulse { height: 8px; width: 8px; background: #00ff00; border-radius: 50%; display: inline-block; margin-right: 5px; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.2; } 100% { opacity: 1; } }
-        .hidden { display: none; }
+        .whid-text { color: #00f2ff; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="monitor-card">
-        <h2><span class="live-pulse"></span> OXYX REAL-TIME FORENSIC TRACKER</h2>
-        <p style="font-size: 11px; color: #555;">ID OWNER TERVERIFIKASI: oxyX Britania9920</p>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th>Waktu</th>
-                    <th>Alamat IP Asli</th>
-                    <th>Lokasi & ISP</th>
-                    <th>Hardware Fingerprint (Device ID)</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody id="trackerTable">
-                </tbody>
-        </table>
+    <div id="blockScreen">
+        <h1>[ ACCESS BLOCKED ]</h1>
+        <p style="margin-top: 20px;">VPN / PROXY DETECTED.</p>
+        <p>ANDA DIBLOKIR 24 JAM DARI OXYX NETWORK.</p>
+        <p id="countdown" style="font-size: 2em; margin-top: 10px;"></p>
+    </div>
+
+    <div class="monitor">
+        <h2 style="color: var(--p-color);">📡 OXYX LIVE FORENSIC TRACKER</h2>
+        <div id="logHeader" style="margin-top: 20px; color: #555;">SCANNING NETWORK...</div>
+        <div id="logDisplay"></div>
     </div>
 
     <script>
-        // CONFIG
         const OWNER_ID = "oxyX Britania9920";
 
-        // GENERATE HARDWARE FINGERPRINT ASLI
-        function getHardwareID() {
+        // 1. GENERASI WHID (HARDWARE FINGERPRINT) - CEPAT & AKURAT
+        function generateWHID() {
             const canvas = document.createElement('canvas');
             const gl = canvas.getContext('webgl');
             const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
             const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-            // Gabungan Renderer GPU + Resolusi + Cores + OS
-            return btoa(renderer + navigator.hardwareConcurrency + screen.width + navigator.userAgent).substring(0, 16);
+            // Kombinasi GPU + Core CPU + Screen + User Agent
+            const rawId = renderer + navigator.hardwareConcurrency + screen.width + navigator.userAgent;
+            return "WHID-" + btoa(rawId).substring(0, 12).toUpperCase();
         }
 
-        // AMBIL IP DAN DATA LOKASI ASLI
-        async function captureVisitorData() {
+        // 2. PELACAKAN IP & ANTI-VPN (AUTO BLOCK 24 JAM)
+        async function startSecurityScan() {
             try {
-                // Menggunakan API ipapi untuk data IP & ISP murni
+                // Mengambil data IP & Geolocation
                 const response = await fetch('https://ipapi.co/json/');
                 const data = await response.json();
-                
-                const table = document.getElementById('trackerTable');
-                const time = new Date().toLocaleTimeString();
-                const hid = getHardwareID();
+                const whid = generateWHID();
 
-                // Logika: Jika pengunjung adalah Tuan, beri tanda khusus
-                const isOwner = (hid === "TuanPunyaID" || data.ip === "IP_TUAN"); // Contoh logic
+                // Deteksi VPN/Proxy Berdasarkan ISP (Datacenter detection)
+                // Jika ISP mengandung kata kunci provider VPN/Server, maka BLOCK
+                const vpnKeywords = ['vpn', 'proxy', 'hosting', 'datacenter', 'cloud', 'digitalocean', 'google cloud', 'ovh', 'linode', 'vultr', 'mullvad', 'nord', 'expressvpn'];
+                const isVPN = vpnKeywords.some(key => data.org.toLowerCase().includes(key));
 
-                const newRow = `
-                    <tr>
-                        <td>${time}</td>
-                        <td class="ip-highlight">${data.ip}</td>
-                        <td>
-                            <div>${data.city}, ${data.country_name}</div>
-                            <div class="isp-tag">${data.org}</div>
-                        </td>
-                        <td class="device-id">HWID_${hid}</td>
-                        <td>
-                            <button onclick="banThis('${data.ip}', 'HWID_${hid}')" style="background:red; color:white; border:none; cursor:pointer; padding:5px;">BAN</button>
-                        </td>
-                    </tr>
-                `;
-                
-                // Menambahkan data ke baris paling atas
-                table.innerHTML = newRow + table.innerHTML;
+                // 3. LOGIKA PEMBLOKIRAN
+                const blockUntil = localStorage.getItem('oxy_block_time');
+                const now = Date.now();
 
-                // KIRIM DATA KE DATABASE TUAN (JSONBin)
-                saveToDatabase(data.ip, hid, data.org);
+                if (blockUntil && now < blockUntil) {
+                    activateBlockScreen(blockUntil);
+                    return;
+                }
 
-            } catch (error) {
-                console.error("Gagal melacak data.");
+                if (isVPN) {
+                    // Set Blockir 24 Jam (86400000 ms)
+                    const expire = Date.now() + 86400000;
+                    localStorage.setItem('oxy_block_time', expire);
+                    activateBlockScreen(expire);
+                    return;
+                }
+
+                // TAMPILKAN DATA KE PANEL OWNER
+                addLogEntry(data.ip, data.org, whid, data.city);
+
+            } catch (err) {
+                console.error("Security Bypass Attempted.");
             }
         }
 
-        async function saveToDatabase(ip, hwid, isp) {
-            // Sesuai prosedur Tuan sebelumnya untuk sinkronisasi JSONBin
-            // Ini akan mencatat siapa saja yang login ke Marketplace Tuan
+        function activateBlockScreen(expire) {
+            document.getElementById('blockScreen').style.display = 'flex';
+            setInterval(() => {
+                const remaining = expire - Date.now();
+                const hours = Math.floor(remaining / 3600000);
+                const mins = Math.floor((remaining % 3600000) / 60000);
+                document.getElementById('countdown').innerText = `${hours}H ${mins}M REMAINING`;
+            }, 1000);
         }
 
-        function banThis(ip, hwid) {
-            const confirmBan = confirm("Konfirmasi Purge untuk IP: " + ip + "?");
-            if(confirmBan) {
-                alert("IP " + ip + " dan " + hwid + " telah dimasukkan ke Global Blacklist.");
-                // Eksekusi fungsi Ban Tuan di sini
+        function addLogEntry(ip, isp, whid, city) {
+            const display = document.getElementById('logDisplay');
+            const entry = `
+                <div class="log-entry">
+                    [${new Date().toLocaleTimeString()}] 
+                    IP: <span style="color:#00ff00">${ip}</span> | 
+                    LOC: <span style="color:white">${city}</span> | 
+                    ISP: <span style="color:orange">${isp}</span> | 
+                    WHID: <span class="whid-text">${whid}</span> | 
+                    SEC: <span class="status-safe">CLEAN</span>
+                </div>
+            `;
+            display.innerHTML = entry + display.innerHTML;
+        }
+
+        function actionPurge() {
+            if (localStorage.getItem('oxy_fp') === OWNER_ID) {
+                startSecurityScan();
+            } else {
+                alert("ACCESS DENIED: OWNER ONLY");
             }
         }
 
-        // Jalankan pelacakan saat ada yang masuk
-        captureVisitorData();
+        // Jalankan pelacakan seketika
+        startSecurityScan();
         
-        // Refresh otomatis setiap 30 detik untuk memantau trafik baru
-        setInterval(captureVisitorData, 30000);
+        // Anti-Bypass (F12, Right Click)
+        window.oncontextmenu = () => false;
+        setInterval(() => { debugger; }, 100);
     </script>
 </body>
 </html>
