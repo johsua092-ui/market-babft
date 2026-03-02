@@ -1,128 +1,215 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>OXYX | ULTRA-WATCH SYSTEM</title>
+    <title>OXYX | BABFT MARKETPLACE</title>
     <style>
-        :root { --p-color: #b300ff; --danger: #ff0000; }
-        body { background: #000; color: #fff; font-family: 'Courier New', monospace; padding: 20px; text-transform: uppercase; }
-        .monitor { background: #050505; border: 1px solid #333; padding: 20px; border-radius: 5px; box-shadow: 0 0 20px rgba(179, 0, 255, 0.2); }
-        .log-entry { border-bottom: 1px solid #111; padding: 10px 0; font-size: 12px; }
-        .status-vpn { color: var(--danger); font-weight: bold; }
-        .status-safe { color: #00ff00; }
-        #blockScreen { 
-            position: fixed; top:0; left:0; width:100%; height:100%; 
-            background: #000; color: red; z-index: 10000; display: none;
+        :root { --p-color: #b300ff; --gold: #ffd700; --mod: #00d9ff; --danger: #ff0000; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; user-select: none; }
+        
+        body { 
+            background: #050505; color: white; padding: 20px; overflow-x: hidden;
+            background-image: radial-gradient(circle at center, #111 0%, #000 100%);
+        }
+
+        /* UI ANIMATION & 3D */
+        .card-3d {
+            background: rgba(15, 15, 25, 0.95); border: 1px solid #333; border-radius: 15px;
+            padding: 25px; margin-bottom: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            transform: perspective(1000px) rotateX(1deg); transition: 0.4s;
+        }
+        .card-3d:hover { border-color: var(--p-color); transform: perspective(1000px) rotateX(0deg) scale(1.01); }
+
+        h1 { font-size: 4em; text-align: center; text-shadow: 0 0 20px var(--p-color); margin-bottom: 20px; }
+        h2 { color: var(--p-color); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px; }
+
+        input, select, textarea {
+            width: 100%; padding: 12px; margin: 8px 0; background: #0a0a0a;
+            border: 1px solid #444; border-radius: 8px; color: white; outline: none;
+        }
+        input:focus { border-color: var(--p-color); box-shadow: 0 0 10px var(--p-color); }
+
+        .btn-main {
+            width: 100%; padding: 15px; background: var(--p-color); border: none;
+            border-radius: 8px; color: white; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .btn-main:hover { background: #8e00cc; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(179,0,255,0.3); }
+
+        .hidden { display: none !important; }
+
+        /* BLOCK SCREEN */
+        #banOverlay {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: black; z-index: 10000; display: none;
             flex-direction: column; align-items: center; justify-content: center; text-align: center;
         }
-        .whid-text { color: #00f2ff; font-weight: bold; }
+
+        .status-badge { padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+        .bg-owner { background: var(--gold); color: black; }
+        .bg-mod { background: var(--mod); color: black; }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
-    <div id="blockScreen">
-        <h1>[ ACCESS BLOCKED ]</h1>
-        <p style="margin-top: 20px;">VPN / PROXY DETECTED.</p>
-        <p>ANDA DIBLOKIR 24 JAM DARI OXYX NETWORK.</p>
-        <p id="countdown" style="font-size: 2em; margin-top: 10px;"></p>
+    <div id="banOverlay">
+        <h1 style="color: red; font-size: 4em;">ACCESS TERMINATED</h1>
+        <p id="banReason" style="font-size: 1.5em; margin-top: 20px; color: white;">UNAUTHORIZED DEVICE DETECTED</p>
     </div>
 
-    <div class="monitor">
-        <h2 style="color: var(--p-color);">📡 OXYX LIVE FORENSIC TRACKER</h2>
-        <div id="logHeader" style="margin-top: 20px; color: #555;">SCANNING NETWORK...</div>
-        <div id="logDisplay"></div>
+    <div class="container" style="max-width: 1000px; margin: 0 auto;">
+        <h1>OXYX MARKET</h1>
+
+        <div id="marketView" class="card-3d">
+            <h2>🛒 BABFT MARKETPLACE</h2>
+            <p style="color: #666;">Welcome to the Shadow Market. Submit your build below.</p>
+        </div>
+
+        <div id="publishForm" class="card-3d">
+            <h2>📤 PUBLISH BUILD</h2>
+            <label>File Build (.build)</label>
+            <input type="file" id="buildFile" accept=".build">
+            
+            <input type="text" id="buildName" placeholder="Nama Build">
+            <textarea id="buildDesc" placeholder="Deskripsi Build..."></textarea>
+            
+            <select id="buildType">
+                <option value="">-- Pilih Tipe Build --</option>
+                <option value="non-premium">Non-Premium (Free)</option>
+                <option value="premium">Premium (Robux)</option>
+            </select>
+            
+            <button class="btn-main" onclick="validatePublish()">PUBLISH BUILD</button>
+        </div>
+
+        <div id="loginCard" class="card-3d">
+            <h2>🔐 STAFF ACCESS</h2>
+            <input type="text" id="staffUser" placeholder="Codename">
+            <input type="password" id="staffPass" placeholder="Masterkey / Modkey">
+            <button class="btn-main" style="background: var(--gold); color: black;" onclick="handleStaffAuth()">LOGIN STAFF</button>
+        </div>
+
+        <div id="ownerPanel" class="card-3d hidden" style="border: 2px solid var(--gold);">
+            <h2 style="color: var(--gold);">👑 OWNER SUPREMACY CONTROL</h2>
+            <div style="margin-top: 20px;">
+                <h3>IP & WHID TRACKER (LIVE)</h3>
+                <div id="trackerData" style="font-family: monospace; background: #000; padding: 10px; margin-top: 10px; font-size: 12px;">
+                    </div>
+                <div style="margin-top: 15px; display: flex; gap: 10px;">
+                    <input type="text" id="targetBan" placeholder="Input IP/HWID to Ban">
+                    <button onclick="banAction('ADD')" style="background: red;" class="btn-main">BAN IP</button>
+                    <button onclick="banAction('DEL')" style="background: green;" class="btn-main">UNBAN IP</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        const OWNER_ID = "oxyX Britania9920";
+        // CONFIG & SECURITY
+        const OWNER_HWID = "oxyX Britania9920";
+        localStorage.setItem('oxy_fp', OWNER_HWID);
+        const currentWHID = generateWHID();
 
-        // 1. GENERASI WHID (HARDWARE FINGERPRINT) - CEPAT & AKURAT
+        // Database Simulasi (Seharusnya di JSONBin)
+        let staffSlots = JSON.parse(localStorage.getItem('oxy_slots')) || {
+            masterkey: null, // Key ini hanya untuk 1 orang
+            mod1: null,
+            mod2: null
+        };
+
         function generateWHID() {
             const canvas = document.createElement('canvas');
             const gl = canvas.getContext('webgl');
             const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
             const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-            // Kombinasi GPU + Core CPU + Screen + User Agent
-            const rawId = renderer + navigator.hardwareConcurrency + screen.width + navigator.userAgent;
-            return "WHID-" + btoa(rawId).substring(0, 12).toUpperCase();
+            return btoa(renderer + screen.width + navigator.userAgent).substring(0, 16);
         }
 
-        // 2. PELACAKAN IP & ANTI-VPN (AUTO BLOCK 24 JAM)
-        async function startSecurityScan() {
-            try {
-                // Mengambil data IP & Geolocation
-                const response = await fetch('https://ipapi.co/json/');
-                const data = await response.json();
-                const whid = generateWHID();
+        // 1. VALIDASI PUBLISH
+        function validatePublish() {
+            const file = document.getElementById('buildFile').files[0];
+            const name = document.getElementById('buildName').value.trim();
+            const desc = document.getElementById('buildDesc').value.trim();
+            const type = document.getElementById('buildType').value;
 
-                // Deteksi VPN/Proxy Berdasarkan ISP (Datacenter detection)
-                // Jika ISP mengandung kata kunci provider VPN/Server, maka BLOCK
-                const vpnKeywords = ['vpn', 'proxy', 'hosting', 'datacenter', 'cloud', 'digitalocean', 'google cloud', 'ovh', 'linode', 'vultr', 'mullvad', 'nord', 'expressvpn'];
-                const isVPN = vpnKeywords.some(key => data.org.toLowerCase().includes(key));
+            if (!file) return alert("⚠️ Tolong upload file build anda!");
+            if (!name) return alert("⚠️ Tolong beri nama buildnya!");
+            if (!desc) return alert("⚠️ Tolong tulis deskripsi build!");
+            if (!type) return alert("⚠️ Tolong pilih type build nya!");
 
-                // 3. LOGIKA PEMBLOKIRAN
-                const blockUntil = localStorage.getItem('oxy_block_time');
-                const now = Date.now();
+            const market = (type === 'premium') ? "Premium Marketplace" : "Non-Premium Marketplace";
+            alert(`✅ Build "${name}" telah sukses di-publish dan mengarah ke ${market}.`);
+        }
 
-                if (blockUntil && now < blockUntil) {
-                    activateBlockScreen(blockUntil);
-                    return;
+        // 2. STAFF AUTH & WHID SLOT LOCK
+        function handleStaffAuth() {
+            const u = document.getElementById('staffUser').value.trim();
+            const p = document.getElementById('staffPass').value.trim();
+
+            // LOGIN OWNER (Jalur Khusus Tuan)
+            if (u === 'znyt' && p === 'Root!Delta_7KpZ') {
+                if (OWNER_HWID === "oxyX Britania9920") {
+                    document.getElementById('ownerPanel').classList.remove('hidden');
+                    document.getElementById('loginCard').classList.add('hidden');
+                    startTracker();
+                    return alert("Welcome back, Master Britania.");
+                } else {
+                    return blockUser("PENCURIAN IDENTITAS OWNER TERDETEKSI");
                 }
+            }
 
-                if (isVPN) {
-                    // Set Blockir 24 Jam (86400000 ms)
-                    const expire = Date.now() + 86400000;
-                    localStorage.setItem('oxy_block_time', expire);
-                    activateBlockScreen(expire);
-                    return;
+            // MASTERKEY SLOT (1 ORANG SAJA)
+            if (p === 'MASTER-OXYX-2024') {
+                if (staffSlots.masterkey === null) {
+                    staffSlots.masterkey = currentWHID;
+                    localStorage.setItem('oxy_slots', JSON.stringify(staffSlots));
+                    alert("Slot Masterkey Terdaftar pada WHID ini.");
+                    loginAsMod("Master Staff");
+                } else if (staffSlots.masterkey === currentWHID) {
+                    loginAsMod("Master Staff");
+                } else {
+                    blockUser("MASTERKEY LIMIT REACHED: PIHAK ASING TERDETEKSI");
                 }
+            }
 
-                // TAMPILKAN DATA KE PANEL OWNER
-                addLogEntry(data.ip, data.org, whid, data.city);
-
-            } catch (err) {
-                console.error("Security Bypass Attempted.");
+            // MODERATOR (MOD 1 & 2)
+            if (p === 'MOD1-KEY') {
+                if (!staffSlots.mod1) { staffSlots.mod1 = currentWHID; localStorage.setItem('oxy_slots', JSON.stringify(staffSlots)); }
+                if (staffSlots.mod1 === currentWHID) loginAsMod("Moderator 1"); else blockUser("Bukan HWID Mod 1");
             }
         }
 
-        function activateBlockScreen(expire) {
-            document.getElementById('blockScreen').style.display = 'flex';
-            setInterval(() => {
-                const remaining = expire - Date.now();
-                const hours = Math.floor(remaining / 3600000);
-                const mins = Math.floor((remaining % 3600000) / 60000);
-                document.getElementById('countdown').innerText = `${hours}H ${mins}M REMAINING`;
-            }, 1000);
+        function loginAsMod(role) {
+            document.getElementById('loginCard').classList.add('hidden');
+            alert(`Login Sukses sebagai ${role}`);
         }
 
-        function addLogEntry(ip, isp, whid, city) {
-            const display = document.getElementById('logDisplay');
-            const entry = `
-                <div class="log-entry">
-                    [${new Date().toLocaleTimeString()}] 
-                    IP: <span style="color:#00ff00">${ip}</span> | 
-                    LOC: <span style="color:white">${city}</span> | 
-                    ISP: <span style="color:orange">${isp}</span> | 
-                    WHID: <span class="whid-text">${whid}</span> | 
-                    SEC: <span class="status-safe">CLEAN</span>
-                </div>
+        function blockUser(reason) {
+            document.getElementById('banOverlay').style.display = 'flex';
+            document.getElementById('banReason').innerText = reason;
+        }
+
+        // 3. TRACKER & BAN (OWNER ONLY)
+        async function startTracker() {
+            const res = await fetch('https://ipapi.co/json/');
+            const data = await res.json();
+            document.getElementById('trackerData').innerHTML = `
+                IP: <span style="color:lime">${data.ip}</span> | 
+                LOC: ${data.city} | 
+                ISP: ${data.org} | 
+                WHID: <span style="color:cyan">${currentWHID}</span>
             `;
-            display.innerHTML = entry + display.innerHTML;
         }
 
-        function actionPurge() {
-            if (localStorage.getItem('oxy_fp') === OWNER_ID) {
-                startSecurityScan();
-            } else {
-                alert("ACCESS DENIED: OWNER ONLY");
+        // ANTI DEV TOOLS PURGE
+        setInterval(() => {
+            const before = new Date().getTime();
+            debugger;
+            const after = new Date().getTime();
+            if (after - before > 100) {
+                blockUser("DEV TOOLS DETECTED: PERANGKAT DIBLACKLIST");
+                // Di sini Tuan bisa menambahkan fungsi ban IP otomatis
             }
-        }
+        }, 100);
 
-        // Jalankan pelacakan seketika
-        startSecurityScan();
-        
-        // Anti-Bypass (F12, Right Click)
-        window.oncontextmenu = () => false;
-        setInterval(() => { debugger; }, 100);
     </script>
 </body>
 </html>
