@@ -1,195 +1,263 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHADOW GARDEN | OXYX MARKET</title>
+    <title>OXYX MARKET | STAFF ONLY CHAT</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Orbitron:wght@400;700&display=swap');
-        :root { --shadow-purple: #6a00ff; --dark-void: #050505; --gold: #ffd700; }
-        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Orbitron', sans-serif; user-select: none; }
-        body { background: var(--dark-void); color: white; overflow-x: hidden; background-image: radial-gradient(circle at 50% -20%, #2a0055 0%, #050505 80%); min-height: 100vh; }
-        .container { max-width:1200px; margin:0 auto; padding: 20px; position: relative; z-index: 10; }
-        .header-title { text-align: center; margin-bottom: 50px; }
-        .header-title h1 { font-family: 'Cinzel', serif; font-size: 3.5em; color: white; text-shadow: 0 0 20px var(--shadow-purple); letter-spacing: 5px; }
-        .shadow-card { background: rgba(10, 10, 15, 0.9); border: 1px solid var(--shadow-purple); padding: 25px; margin-bottom: 30px; clip-path: polygon(2% 0%, 100% 0%, 100% 90%, 98% 100%, 0% 100%, 0% 10%); }
-        h2 { color: var(--shadow-purple); margin-bottom: 20px; font-family: 'Cinzel', serif; }
-        input { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; margin-bottom: 15px; outline: none; }
-        input:focus { border-color: var(--shadow-purple); }
-        button { width: 100%; padding: 15px; background: transparent; border: 1px solid var(--shadow-purple); color: white; cursor: pointer; transition: 0.3s; font-weight: bold; }
-        button:hover { background: var(--shadow-purple); box-shadow: 0 0 15px var(--shadow-purple); }
-        #chatDisplay { height: 250px; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 15px; border: 1px solid #222; margin-bottom: 10px; font-size: 0.85em; }
-        .msg-owner { color: var(--gold); }
-        #banOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background: black; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
-        .hidden { display: none !important; }
+        /* UI ASLI OXYX */
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Arial,sans-serif; user-select: none; }
+        body { background:#0a0a0a; color:white; padding:20px; overflow-x: hidden; }
+        .container { max-width:1400px; margin:0 auto; }
+        
+        h1 { font-size:4em; text-align:center; color:#b300ff; text-shadow:3px 3px 0 #ff00ff,-3px -3px 0 #00ffff; margin-bottom:30px; }
+        .card { background:#1a1a2a; border:2px solid #b300ff; border-radius:15px; padding:20px; margin-bottom:20px; position: relative; }
+        
+        /* STATS */
+        .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:15px; margin:20px 0; }
+        .stat-card { background:#2a0a3a; border:2px solid gold; border-radius:10px; padding:15px; text-align:center; }
+        .stat-value { font-size:2.5em; color:gold; font-weight: bold; }
+
+        /* INPUT & BUTTON */
+        input { width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #b300ff; border-radius:5px; color:white; outline: none; }
+        button { width:100%; padding:15px; background:#b300ff; border:none; border-radius:5px; color:white; font-weight:bold; cursor:pointer; transition: 0.3s; }
+        button:hover { background:#d400ff; transform: scale(1.01); }
+
+        /* CHAT SECTION (STAFF ONLY STYLE) */
+        #chatDisplay { height:250px; overflow-y:auto; background:#050505; padding:15px; border-radius:5px; border:1px solid #444; margin-bottom:10px; font-family: monospace; }
+        .msg-owner { color: gold; font-weight: bold; }
+        .msg-mod { color: #00ff00; }
+        .msg-line { margin-bottom: 8px; border-bottom: 1px solid #222; padding-bottom: 4px; }
+
+        /* BAN OVERLAY */
+        #banOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background: black; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+
+        .hidden { display:none !important; }
+        .footer { text-align:center; color:#444; margin-top:30px; font-size: 12px; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
     <div id="banOverlay">
-        <h1 style="color: red; font-size: 3em;">ACCESS DENIED</h1>
-        <p id="banMsg" style="color: #555; margin-top: 10px;">Purged by the Eminence in Shadow.</p>
+        <h1 style="color: red; font-size: 3em;">PURGED FROM SHADOWS</h1>
+        <p id="banMsg" style="color: white; margin-top: 20px;">Your access has been revoked by the Owner.</p>
     </div>
 
     <div class="container">
-        <div class="header-title">
-            <h1>OXYX MARKET</h1>
-            <p>I Am Atomic.</p>
+        <h1>⚡ OXYX MARKET ⚡</h1>
+        
+        <div class="stats">
+            <div class="stat-card"><div class="stat-value" id="statMembers">0</div><div>Followers</div></div>
+            <div class="stat-card"><div class="stat-value" id="statBuilds">248</div><div>Total Builds</div></div>
+            <div class="stat-card" style="border-color: red;"><div class="stat-value" id="statBanned" style="color: red;">0</div><div>Purged IPs</div></div>
         </div>
-
-        <div id="authSection" class="shadow-card">
-            <h2>🔐 ACCESS GATE</h2>
+        
+        <div id="loginCard" class="card">
+            <h2>🔐 IDENTIFICATION</h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <div>
-                    <h3>MEMBER</h3>
-                    <input type="text" id="userIn" placeholder="Identity Name">
-                    <button onclick="loginMember()">ENTER</button>
+                    <h3>👤 MEMBER</h3>
+                    <input type="text" id="memUser" placeholder="Enter Name">
+                    <button onclick="loginMem()">JOIN VOID</button>
                 </div>
                 <div>
-                    <h3>STAFF ONLY</h3>
+                    <h3>👑 STAFF</h3>
                     <input type="text" id="staffUser" placeholder="Codename">
-                    <input type="password" id="staffPass" placeholder="Secret Key">
-                    <div id="githubVerifyRow" class="hidden">
-                        <input type="text" id="ghCode" placeholder="GitHub OTP Code" style="border-color: var(--gold);">
+                    <input type="password" id="staffPass" placeholder="Password">
+                    <div id="ghVerifyBox" class="hidden">
+                        <input type="text" id="ghCode" placeholder="GITHUB OTP CODE" style="border-color: gold;">
                     </div>
-                    <button onclick="handleStaffLogin()" id="btnStaff" style="border-color: var(--gold); color: var(--gold);">AUTHENTICATE</button>
+                    <button onclick="handleStaff()" style="background: gold; color: black;">STAFF AUTH</button>
+                    <p id="failText" style="color: red; font-size: 11px; margin-top: 5px;"></p>
                 </div>
             </div>
         </div>
 
-        <div id="userDash" class="shadow-card hidden">
-            <h3 id="welcomeText"></h3>
-            <button onclick="location.reload()" style="width: 100px; margin-top:10px; border-color: red;">EXIT</button>
+        <div id="dashCard" class="card hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>Active Identity: <span id="userNameDisplay" style="color: #b300ff;"></span></h3>
+                <button onclick="location.reload()" style="width: 100px; background: #aa0000;">LOGOUT</button>
+            </div>
         </div>
 
-        <div id="chatSection" class="shadow-card hidden">
-            <h2>💬 SHADOW COMMUNICATOR</h2>
-            <div id="chatDisplay">Loading messages...</div>
+        <div id="chatCard" class="card hidden">
+            <h2 style="color: gold;">🛡️ STAFF COMMUNICATOR (ENCRYPTED)</h2>
+            <div id="chatDisplay">Connecting to secure bin...</div>
             <div style="display: flex; gap: 10px;">
-                <input type="text" id="chatInput" placeholder="Message..." style="margin:0;">
+                <input type="text" id="chatInput" placeholder="Send secure message..." style="margin:0;">
                 <button onclick="sendChat()" style="width: 100px;">SEND</button>
             </div>
         </div>
+
+        <div id="ownerCard" class="card hidden">
+            <h2 style="color: gold;">👑 THE EMINENCE CONTROL</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <h3>BAN BY FINGERPRINT</h3>
+                    <input type="text" id="banTarget" placeholder="Enter FP ID">
+                    <button onclick="addBan()" style="background: red;">PURGE USER</button>
+                </div>
+                <div>
+                    <h3>BLACKLISTED</h3>
+                    <select id="banListSelect" style="width: 100%; padding: 12px; background: #000; color: white; margin-bottom: 8px;"></select>
+                    <button onclick="delBan()" style="background: green;">REDEEM USER</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">OXYX MARKET • PROTECTED BY SHADOW GARDEN PROTOCOL</div>
     </div>
 
     <script>
-        // ========== CONFIG & SECURITY ==========
+        // ========== CONFIG ==========
         const JSONBIN = {
             ID: '69a24d2a43b1c97be9a53651',
             KEY: '$2a$10$hQHmQJhNStn.YXwhwNsoXuovmgMcA1cXfyL3lIrlznz76I357CwoS'
         };
-        // URL GitHub yang berisi kode verifikasi (Ganti dengan file raw Anda!)
-        const GITHUB_VERIFY_URL = "https://raw.githubusercontent.com/catblox1346/StensUIReMake/refs/heads/main/Script/owner_code.txt";
+        const GH_URL = "https://raw.githubusercontent.com/catblox1346/StensUIReMake/refs/heads/main/Script/owner_code.txt";
 
         let currentUser = null;
         let isWaitingGH = false;
+        let loginFails = parseInt(localStorage.getItem('oxy_fails')) || 0;
+        let deviceId = localStorage.getItem('oxy_fp') || 'OX-'+Math.random().toString(36).slice(2,12).toUpperCase();
+        localStorage.setItem('oxy_fp', deviceId);
 
-        // ========== ANTI DEVELOPER TOOLS ==========
-        setInterval(() => { debugger; }, 100); // Debugger loop
-        
-        document.onkeydown = function(e) {
-            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0))) || (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0))) {
-                alert("Shadow Garden is watching you.");
-                return false;
-            }
+        // ========== ANTI DEV TOOLS ==========
+        setInterval(() => { debugger; }, 100);
+        document.onkeydown = (e) => {
+            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73) || (e.ctrlKey && e.keyCode == 85)) return false;
         };
 
+        // ========== BAN CHECK ==========
+        function checkBan() {
+            let ban24 = localStorage.getItem('oxy_ban_24');
+            if (ban24 && Date.now() < parseInt(ban24)) {
+                document.getElementById('banOverlay').style.display = 'flex';
+                document.getElementById('banMsg').innerText = "BRUTE FORCE ATTEMPT. 24H LOCKOUT.";
+                return true;
+            }
+            let bl = JSON.parse(localStorage.getItem('oxy_blacklist')) || [];
+            if (bl.includes(deviceId)) {
+                document.getElementById('banOverlay').style.display = 'flex';
+                return true;
+            }
+            return false;
+        }
+
         // ========== AUTH LOGIC ==========
-        async function handleStaffLogin() {
-            let u = document.getElementById('staffUser').value;
-            let p = document.getElementById('staffPass').value;
+        async function handleStaff() {
+            if (checkBan()) return;
+            let u = document.getElementById('staffUser').value.trim();
+            let p = document.getElementById('staffPass').value.trim();
 
             if (u === 'znyt' && p === 'Root!Delta_7KpZ') {
                 if (!isWaitingGH) {
-                    alert("Owner Identity Recognized. Fetching GitHub OTP...");
-                    document.getElementById('githubVerifyRow').classList.remove('hidden');
+                    document.getElementById('ghVerifyBox').classList.remove('hidden');
                     isWaitingGH = true;
+                    alert("Owner ID Recognized. Enter GitHub OTP.");
                     return;
                 }
-                
-                // Cek Kode dari GitHub
                 try {
-                    let res = await fetch(GITHUB_VERIFY_URL);
-                    let correctCode = (await res.text()).trim();
-                    let inputCode = document.getElementById('ghCode').value.trim();
-
-                    if (inputCode === correctCode) {
-                        loginSuccess('owner');
-                    } else {
-                        alert("INVALID GITHUB OTP!");
-                    }
-                } catch (e) { alert("GitHub Connection Error!"); }
+                    let res = await fetch(GH_URL);
+                    let code = (await res.text()).trim();
+                    if (document.getElementById('ghCode').value.trim() === code) loginSuccess('owner');
+                    else alert("OTP WRONG!");
+                } catch(e) { alert("GitHub Offline"); }
             } else if ((u === 'helper_tester' && p === 'huwydhdjsiqo') || (u === 'sigma' && p === 'uBwbONeqIwYQ97')) {
                 loginSuccess('mod');
             } else {
-                alert("Wrong Staff Credentials");
+                loginFails++;
+                localStorage.setItem('oxy_fails', loginFails);
+                document.getElementById('failText').innerText = `Attempts: ${loginFails}/3`;
+                if (loginFails >= 3) {
+                    localStorage.setItem('oxy_ban_24', Date.now() + 86400000);
+                    checkBan();
+                }
             }
         }
 
+        function loginMem() {
+            let u = document.getElementById('memUser').value.trim();
+            if (u) { currentUser = {username: u, role: 'member'}; loginSuccess('member'); }
+        }
+
         function loginSuccess(role) {
-            currentUser = { username: document.getElementById('staffUser').value || document.getElementById('userIn').value, role: role };
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('userDash').classList.remove('hidden');
-            document.getElementById('chatSection').classList.remove('hidden');
-            document.getElementById('welcomeText').innerText = `ID: ${currentUser.username.toUpperCase()} [${role.toUpperCase()}]`;
-            fetchChat();
-            setInterval(fetchChat, 5000); // Auto refresh chat
+            loginFails = 0; localStorage.setItem('oxy_fails', 0);
+            document.getElementById('loginCard').classList.add('hidden');
+            document.getElementById('dashCard').classList.remove('hidden');
+            document.getElementById('userNameDisplay').innerText = currentUser.username.toUpperCase() + " [" + role.toUpperCase() + "]";
+            
+            // LOGIKA CHAT HANYA UNTUK STAFF
+            if (role === 'owner' || role === 'mod') {
+                document.getElementById('chatCard').classList.remove('hidden');
+                fetchChat();
+                setInterval(fetchChat, 6000);
+            }
+
+            if (role === 'owner') {
+                document.getElementById('ownerCard').classList.remove('hidden');
+                refreshBanSelect();
+            }
+            updateStats();
         }
 
-        window.loginMember = function() {
-            let u = document.getElementById('userIn').value.trim();
-            if (!u) return;
-            currentUser = { username: u, role: 'member' };
-            loginSuccess('member');
-        }
-
-        // ========== JSONBIN CHAT SYSTEM ==========
+        // ========== CHAT (JSONBIN) ==========
         async function fetchChat() {
             try {
                 let res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN.ID}/latest`, {
                     headers: { 'X-Master-Key': JSONBIN.KEY }
                 });
                 let data = await res.json();
-                let msgs = data.record.messages || [];
-                let display = document.getElementById('chatDisplay');
-                display.innerHTML = msgs.slice(-15).map(m => `
-                    <div style="margin-bottom:5px;">
-                        <span class="${m.role==='owner'?'msg-owner':''}">[${m.user}]:</span> ${m.text}
+                let html = (data.record.messages || []).map(m => `
+                    <div class="msg-line">
+                        <span class="${m.role==='owner'?'msg-owner':'msg-mod'}">[${m.user.toUpperCase()}]:</span> ${m.text}
                     </div>
                 `).join('');
-                display.scrollTop = display.scrollHeight;
-            } catch (e) { console.log("Chat fetch failed"); }
+                document.getElementById('chatDisplay').innerHTML = html;
+                document.getElementById('chatDisplay').scrollTop = 99999;
+            } catch(e) {}
         }
 
         async function sendChat() {
             let txt = document.getElementById('chatInput').value.trim();
             if (!txt || !currentUser) return;
-
             try {
-                // Ambil data lama
-                let res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN.ID}/latest`, {
-                    headers: { 'X-Master-Key': JSONBIN.KEY }
-                });
+                let res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN.ID}/latest`, { headers: { 'X-Master-Key': JSONBIN.KEY } });
                 let data = await res.json();
                 let msgs = data.record.messages || [];
-                
-                // Tambah data baru
                 msgs.push({ user: currentUser.username, role: currentUser.role, text: txt });
-
-                // Update ke JSONBin
                 await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN.ID}`, {
-                    method: 'PUT',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': JSONBIN.KEY 
-                    },
+                    method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN.KEY },
                     body: JSON.stringify({ messages: msgs })
                 });
-
                 document.getElementById('chatInput').value = '';
                 fetchChat();
-            } catch (e) { alert("Failed to send message"); }
+            } catch(e) { alert("Chat Error"); }
         }
+
+        // ========== OWNER ACTION ==========
+        function addBan() {
+            let t = document.getElementById('banTarget').value.trim();
+            if(!t) return;
+            let bl = JSON.parse(localStorage.getItem('oxy_blacklist')) || [];
+            bl.push(t);
+            localStorage.setItem('oxy_blacklist', JSON.stringify(bl));
+            refreshBanSelect();
+            updateStats();
+            alert("User Blacklisted.");
+        }
+
+        function refreshBanSelect() {
+            let bl = JSON.parse(localStorage.getItem('oxy_blacklist')) || [];
+            document.getElementById('banListSelect').innerHTML = bl.map(b => `<option value="${b}">${b}</option>`).join('');
+        }
+
+        function updateStats() {
+            let bl = JSON.parse(localStorage.getItem('oxy_blacklist')) || [];
+            document.getElementById('statBanned').innerText = bl.length;
+            document.getElementById('statMembers').innerText = "1,529";
+        }
+
+        checkBan();
+        updateStats();
     </script>
 </body>
 </html>
