@@ -3,278 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OXYX MARKET - OFFICIAL</title>
+    <title>SHADOW GARDEN | OXYX MARKET</title>
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Arial,sans-serif; }
-        body { background:#0a0a0a; color:white; padding:20px; overflow-x: hidden; }
-        .container { max-width:1400px; margin:0 auto; position: relative; z-index: 2; }
-        
-        /* BACKGROUND ANIMATION */
-        .bg-glow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, #1a0a2a 0%, #0a0a0a 100%); z-index: 1; }
-
-        h1 { font-size:4em; text-align:center; color:#b300ff; text-shadow:3px 3px 0 #ff00ff, -3px -3px 0 #00ffff; margin-bottom:30px; letter-spacing: 5px; }
-        
-        .card { background:rgba(26, 26, 42, 0.9); border:2px solid #b300ff; border-radius:15px; padding:20px; margin-bottom:20px; backdrop-filter: blur(10px); }
-        
-        /* STATS */
-        .stats { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:15px; margin:20px 0; }
-        .stat-card { background:#2a0a3a; border:2px solid gold; border-radius:10px; padding:15px; text-align:center; transition: 0.3s; }
-        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 0 20px gold; }
-        .stat-value { font-size:2.5em; color:gold; font-weight: bold; }
-        .online-dot { display:inline-block; width:10px; height:10px; background:#00ff00; border-radius:50%; animation:pulse 2s infinite; margin-right: 5px; }
-        @keyframes pulse { 0%{opacity:1} 50%{opacity:0.3;transform:scale(1.2)} 100%{opacity:1} }
-        
-        /* DEVICE INFO */
-        .admin-device { background:#0a0a1a; padding:15px; border-radius:10px; font-family:monospace; border-left: 5px solid #00ff00; }
-        .device-id { color:#00ff00; font-weight: bold; }
-        .ip-addr { color:#ffaa00; font-weight: bold; }
-        
-        /* LOGIN */
-        .login-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:20px; }
-        input { width:100%; padding:14px; margin:10px 0; background:#0d0d1a; border:2px solid #b300ff; border-radius:8px; color:white; font-size: 1rem; }
-        button { width:100%; padding:15px; background:#b300ff; border:none; border-radius:8px; color:white; font-weight:bold; cursor:pointer; transition: 0.2s; }
-        button:hover { background:#d400ff; transform: scale(1.02); box-shadow: 0 0 15px #b300ff; }
-        
-        /* TABLE */
-        .table-container { overflow-x: auto; }
-        .ip-table { width:100%; border-collapse:collapse; margin-top:15px; min-width: 600px; }
-        .ip-table th { background:#b300ff; padding:12px; text-align:left; color: white; }
-        .ip-table td { padding:12px; border-bottom: 1px solid #333; background: rgba(0,0,0,0.2); }
-        .online { color:#00ff00; font-weight: bold; }
-        .offline { color:#777; }
-        
-        /* MARKETPLACE */
-        .build-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px; }
-        .item-card { background:#1a1a2a; border:2px solid #b300ff; border-radius:12px; padding:20px; transition: 0.3s; position: relative; }
-        .item-card.premium { border-color: gold; box-shadow: 0 0 15px rgba(255, 215, 0, 0.2); }
-        .item-card:hover { transform: scale(1.03); }
-
-        .hidden { display:none !important; }
-        .footer { text-align:center; color:#555; margin-top:50px; padding: 20px; border-top: 1px solid #333; }
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Orbitron:wght@400;700&display=swap');
+        :root { --shadow-purple: #6a00ff; --dark-void: #050505; --gold: #ffd700; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Orbitron', sans-serif; user-select: none; }
+        body { background: var(--dark-void); color: white; overflow-x: hidden; background-image: radial-gradient(circle at 50% -20%, #2a0055 0%, #050505 80%); min-height: 100vh; }
+        .container { max-width:1200px; margin:0 auto; padding: 20px; position: relative; z-index: 10; }
+        .header-title { text-align: center; margin-bottom: 50px; }
+        .header-title h1 { font-family: 'Cinzel', serif; font-size: 3.5em; color: white; text-shadow: 0 0 20px var(--shadow-purple); letter-spacing: 5px; }
+        .shadow-card { background: rgba(10, 10, 15, 0.9); border: 1px solid var(--shadow-purple); padding: 25px; margin-bottom: 30px; clip-path: polygon(2% 0%, 100% 0%, 100% 90%, 98% 100%, 0% 100%, 0% 10%); }
+        h2 { color: var(--shadow-purple); margin-bottom: 20px; font-family: 'Cinzel', serif; }
+        input { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; margin-bottom: 15px; outline: none; }
+        input:focus { border-color: var(--shadow-purple); }
+        button { width: 100%; padding: 15px; background: transparent; border: 1px solid var(--shadow-purple); color: white; cursor: pointer; transition: 0.3s; font-weight: bold; }
+        button:hover { background: var(--shadow-purple); box-shadow: 0 0 15px var(--shadow-purple); }
+        #chatDisplay { height: 250px; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 15px; border: 1px solid #222; margin-bottom: 10px; font-size: 0.85em; }
+        .msg-owner { color: var(--gold); }
+        #banOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background: black; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .hidden { display: none !important; }
     </style>
 </head>
-<body>
-    <div class="bg-glow"></div>
-    <div class="container">
-        <h1>⚡ OXYX MARKET ⚡</h1>
-        
-        <div class="stats">
-            <div class="stat-card"><div class="stat-value" id="totalMembers">0</div><div>Total Members</div></div>
-            <div class="stat-card"><div class="stat-value" id="onlineNow">0</div><div><span class="online-dot"></span> Online</div></div>
-            <div class="stat-card"><div class="stat-value" id="totalBuilds">0</div><div>Total Builds</div></div>
-            <div class="stat-card"><div class="stat-value" id="totalIPs">0</div><div>Unique IPs</div></div>
-        </div>
-        
-        <div id="deviceInfoSection" class="card hidden">
-            <h2>📱 YOUR DEVICE INFO</h2>
-            <div class="admin-device">
-                <p>Device Fingerprint: <span class="device-id" id="deviceId">Generating...</span></p>
-                <p>Current IP: <span class="ip-addr" id="ipAddress">Detecting...</span></p>
-            </div>
-        </div>
-        
-        <div id="loginSection" class="card">
-            <h2>🔐 ACCESS PANEL</h2>
-            <div class="login-grid">
-                <div style="padding: 10px; border-right: 1px solid #333;">
-                    <h3>👤 MEMBER LOGIN</h3>
-                    <input type="text" id="memberUsername" placeholder="Enter Username">
-                    <button onclick="loginMember()">JOIN MARKET</button>
-                </div>
-                <div style="padding: 10px;">
-                    <h3>👑 STAFF LOGIN</h3>
-                    <input type="text" id="adminUser" placeholder="Admin Username">
-                    <input type="password" id="adminPass" placeholder="Secret Key">
-                    <button onclick="loginAdmin()" style="background: gold; color: black;">STAFF AUTH</button>
-                </div>
-            </div>
-        </div>
+<body oncontextmenu="return false;">
 
-        <div id="userInfo" class="card hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h3>Logged in as: <span id="displayName" style="color: gold;"></span></h3>
-                <button onclick="logout()" style="background:#aa0000; width: 120px;">LOGOUT</button>
-            </div>
-        </div>
-        
-        <div id="ipTableSection" class="card hidden">
-            <h2>👑 OWNER CONTROL: IP TRACKER</h2>
-            <div class="table-container">
-                <table class="ip-table">
-                    <thead><tr><th>User</th><th>IP Address</th><th>Device Fingerprint</th><th>Last Active</th><th>Status</th></tr></thead>
-                    <tbody id="ipTableBody"></tbody>
-                </table>
-            </div>
-        </div>
-        
-        <div class="card">
-            <h2>🏪 BLUEPRINT MARKETPLACE</h2>
-            <div style="display:flex; gap:10px; margin:20px 0; flex-wrap:wrap;">
-                <button style="width: auto; padding: 10px 20px;" onclick="filterBuilds('all')">ALL</button>
-                <button style="width: auto; padding: 10px 20px; background: #0088ff;" onclick="filterBuilds('premium')">PREMIUM</button>
-                <button style="width: auto; padding: 10px 20px; background: #555;" onclick="filterBuilds('my')">MY STUFF</button>
-            </div>
-            <div id="marketplace" class="build-grid"></div>
-        </div>
-
-        <div class="footer">OXYX MARKET • Build A Boat Exclusive • 2024</div>
+    <div id="banOverlay">
+        <h1 style="color: red; font-size: 3em;">ACCESS DENIED</h1>
+        <p id="banMsg" style="color: #555; margin-top: 10px;">Purged by the Eminence in Shadow.</p>
     </div>
-    
+
+    <div class="container">
+        <div class="header-title">
+            <h1>OXYX MARKET</h1>
+            <p>I Am Atomic.</p>
+        </div>
+
+        <div id="authSection" class="shadow-card">
+            <h2>🔐 ACCESS GATE</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <h3>MEMBER</h3>
+                    <input type="text" id="userIn" placeholder="Identity Name">
+                    <button onclick="loginMember()">ENTER</button>
+                </div>
+                <div>
+                    <h3>STAFF ONLY</h3>
+                    <input type="text" id="staffUser" placeholder="Codename">
+                    <input type="password" id="staffPass" placeholder="Secret Key">
+                    <div id="githubVerifyRow" class="hidden">
+                        <input type="text" id="ghCode" placeholder="GitHub OTP Code" style="border-color: var(--gold);">
+                    </div>
+                    <button onclick="handleStaffLogin()" id="btnStaff" style="border-color: var(--gold); color: var(--gold);">AUTHENTICATE</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="userDash" class="shadow-card hidden">
+            <h3 id="welcomeText"></h3>
+            <button onclick="location.reload()" style="width: 100px; margin-top:10px; border-color: red;">EXIT</button>
+        </div>
+
+        <div id="chatSection" class="shadow-card hidden">
+            <h2>💬 SHADOW COMMUNICATOR</h2>
+            <div id="chatDisplay">Loading messages...</div>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="chatInput" placeholder="Message..." style="margin:0;">
+                <button onclick="sendChat()" style="width: 100px;">SEND</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // ========== CORE SYSTEM ==========
+        // ========== CONFIG & SECURITY ==========
+        const JSONBIN = {
+            ID: '69a24d2a43b1c97be9a53651',
+            KEY: '$2a$10$hQHmQJhNStn.YXwhwNsoXuovmgMcA1cXfyL3lIrlznz76I357CwoS'
+        };
+        // URL GitHub yang berisi kode verifikasi (Ganti dengan file raw Anda!)
+        const GITHUB_VERIFY_URL = "https://raw.githubusercontent.com/catblox1346/StensUIReMake/refs/heads/main/Script/owner_code.txt";
+
         let currentUser = null;
-        let currentFilter = 'all';
-        let clientIP = 'Detecting...';
+        let isWaitingGH = false;
 
-        // PERSISTENT DEVICE ID (Anti-Refresh Lock)
-        let deviceId = localStorage.getItem('oxyx_fingerprint');
-        if (!deviceId) {
-            deviceId = 'OX-' + Math.random().toString(36).substring(2,15).toUpperCase();
-            localStorage.setItem('oxyx_fingerprint', deviceId);
+        // ========== ANTI DEVELOPER TOOLS ==========
+        setInterval(() => { debugger; }, 100); // Debugger loop
+        
+        document.onkeydown = function(e) {
+            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0))) || (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0))) {
+                alert("Shadow Garden is watching you.");
+                return false;
+            }
+        };
+
+        // ========== AUTH LOGIC ==========
+        async function handleStaffLogin() {
+            let u = document.getElementById('staffUser').value;
+            let p = document.getElementById('staffPass').value;
+
+            if (u === 'znyt' && p === 'Root!Delta_7KpZ') {
+                if (!isWaitingGH) {
+                    alert("Owner Identity Recognized. Fetching GitHub OTP...");
+                    document.getElementById('githubVerifyRow').classList.remove('hidden');
+                    isWaitingGH = true;
+                    return;
+                }
+                
+                // Cek Kode dari GitHub
+                try {
+                    let res = await fetch(GITHUB_VERIFY_URL);
+                    let correctCode = (await res.text()).trim();
+                    let inputCode = document.getElementById('ghCode').value.trim();
+
+                    if (inputCode === correctCode) {
+                        loginSuccess('owner');
+                    } else {
+                        alert("INVALID GITHUB OTP!");
+                    }
+                } catch (e) { alert("GitHub Connection Error!"); }
+            } else if ((u === 'helper_tester' && p === 'huwydhdjsiqo') || (u === 'sigma' && p === 'uBwbONeqIwYQ97')) {
+                loginSuccess('mod');
+            } else {
+                alert("Wrong Staff Credentials");
+            }
         }
-        document.getElementById('deviceId').innerText = deviceId;
 
-        // FETCH IP
-        fetch('https://api.ipify.org?format=json')
-            .then(res => res.json())
-            .then(data => { clientIP = data.ip; document.getElementById('ipAddress').innerText = clientIP; })
-            .catch(() => { clientIP = 'Hidden/VPN'; });
-
-        // DATABASE (Local Storage Sim)
-        let activeSessions = JSON.parse(localStorage.getItem('activeSessions')) || {};
-        let members = JSON.parse(localStorage.getItem('members')) || [];
-        let builds = JSON.parse(localStorage.getItem('builds')) || [
-            {id:1, name:"ZNYT Special Boat", price:999, desc:"Official Owner Boat", file:"owner.build", seller:"znyt"},
-            {id:2, name:"Speedster Raft", price:0, desc:"Fast and cheap", file:"speed.build", seller:"System"}
-        ];
-
-        // ========== AUTH FUNCTIONS ==========
-        function setSession(username) {
-            activeSessions[username] = deviceId;
-            localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
-        }
-
-        function isLocked(username) {
-            return activeSessions[username] && activeSessions[username] !== deviceId;
+        function loginSuccess(role) {
+            currentUser = { username: document.getElementById('staffUser').value || document.getElementById('userIn').value, role: role };
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('userDash').classList.remove('hidden');
+            document.getElementById('chatSection').classList.remove('hidden');
+            document.getElementById('welcomeText').innerText = `ID: ${currentUser.username.toUpperCase()} [${role.toUpperCase()}]`;
+            fetchChat();
+            setInterval(fetchChat, 5000); // Auto refresh chat
         }
 
         window.loginMember = function() {
-            let user = document.getElementById('memberUsername').value.trim();
-            if (!user) return alert('Enter username!');
-            if (isLocked(user)) return alert('❌ Account ACTIVE in another device!');
-
-            updateMemberData(user);
-            setSession(user);
-            currentUser = { username: user, role: 'member' };
-            enterDashboard();
-        };
-
-        window.loginAdmin = function() {
-            let user = document.getElementById('adminUser').value.trim();
-            let pass = document.getElementById('adminPass').value.trim();
-
-            // --- THE MASTER BYPASS FOR OWNER ---
-            if (user === 'znyt' && pass === 'Root!Delta_7KpZ') {
-                delete activeSessions['znyt']; // Auto-unbind session lama
-                currentUser = { username: 'znyt', role: 'owner' };
-                setSession('znyt');
-                enterDashboard();
-                document.getElementById('ipTableSection').classList.remove('hidden');
-                updateIpTable();
-                return;
-            }
-
-            // MODS LOGIN
-            if (isLocked(user)) return alert('❌ Account ACTIVE in another device!');
-            
-            if ((user === 'helper_tester' && pass === 'huwydhdjsiqo') || 
-                (user === 'sigma' && pass === 'uBwbONeqIwYQ97')) {
-                currentUser = { username: user, role: 'mod' };
-                setSession(user);
-                enterDashboard();
-            } else {
-                alert('❌ Invalid Credentials');
-            }
-        };
-
-        function updateMemberData(user) {
-            let now = new Date().toISOString();
-            let idx = members.findIndex(m => m.username === user);
-            if (idx > -1) {
-                members[idx].lastSeen = now;
-                members[idx].ip = clientIP;
-            } else {
-                members.push({ username: user, ip: clientIP, deviceId: deviceId, lastSeen: now });
-            }
-            localStorage.setItem('members', JSON.stringify(members));
+            let u = document.getElementById('userIn').value.trim();
+            if (!u) return;
+            currentUser = { username: u, role: 'member' };
+            loginSuccess('member');
         }
 
-        function enterDashboard() {
-            document.getElementById('loginSection').classList.add('hidden');
-            document.getElementById('userInfo').classList.remove('hidden');
-            document.getElementById('deviceInfoSection').classList.remove('hidden');
-            document.getElementById('displayName').innerText = currentUser.username.toUpperCase() + ` (${currentUser.role})`;
-            displayBuilds();
-            updateStats();
+        // ========== JSONBIN CHAT SYSTEM ==========
+        async function fetchChat() {
+            try {
+                let res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN.ID}/latest`, {
+                    headers: { 'X-Master-Key': JSONBIN.KEY }
+                });
+                let data = await res.json();
+                let msgs = data.record.messages || [];
+                let display = document.getElementById('chatDisplay');
+                display.innerHTML = msgs.slice(-15).map(m => `
+                    <div style="margin-bottom:5px;">
+                        <span class="${m.role==='owner'?'msg-owner':''}">[${m.user}]:</span> ${m.text}
+                    </div>
+                `).join('');
+                display.scrollTop = display.scrollHeight;
+            } catch (e) { console.log("Chat fetch failed"); }
         }
 
-        window.logout = function() {
-            if (currentUser) {
-                delete activeSessions[currentUser.username];
-                localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
-            }
-            location.reload();
-        };
+        async function sendChat() {
+            let txt = document.getElementById('chatInput').value.trim();
+            if (!txt || !currentUser) return;
 
-        // ========== MARKET LOGIC ==========
-        function updateStats() {
-            document.getElementById('totalMembers').innerText = members.length;
-            document.getElementById('totalBuilds').innerText = builds.length;
-            document.getElementById('totalIPs').innerText = [...new Set(members.map(m => m.ip))].length;
-            let onlineCount = members.filter(m => (Date.now() - new Date(m.lastSeen)) < 300000).length;
-            document.getElementById('onlineNow').innerText = onlineCount;
+            try {
+                // Ambil data lama
+                let res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN.ID}/latest`, {
+                    headers: { 'X-Master-Key': JSONBIN.KEY }
+                });
+                let data = await res.json();
+                let msgs = data.record.messages || [];
+                
+                // Tambah data baru
+                msgs.push({ user: currentUser.username, role: currentUser.role, text: txt });
+
+                // Update ke JSONBin
+                await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN.ID}`, {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': JSONBIN.KEY 
+                    },
+                    body: JSON.stringify({ messages: msgs })
+                });
+
+                document.getElementById('chatInput').value = '';
+                fetchChat();
+            } catch (e) { alert("Failed to send message"); }
         }
-
-        function updateIpTable() {
-            let tbody = document.getElementById('ipTableBody');
-            tbody.innerHTML = members.map(m => {
-                let isOnline = (Date.now() - new Date(m.lastSeen)) < 300000;
-                return `<tr>
-                    <td><b>${m.username}</b></td>
-                    <td>${m.ip}</td>
-                    <td style="font-size:10px;">${m.deviceId}</td>
-                    <td>${new Date(m.lastSeen).toLocaleString()}</td>
-                    <td>${isOnline ? '<span class="online">ONLINE</span>' : '<span class="offline">OFFLINE</span>'}</td>
-                </tr>`;
-            }).join('');
-        }
-
-        window.filterBuilds = function(f) {
-            currentFilter = f;
-            displayBuilds();
-        }
-
-        function displayBuilds() {
-            let container = document.getElementById('marketplace');
-            let filtered = builds;
-            if (currentFilter === 'premium') filtered = builds.filter(b => b.price > 0);
-            if (currentFilter === 'my') filtered = builds.filter(b => b.seller === (currentUser?.username || ''));
-
-            container.innerHTML = filtered.map(b => `
-                <div class="item-card ${b.price > 0 ? 'premium' : ''}">
-                    <h3 style="color:#b300ff">${b.name}</h3>
-                    <p style="color:gold; font-weight:bold;">💰 ${b.price} Robux</p>
-                    <p style="font-size:0.9em; margin:10px 0;">${b.desc}</p>
-                    <small style="color:#666">Seller: ${b.seller}</small>
-                    <button style="margin-top:10px; background:#00aa00;" onclick="alert('Downloading ${b.file}...')">GET FILE</button>
-                </div>
-            `).join('');
-        }
-
-        // INITIALIZE
-        updateStats();
-        displayBuilds();
-        setInterval(updateStats, 10000);
     </script>
 </body>
 </html>
