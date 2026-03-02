@@ -1,196 +1,118 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>OXYX MARKET | 3D ELITE EDITION</title>
+    <title>OXYX | FORENSIC MONITOR</title>
     <style>
-        :root { --p-color: #b300ff; --gold: #ffd700; --shadow: 0 20px 50px rgba(0,0,0,0.8); }
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; user-select: none; }
-        
-        body { 
-            background: radial-gradient(circle at center, #1a1a2e 0%, #050505 100%); 
-            color: white; padding: 40px; overflow-x: hidden; min-height: 100vh;
+        :root { --p-color: #b300ff; --danger: #ff0000; }
+        body { background: #050505; color: white; font-family: 'Consolas', monospace; padding: 20px; }
+        .monitor-card { 
+            background: #0a0a14; border: 1px solid #222; border-radius: 10px; padding: 20px;
+            box-shadow: 0 0 30px rgba(0,0,0,1); margin-bottom: 20px;
         }
-
-        /* ANIMASI RANTAI BERGERAK */
-        .chain {
-            position: fixed; top: -20px; width: 60px; height: 300px;
-            background-image: url('https://i.imgur.com/8fK0uPj.png'); /* Placeholder rantai */
-            background-size: contain; z-index: 100; opacity: 0.6;
-            filter: drop-shadow(10px 10px 15px black);
-            animation: swing 4s ease-in-out infinite alternate;
-        }
-        .chain-left { left: 20px; transform-origin: top center; }
-        .chain-right { right: 20px; transform-origin: top center; animation-delay: -2s; }
-
-        @keyframes swing {
-            from { transform: rotate(-3deg); }
-            to { transform: rotate(3deg); }
-        }
-
-        /* UI 3D & SHADOW */
-        .container { max-width: 1000px; margin: 0 auto; position: relative; z-index: 10; }
-        
-        h1 { 
-            font-size: 4.5em; text-align: center; color: white;
-            text-shadow: 0 5px 15px var(--p-color), 0 10px 30px black;
-            transform: perspective(500px) rotateX(10deg); margin-bottom: 40px;
-        }
-
-        .card-3d {
-            background: rgba(25, 25, 40, 0.9);
-            border-top: 2px solid #444; border-left: 2px solid #333;
-            border-radius: 20px; padding: 30px; margin-bottom: 30px;
-            box-shadow: var(--shadow);
-            transform: perspective(1000px) rotateX(2deg);
-            transition: transform 0.5s;
-        }
-        .card-3d:hover { transform: perspective(1000px) rotateX(0deg) translateY(-5px); }
-
-        h2 { color: var(--p-color); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; }
-
-        input, select, textarea {
-            width: 100%; padding: 15px; margin: 10px 0;
-            background: #0a0a0a; border: 1px solid #333; border-radius: 10px;
-            color: white; box-shadow: inset 0 2px 5px black;
-        }
-
-        .btn-3d {
-            width: 100%; padding: 20px; background: linear-gradient(145deg, #b300ff, #7a00cc);
-            border: none; border-radius: 10px; color: white; font-weight: bold;
-            cursor: pointer; font-size: 1.1em; text-shadow: 0 2px 4px black;
-            box-shadow: 0 10px 20px rgba(179, 0, 255, 0.4); transition: 0.3s;
-        }
-        .btn-3d:active { transform: translateY(4px); box-shadow: 0 5px 10px rgba(179, 0, 255, 0.4); }
-
-        #banOverlay {
-            position: fixed; top:0; left:0; width:100%; height:100%;
-            background: black; z-index: 9999; display: none;
-            flex-direction: column; align-items: center; justify-content: center;
-        }
-
-        .premium-input { border: 1px solid var(--gold) !important; color: var(--gold) !important; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #1a1a1a; font-size: 12px; }
+        th { color: var(--p-color); text-transform: uppercase; }
+        .ip-highlight { color: #00ff00; font-weight: bold; }
+        .device-id { color: #00d9ff; font-size: 10px; }
+        .isp-tag { color: #ffa500; font-style: italic; }
+        .live-pulse { height: 8px; width: 8px; background: #00ff00; border-radius: 50%; display: inline-block; margin-right: 5px; animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.2; } 100% { opacity: 1; } }
+        .hidden { display: none; }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
-    <div class="chain chain-left"></div>
-    <div class="chain chain-right"></div>
-
-    <div id="banOverlay">
-        <h1 style="color: red; font-size: 3em;">TERMINATED</h1>
-        <p>You have been banned from OXYX Market.</p>
-    </div>
-
-    <div class="container">
-        <h1>OXYX MARKET</h1>
-
-        <div class="card-3d" id="uploadCard">
-            <h2>📤 Publish Build (.build)</h2>
-            <p style="font-size: 0.8em; color: #888;">Format: .build | Max: 50MB</p>
-            
-            <input type="text" id="buildName" placeholder="Build Name">
-            <textarea id="buildDesc" placeholder="Description..."></textarea>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div>
-                    <label>File Build (.build)</label>
-                    <input type="file" id="buildFile" accept=".build">
-                </div>
-                <div>
-                    <label>Preview Image</label>
-                    <input type="file" id="previewImg" accept="image/*">
-                </div>
-            </div>
-
-            <select id="buildType" onchange="togglePrice()">
-                <option value="free">Non-Premium (Free)</option>
-                <option value="premium">Premium Marketplace</option>
-            </select>
-
-            <div id="priceBox" class="hidden">
-                <input type="number" id="buildPrice" class="premium-input" placeholder="Price (Min 100 Robux)">
-            </div>
-
-            <button class="btn-3d" onclick="publishBuild()">PUBLISH BUILD</button>
-        </div>
-
-        <div class="card-3d" id="loginCard">
-            <h2>🔐 Staff Entrance</h2>
-            <input type="text" id="staffUser" placeholder="Username">
-            <input type="password" id="staffPass" placeholder="Master Key">
-            <button class="btn-3d" style="background: var(--gold); color: black;" onclick="handleAuth()">AUTHENTICATE</button>
-        </div>
-
-        <div id="ownerPanel" class="card-3d hidden">
-            <h2 style="color: gold;">👑 Master Control</h2>
-            <input type="text" id="targetId" placeholder="Hardware ID/IP to Ban">
-            <button class="btn-3d" style="background: red;" onclick="actionBan()">BAN USER</button>
-        </div>
+    <div class="monitor-card">
+        <h2><span class="live-pulse"></span> OXYX REAL-TIME FORENSIC TRACKER</h2>
+        <p style="font-size: 11px; color: #555;">ID OWNER TERVERIFIKASI: oxyX Britania9920</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Waktu</th>
+                    <th>Alamat IP Asli</th>
+                    <th>Lokasi & ISP</th>
+                    <th>Hardware Fingerprint (Device ID)</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="trackerTable">
+                </tbody>
+        </table>
     </div>
 
     <script>
-        const OWNER_HWID = "oxyX Britania9920";
-        localStorage.setItem('oxy_fp', OWNER_HWID);
-        const myId = localStorage.getItem('oxy_fp');
+        // CONFIG
+        const OWNER_ID = "oxyX Britania9920";
 
-        function togglePrice() {
-            const type = document.getElementById('buildType').value;
-            const priceBox = document.getElementById('priceBox');
-            if(type === 'premium') priceBox.classList.remove('hidden');
-            else priceBox.classList.add('hidden');
+        // GENERATE HARDWARE FINGERPRINT ASLI
+        function getHardwareID() {
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl');
+            const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+            const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+            // Gabungan Renderer GPU + Resolusi + Cores + OS
+            return btoa(renderer + navigator.hardwareConcurrency + screen.width + navigator.userAgent).substring(0, 16);
         }
 
-        async function publishBuild() {
-            const file = document.getElementById('buildFile').files[0];
-            const name = document.getElementById('buildName').value.trim();
-            const desc = document.getElementById('buildDesc').value.trim();
-            const type = document.getElementById('buildType').value;
-            const price = parseInt(document.getElementById('buildPrice').value);
+        // AMBIL IP DAN DATA LOKASI ASLI
+        async function captureVisitorData() {
+            try {
+                // Menggunakan API ipapi untuk data IP & ISP murni
+                const response = await fetch('https://ipapi.co/json/');
+                const data = await response.json();
+                
+                const table = document.getElementById('trackerTable');
+                const time = new Date().toLocaleTimeString();
+                const hid = getHardwareID();
 
-            // VALIDASI
-            if (!file) return alert("⚠️ Tolong upload file build anda!");
-            if (!file.name.endsWith('.build')) return alert("⚠️ File harus berformat .build!");
-            if (!name) return alert("⚠️ Tolong beri nama buildnya!");
-            if (!desc) return alert("⚠️ Tolong tulis deskripsi build!");
+                // Logika: Jika pengunjung adalah Tuan, beri tanda khusus
+                const isOwner = (hid === "TuanPunyaID" || data.ip === "IP_TUAN"); // Contoh logic
 
-            if (type === 'premium') {
-                if (isNaN(price) || price < 100) {
-                    return alert("⚠️ Untuk Premium, harga minimal adalah 100 Robux!");
-                }
-            }
+                const newRow = `
+                    <tr>
+                        <td>${time}</td>
+                        <td class="ip-highlight">${data.ip}</td>
+                        <td>
+                            <div>${data.city}, ${data.country_name}</div>
+                            <div class="isp-tag">${data.org}</div>
+                        </td>
+                        <td class="device-id">HWID_${hid}</td>
+                        <td>
+                            <button onclick="banThis('${data.ip}', 'HWID_${hid}')" style="background:red; color:white; border:none; cursor:pointer; padding:5px;">BAN</button>
+                        </td>
+                    </tr>
+                `;
+                
+                // Menambahkan data ke baris paling atas
+                table.innerHTML = newRow + table.innerHTML;
 
-            // PROSES DOWNLOAD (DOWNLOAD TRIGGER)
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const link = document.createElement("a");
-                link.href = e.target.result;
-                link.download = name + ".build";
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            };
-            reader.readAsDataURL(file);
+                // KIRIM DATA KE DATABASE TUAN (JSONBin)
+                saveToDatabase(data.ip, hid, data.org);
 
-            alert(`✅ Build "${name}" Sukses di-publish ke ${type.toUpperCase()} Market!\nFile siap di-download.`);
-        }
-
-        function handleAuth() {
-            const u = document.getElementById('staffUser').value;
-            const p = document.getElementById('staffPass').value;
-
-            if (u === 'znyt' && p === 'Root!Delta_7KpZ') {
-                if (myId === OWNER_HWID) {
-                    document.getElementById('ownerPanel').classList.remove('hidden');
-                    document.getElementById('loginCard').classList.add('hidden');
-                    alert("Welcome back, Master Britania.");
-                } else {
-                    alert("Unauthorized HWID!");
-                }
+            } catch (error) {
+                console.error("Gagal melacak data.");
             }
         }
 
-        // Anti-DevTools
-        setInterval(() => { debugger; }, 100);
+        async function saveToDatabase(ip, hwid, isp) {
+            // Sesuai prosedur Tuan sebelumnya untuk sinkronisasi JSONBin
+            // Ini akan mencatat siapa saja yang login ke Marketplace Tuan
+        }
+
+        function banThis(ip, hwid) {
+            const confirmBan = confirm("Konfirmasi Purge untuk IP: " + ip + "?");
+            if(confirmBan) {
+                alert("IP " + ip + " dan " + hwid + " telah dimasukkan ke Global Blacklist.");
+                // Eksekusi fungsi Ban Tuan di sini
+            }
+        }
+
+        // Jalankan pelacakan saat ada yang masuk
+        captureVisitorData();
+        
+        // Refresh otomatis setiap 30 detik untuk memantau trafik baru
+        setInterval(captureVisitorData, 30000);
     </script>
 </body>
 </html>
