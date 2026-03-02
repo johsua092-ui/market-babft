@@ -12,6 +12,18 @@
         
         .card { background:#1a1a2a; border:2px solid #b300ff; border-radius:15px; padding:20px; margin-bottom:20px; }
         
+        .test-button { 
+            background: #00ff00; 
+            color: black; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border: none; 
+            border-radius: 5px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            width: 100%;
+        }
+        
         .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:15px; margin:20px 0; }
         .stat-card { background:#2a0a3a; border:2px solid gold; border-radius:10px; padding:15px; text-align:center; }
         .stat-value { font-size:2.5em; color:gold; }
@@ -25,7 +37,7 @@
         
         .login-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
         input { width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #b300ff; border-radius:5px; color:white; }
-        button { width:100%; padding:15px; background:#b300ff; border:none; border-radius:5px; color:white; font-weight:bold; cursor:pointer; }
+        button { width:100%; padding:15px; background:#b300ff; border:none; border-radius:5px; color:white; font-weight:bold; cursor:pointer; margin:5px 0; }
         button:hover { background:#d400ff; }
         
         .verify-section { background:#2a0a3a; border:2px solid gold; border-radius:10px; padding:15px; margin:15px 0; text-align:center; }
@@ -41,8 +53,6 @@
         .ban-table { width:100%; border-collapse:collapse; margin-top:15px; }
         .ban-table th { background:#aa0000; padding:12px; text-align:left; }
         .ban-table td { padding:10px; border-bottom:1px solid #333; }
-        .ban-btn { background:#aa0000; padding:5px 10px; width:auto; margin:0; }
-        .unban-btn { background:#00aa00; padding:5px 10px; width:auto; margin:0; }
         
         .session-warning { background:#aa0000; padding:10px; border-radius:5px; text-align:center; }
         .hidden { display:none !important; }
@@ -52,6 +62,9 @@
 <body>
     <div class="container">
         <h1>⚡ OXYX MARKET ⚡</h1>
+        
+        <!-- TEST BUTTON - KALO INI BISA, BERARTI JS JALAN -->
+        <button class="test-button" onclick="testClick()">TEST BUTTON - KLIK SAYA</button>
         
         <div class="stats">
             <div class="stat-card"><div class="stat-value" id="totalMembers">0</div><div>Total Members</div></div>
@@ -145,6 +158,12 @@
     </div>
     
     <script>
+        // ========== TEST FUNCTION ==========
+        window.testClick = function() {
+            alert('✅ TEST BERHASIL! JavaScript jalan!');
+            console.log('Test clicked');
+        };
+        
         // ========== DATA ==========
         let currentUser = null;
         let currentFilter = 'all';
@@ -155,50 +174,40 @@
         let activeSessions = JSON.parse(localStorage.getItem('activeSessions')) || {};
         let members = JSON.parse(localStorage.getItem('members')) || [];
         let builds = JSON.parse(localStorage.getItem('builds')) || [
-            {id:1, name:"Dragon Boat", price:0, desc:"Cool dragon boat", file:"dragon.build", seller:"znyt", fileData:null},
-            {id:2, name:"Flying Ship", price:150, desc:"Flying ship", file:"flying.build", seller:"helper_tester", fileData:null},
-            {id:3, name:"Golden Raft", price:200, desc:"Golden raft", file:"golden.build", seller:"sigma", fileData:null}
+            {id:1, name:"Dragon Boat", price:0, desc:"Cool dragon boat", file:"dragon.build", seller:"znyt"},
+            {id:2, name:"Flying Ship", price:150, desc:"Flying ship", file:"flying.build", seller:"helper_tester"},
+            {id:3, name:"Golden Raft", price:200, desc:"Golden raft", file:"golden.build", seller:"sigma"}
         ];
-        let chats = JSON.parse(localStorage.getItem('chats')) || [{user:"znyt",role:"owner",msg:"Welcome!"}];
+        let chats = JSON.parse(localStorage.getItem('chats')) || [{user:"znyt",msg:"Welcome!"}];
         let bannedIPs = JSON.parse(localStorage.getItem('bannedIPs')) || [];
         
-        // ========== IP FIX ==========
+        // ========== IP ==========
         fetch('https://httpbin.org/ip')
             .then(res => res.json())
-            .then(data => { 
-                clientIP = data.origin; 
-                document.getElementById('ipAddress').innerText = clientIP; 
-            })
-            .catch(() => { 
-                clientIP = '127.0.0.1'; 
-                document.getElementById('ipAddress').innerText = clientIP; 
-            });
+            .then(data => { clientIP = data.origin; document.getElementById('ipAddress').innerText = clientIP; })
+            .catch(() => { clientIP = '127.0.0.1'; document.getElementById('ipAddress').innerText = clientIP; });
         
         document.getElementById('deviceId').innerText = deviceId;
         
-        // ========== SESSION CHECK ==========
-        function checkSession(username) {
+        // ========== SESSION ==========
+        window.checkSession = function(username) {
             if (username === 'znyt') return false;
             return activeSessions[username] && activeSessions[username] !== deviceId;
-        }
+        };
         
-        function setSession(username) {
+        window.setSession = function(username) {
             activeSessions[username] = deviceId;
             localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
-        }
+        };
         
-        function clearSession(username) {
+        window.clearSession = function(username) {
             delete activeSessions[username];
             localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
-        }
-        
-        // ========== GENERATE VERIFICATION CODE ==========
-        function generateVerificationCode() {
-            return Math.floor(100000 + Math.random() * 900000).toString();
-        }
+        };
         
         // ========== LOGIN MEMBER ==========
         window.loginMember = function() {
+            alert('Login member clicked');
             let user = document.getElementById('memberUsername').value.trim();
             if (!user) { alert('Masukin nama!'); return; }
             
@@ -227,6 +236,7 @@
         
         // ========== LOGIN ADMIN ==========
         window.initiateAdminLogin = function() {
+            alert('Admin login clicked');
             let user = document.getElementById('adminUser').value.trim();
             let pass = document.getElementById('adminPass').value.trim();
             
@@ -247,13 +257,14 @@
                 return;
             }
             
-            let code = generateVerificationCode();
+            let code = Math.floor(100000 + Math.random() * 900000).toString();
             document.getElementById('verifyCodeDisplay').innerText = code;
             document.getElementById('verifySection').classList.remove('hidden');
             pendingAdminLogin = { username: user, role: role };
         };
         
         window.verifyCode = function() {
+            alert('Verify clicked');
             if (!pendingAdminLogin) return;
             
             let inputCode = document.getElementById('verifyCodeInput').value.trim();
@@ -302,7 +313,7 @@
             }
         };
         
-        function showUserInfo() {
+        window.showUserInfo = function() {
             document.getElementById('userInfo').classList.remove('hidden');
             document.getElementById('displayName').innerText = currentUser.username + ' (' + currentUser.role + ')';
             document.getElementById('uploadSection').classList.remove('hidden');
@@ -310,9 +321,10 @@
                 document.getElementById('chatSection').classList.remove('hidden');
                 displayChat();
             }
-        }
+        };
         
         window.logout = function() {
+            alert('Logout clicked');
             if (currentUser) clearSession(currentUser.username);
             currentUser = null;
             pendingAdminLogin = null;
@@ -337,7 +349,7 @@
         }
         
         // ========== IP TABLE ==========
-        function updateIpTable() {
+        window.updateIpTable = function() {
             let tbody = document.getElementById('ipTableBody');
             if (members.length === 0) { tbody.innerHTML = '<tr><td colspan="6">Belum ada member</td></tr>'; return; }
             let html = '';
@@ -353,15 +365,16 @@
                     <td>${new Date(m.lastSeen).toLocaleString()}</td>
                     <td>${status}</td>
                     <td>
-                        ${!isBanned ? `<button class="ban-btn" onclick="banIP('${m.ip}', '${m.username}')">BAN</button>` : ''}
+                        ${!isBanned ? `<button onclick="banIP('${m.ip}', '${m.username}')">BAN</button>` : ''}
                     </td>
                 </tr>`;
             });
             tbody.innerHTML = html;
-        }
+        };
         
         // ========== BAN IP ==========
         window.banIP = function(ip, username) {
+            alert('Ban clicked');
             if (!currentUser || (currentUser.role !== 'owner' && currentUser.role !== 'mod')) {
                 alert('❌ Hanya moderator/owner yang bisa ban!');
                 return;
@@ -383,6 +396,7 @@
         };
         
         window.unbanIP = function(ip) {
+            alert('Unban clicked');
             if (!currentUser || (currentUser.role !== 'owner' && currentUser.role !== 'mod')) {
                 alert('❌ Hanya moderator/owner yang bisa unban!');
                 return;
@@ -393,13 +407,3 @@
             updateBanTable();
             alert(`✅ IP ${ip} berhasil di-unban!`);
         };
-        
-        function updateBanTable() {
-            let tbody = document.getElementById('banTableBody');
-            if (bannedIPs.length === 0) { tbody.innerHTML = '<tr><td colspan="5">Tidak ada IP yang di-ban</td></tr>'; return; }
-            let html = '';
-            bannedIPs.forEach(b => {
-                html += `<tr>
-                    <td>${b.ip}</td>
-                    <td>${b.username}</td>
-                    <td>${b.reason}</td>
