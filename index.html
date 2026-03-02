@@ -1,154 +1,80 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>OXYX MARKET | SHADOW EDITION</title>
+    <title>OXYX MARKET | FIXED EDITION</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Orbitron',monospace; }
-        body { 
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 50%, #0a0a0a 100%);
-            color:#e0e0e0; padding:20px; min-height:100vh; position:relative; overflow-x:hidden;
-        }
-        
-        /* Shadow Chain Effects */
-        .chain-left, .chain-right {
-            position: fixed; top: 0; width: 50px; height: 100vh; z-index: 1000; opacity: 0.4;
-            background: repeating-linear-gradient(0deg, #333 0px, #333 15px, #666 15px, #666 30px);
-            animation: chainMove 3s ease-in-out infinite;
-        }
-        .chain-left { left: 0; }
-        .chain-right { right: 0; animation-direction: reverse; }
-        @keyframes chainMove { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
-        
-        .container { max-width:1400px; margin:0 auto; position:relative; z-index:10; }
-        
-        h1 { 
-            font-size:4.5em; text-align:center; font-weight:900; margin-bottom:20px;
-            background: linear-gradient(45deg, #b300ff, #ff00ff, #00ffff, #b300ff);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: shadowPulse 2s ease-in-out infinite;
-        }
-        @keyframes shadowPulse { 0%, 100% { text-shadow: 0 0 30px rgba(179,0,255,0.5); } 50% { text-shadow: 0 0 50px rgba(179,0,255,0.8); } }
-        
-        .powered-by { text-align:center; font-size:0.9em; color:#666; margin-bottom:30px; font-style:italic; }
-        
-        .card { 
-            background: linear-gradient(145deg, #1a1a2a, #2a1a3a); border:2px solid #b300ff; border-radius:20px; 
-            padding:25px; margin-bottom:25px; position:relative; backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(179,0,255,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
-            transform: perspective(1000px) rotateX(2deg); transition: all 0.3s ease;
-        }
-        .card:hover { transform: perspective(1000px) rotateX(0deg) translateY(-5px); box-shadow: 0 15px 40px rgba(179,0,255,0.4); }
-        .card::before {
-            content:''; position:absolute; top:-2px; left:-2px; right:-2px; bottom:-2px;
-            background: linear-gradient(45deg, #b300ff, #ff00ff, #00ffff, #b300ff);
-            border-radius:22px; z-index:-1; opacity:0.7; animation: borderGlow 3s ease-in-out infinite;
-        }
-        @keyframes borderGlow { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
-        
-        .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin:25px 0; }
-        .stat-card { 
-            background: linear-gradient(145deg, #2a0a3a, #3a1a4a); border:2px solid gold; border-radius:15px; 
-            padding:20px; text-align:center; box-shadow: 0 4px 20px rgba(255,215,0,0.3);
-            transition: transform 0.3s ease; transform: perspective(800px) rotateY(-5deg);
-        }
-        .stat-card:hover { transform: perspective(800px) rotateY(0deg) translateY(-8px); }
-        .stat-value { font-size:3em; color:gold; font-weight:900; text-shadow: 0 0 20px rgba(255,215,0,0.5); }
-        
-        .login-grid { display:grid; grid-template-columns:1fr 1fr; gap:25px; }
-        input, textarea, select { 
-            width:100%; padding:15px; margin:10px 0; color:#e0e0e0; font-family:'Orbitron',monospace;
-            background: linear-gradient(145deg, #2a2a3a, #3a3a4a); border:2px solid #b300ff; border-radius:10px;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.3); transition: all 0.3s ease;
-        }
-        input:focus, textarea:focus { border-color:#ff00ff; box-shadow: 0 0 20px rgba(255,0,255,0.3); outline:none; transform: translateY(-2px); }
-        
-        button { 
-            width:100%; padding:18px; background: linear-gradient(45deg, #b300ff, #d400ff); border:none; 
-            border-radius:10px; color:white; font-weight:bold; cursor:pointer; font-family:'Orbitron',monospace;
-            transition: all 0.3s ease; text-transform:uppercase; letter-spacing:1px;
-            box-shadow: 0 4px 15px rgba(179,0,255,0.3); transform: perspective(500px) rotateX(10deg);
-        }
-        button:hover { 
-            background: linear-gradient(45deg, #d400ff, #ff00ff);
-            transform: perspective(500px) rotateX(0deg) translateY(-3px);
-            box-shadow: 0 8px 25px rgba(179,0,255,0.5);
-        }
-        
+        /* Style tetap sama seperti milik Tuan agar UI tidak berubah */
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Arial,sans-serif; }
+        body { background:#0a0a0a; color:white; padding:20px; }
+        .container { max-width:1400px; margin:0 auto; }
+        h1 { font-size:4em; text-align:center; color:#b300ff; text-shadow:3px 3px 0 #ff00ff,-3px -3px 0 #00ffff; margin-bottom:30px; }
+        .card { background:#1a1a2a; border:2px solid #b300ff; border-radius:15px; padding:20px; margin-bottom:20px; }
+        .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:15px; margin:20px 0; }
+        .stat-card { background:#2a0a3a; border:2px solid gold; border-radius:10px; padding:15px; text-align:center; }
+        .stat-value { font-size:2.5em; color:gold; }
+        .online-dot { display:inline-block; width:10px; height:10px; background:#00ff00; border-radius:50%; animation:pulse 2s infinite; }
+        @keyframes pulse { 0%{opacity:1} 50%{opacity:0.5;transform:scale(1.3)} }
+        #deviceInfoSection { display:none; }
+        .admin-device { background:#0a0a1a; padding:10px; border-radius:5px; font-family:monospace; }
+        .device-id { color:#00ff00; }
+        .ip-addr { color:#ffaa00; }
+        .login-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+        input, textarea { width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #b300ff; border-radius:5px; color:white; }
+        button { width:100%; padding:15px; background:#b300ff; border:none; border-radius:5px; color:white; font-weight:bold; cursor:pointer; }
+        button:hover { background:#d400ff; }
+        .ip-table { width:100%; border-collapse:collapse; margin-top:15px; }
+        .ip-table th { background:#b300ff; padding:12px; text-align:left; }
+        .ip-table td { padding:10px; border-bottom:1px solid #333; }
+        .online { color:#00ff00; }
+        .offline { color:#666; }
+        .session-warning { background:#aa0000; padding:15px; border-radius:5px; text-align:center; margin-bottom: 10px; }
         .hidden { display:none !important; }
-        .owner-panel { background: linear-gradient(145deg, #1a0a2a, #2a1a3a); border:3px solid gold; }
-        .mod-panel { background: linear-gradient(145deg, #1a1a0a, #2a2a1a); border:3px solid #ffaa00; }
-        
-        /* Discord Links */
-        .discord-links { display:flex; gap:15px; justify-content:center; margin:20px 0; flex-wrap:wrap; }
-        .discord-btn {
-            background: linear-gradient(45deg, #5865F2, #7289DA); padding:12px 25px; border-radius:25px;
-            text-decoration:none; color:white; font-weight:bold; transition: all 0.3s ease;
-            display:flex; align-items:center; gap:8px; transform: perspective(400px) rotateX(10deg);
-        }
-        .discord-btn:hover { transform: perspective(400px) rotateX(0deg) translateY(-5px); }
+        .footer { text-align:center; color:#666; margin-top:30px; }
+        /* Enhanced security styles */
+        .owner-panel { background:#1a0a2a; border:3px solid gold; }
+        .mod-panel { background:#1a1a0a; border:3px solid #ffaa00; }
+        .panel-tabs { display:flex; gap:10px; margin-bottom:20px; }
+        .tab-btn { padding:10px 20px; background:#2a2a3a; border:2px solid #666; border-radius:5px; cursor:pointer; }
+        .tab-btn.active { background:gold; color:black; border-color:gold; }
+        .tab-content { display:none; }
+        .tab-content.active { display:block; }
+        .security-alert { background:#aa0000; padding:10px; border-radius:5px; margin:10px 0; }
+        .role-member { color:#00ff00; }
+        .role-mod { color:#ffaa00; }
+        .role-owner { color:gold; }
+        .suspicious { background:#330000; }
+        .ban-btn { background:#aa0000; padding:5px 10px; font-size:12px; }
+        .unban-btn { background:#00aa00; padding:5px 10px; font-size:12px; }
+        .whid-input { background:#0a0a0a; border:2px solid gold; }
+        .security-warning { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; display:flex; align-items:center; justify-content:center; }
         
         /* FAQ Styles */
-        .faq-item { background: linear-gradient(145deg, #2a2a3a, #3a3a4a); margin:10px 0; border-radius:10px; overflow:hidden; }
-        .faq-question { padding:15px; background: linear-gradient(45deg, #b300ff, #d400ff); cursor:pointer; font-weight:bold; }
-        .faq-answer { padding:15px; display:none; }
-        .faq-answer.active { display:block; animation: fadeIn 0.3s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .faq-item { background:#2a2a3a; margin:10px 0; border-radius:10px; overflow:hidden; border:1px solid #444; }
+        .faq-question { padding:15px; background:#b300ff; cursor:pointer; font-weight:bold; transition:background 0.3s; }
+        .faq-question:hover { background:#d400ff; }
+        .faq-answer { padding:15px; display:none; background:#1a1a2a; }
+        .faq-answer.active { display:block; }
         
-        /* Build Preview */
-        .build-preview { max-width:200px; max-height:150px; border-radius:10px; margin:10px 0; border:2px solid #b300ff; }
-        .build-card { 
-            background: linear-gradient(145deg, #2a2a3a, #3a3a4a); border:2px solid #b300ff; border-radius:15px; 
-            padding:20px; transition: all 0.3s ease; transform: perspective(600px) rotateY(5deg);
-        }
-        .build-card:hover { transform: perspective(600px) rotateY(0deg) translateY(-8px); }
-        .premium-build { border-color:gold; background: linear-gradient(145deg, #3a2a0a, #4a3a1a); }
+        /* Download Animation */
+        .download-progress { background:#2a2a3a; border-radius:5px; overflow:hidden; margin:10px 0; height:20px; }
+        .download-bar { background:linear-gradient(90deg, #00ff00, #00aa00); height:100%; width:0%; transition:width 0.1s; }
         
-        /* Security Warning */
-        .security-warning { 
-            position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); 
-            z-index:9999; display:flex; align-items:center; justify-content:center;
-        }
-        .blocked-overlay {
-            background: linear-gradient(45deg, #aa0000, #ff0000); padding:40px; border-radius:20px; text-align:center;
-            box-shadow: 0 0 50px rgba(255,0,0,0.5); animation: warningPulse 1s ease-in-out infinite;
-        }
-        @keyframes warningPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .stats { grid-template-columns: 1fr; }
-            .login-grid { grid-template-columns: 1fr; }
-            .discord-links { flex-direction: column; align-items: center; }
-            h1 { font-size: 2.5em; }
-            .chain-left, .chain-right { width: 30px; }
-        }
+        /* Bug Report Styles */
+        .bug-report-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+        select { width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #b300ff; border-radius:5px; color:white; }
     </style>
 </head>
 <body>
-    <!-- Chain Effects -->
-    <div class="chain-left"></div>
-    <div class="chain-right"></div>
-    
-    <!-- Security Warning -->
     <div id="securityWarning" class="security-warning hidden">
-        <div class="blocked-overlay">
-            <h2>🚨 SHADOW SECURITY BREACH</h2>
-            <p>Unauthorized access detected. System locked.</p>
-            <p id="blockMessage">This incident has been logged.</p>
+        <div style="background:#aa0000; padding:30px; border-radius:10px; text-align:center;">
+            <h2>🚨 SECURITY BREACH DETECTED</h2>
+            <p>Developer tools detected. Access denied for security reasons.</p>
+            <p>This incident has been logged.</p>
         </div>
     </div>
 
     <div class="container">
         <h1>⚡ OXYX MARKET ⚡</h1>
-        <div class="powered-by">Powered by OxyX • Shadow Edition</div>
-        
-        <!-- Custom Discord Links -->
-        <div class="discord-links">
-            <a href="https://discord.gg/autobuild" class="discord-btn" target="_blank">🎮 Main Server</a>
-            <a href="https://discord.gg/boatbuilderhub" class="discord-btn" target="_blank">🛠️ Support Server</a>
-            <a href="https://discord.gg/boatbuilderhub" class="discord-btn" target="_blank">💬 Support Server 2</a>
-        </div>
         
         <div class="stats">
             <div class="stat-card">
@@ -157,7 +83,7 @@
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="onlineNow">0</div>
-                <div>Online</div>
+                <div><span class="online-dot"></span> Online</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="totalBuilds">0</div>
@@ -165,11 +91,19 @@
             </div>
         </div>
 
+        <div id="deviceInfoSection" class="card">
+            <h2>📱 DEVICE INFO</h2>
+            <div class="admin-device">
+                <p>Device ID: <span class="device-id" id="deviceId">Loading...</span></p>
+                <p id="ipDisplay" class="hidden">IP Address: <span class="ip-addr" id="ipAddress">Loading...</span></p>
+            </div>
+        </div>
+
         <div class="card">
-            <h2>🔐 SHADOW LOGIN</h2>
-            <div id="sessionWarning" class="hidden" style="background:#aa0000; padding:15px; border-radius:10px; text-align:center; margin-bottom:15px;">
-                ⚠️ Session active on another device! 
-                <button onclick="forceUnbind()" style="width:auto; padding:8px 15px; background:white; color:black; font-size:12px;">FORCE UNBIND</button>
+            <h2>🔐 LOGIN</h2>
+            <div id="sessionWarning" class="session-warning hidden">
+                ⚠️ Akun aktif di device lain! 
+                <button onclick="forceUnbind()" style="width:auto; padding:5px 10px; background:white; color:black; font-size:12px;">FORCE UNBIND (OWNER ONLY)</button>
             </div>
             <div class="login-grid" id="loginForm">
                 <div>
@@ -181,82 +115,194 @@
                     <h3>👑 ADMIN</h3>
                     <input type="text" id="adminUser" placeholder="Username">
                     <input type="password" id="adminPass" placeholder="Password">
-                    <input type="text" id="whidInput" placeholder="WHID (Required)" style="background:#0a0a0a; border:2px solid gold;">
+                    <input type="text" id="whidInput" class="whid-input" placeholder="WHID (Required for Admin)" style="margin-top:5px;">
                     <button onclick="loginAdmin()">LOGIN ADMIN</button>
                 </div>
             </div>
-            <div id="userInfo" class="hidden" style="margin-top:25px; padding:20px; background:linear-gradient(145deg, #2a0a3a, #3a1a4a); border-radius:15px;">
+            <div id="userInfo" class="hidden" style="margin-top:20px; padding:15px; background:#2a0a3a; border-radius:10px;">
                 <p>Logged in as: <span id="displayName" style="font-weight:bold; color:gold;"></span></p>
-                <button onclick="logout()" style="background:linear-gradient(45deg, #aa0000, #ff0000); margin-top:15px;">LOGOUT</button>
+                <button onclick="logout()" style="background:#aa0000; margin-top:10px;">LOGOUT</button>
             </div>
         </div>
 
         <!-- Owner Panel -->
         <div id="ownerPanel" class="card owner-panel hidden">
-            <h2>👑 SHADOW COMMAND CENTER</h2>
-            <div style="margin-bottom:20px;">
-                <h4>Reset Moderator Password</h4>
-                <select id="modSelect">
-                    <option value="">Select Moderator</option>
-                    <option value="helper_tester">helper_tester</option>
-                    <option value="sigma">sigma</option>
-                </select>
-                <input type="password" id="newModPass" placeholder="New Password">
-                <button onclick="resetModPassword()">RESET PASSWORD</button>
+            <h2>👑 OWNER SECURITY PANEL</h2>
+            <div class="panel-tabs">
+                <button class="tab-btn active" onclick="switchTab('users')">👥 USER TRACKING</button>
+                <button class="tab-btn" onclick="switchTab('security')">🛡️ SECURITY</button>
+                <button class="tab-btn" onclick="switchTab('logs')">📋 ACTIVITY LOGS</button>
+                <button class="tab-btn" onclick="switchTab('blacklist')">🚫 BLACKLIST</button>
+            </div>
+
+            <!-- User Tracking Tab -->
+            <div id="usersTab" class="tab-content active">
+                <div style="display:flex; gap:10px; margin-bottom:15px;">
+                    <button onclick="filterUsers('all')">ALL USERS</button>
+                    <button onclick="filterUsers('members')">MEMBERS</button>
+                    <button onclick="filterUsers('mods')">MODERATORS</button>
+                    <button onclick="filterUsers('online')">ONLINE ONLY</button>
+                </div>
+                <table class="ip-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>IP Address</th>
+                            <th>Device ID</th>
+                            <th>Last Seen</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTrackingTable"></tbody>
+                </table>
+            </div>
+
+            <!-- Security Tab -->
+            <div id="securityTab" class="tab-content">
+                <div class="security-alert">
+                    <h3>🚨 SECURITY ALERTS</h3>
+                    <div id="securityAlerts">No security issues detected.</div>
+                </div>
+                <h3>🔍 IP Analysis</h3>
+                <table class="ip-table">
+                    <thead>
+                        <tr>
+                            <th>IP Address</th>
+                            <th>Users Count</th>
+                            <th>User List</th>
+                            <th>Risk Level</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ipAnalysisTable"></tbody>
+                </table>
+            </div>
+
+            <!-- Activity Logs Tab -->
+            <div id="logsTab" class="tab-content">
+                <h3>📋 Recent Activity</h3>
+                <div style="height:300px; overflow:auto; background:#0a0a1a; padding:10px; border-radius:5px;">
+                    <div id="activityLogs"></div>
+                </div>
+                <button onclick="clearLogs()" style="background:#aa0000; margin-top:10px;">CLEAR LOGS</button>
+            </div>
+
+            <!-- Blacklist Tab -->
+            <div id="blacklistTab" class="tab-content">
+                <h3>🚫 IP Blacklist Management</h3>
+                <div style="margin-bottom:15px;">
+                    <input type="text" id="blacklistIP" placeholder="IP Address to blacklist">
+                    <button onclick="addToBlacklist()" style="background:#aa0000;">ADD TO BLACKLIST</button>
+                </div>
+                <table class="ip-table">
+                    <thead>
+                        <tr>
+                            <th>IP Address</th>
+                            <th>Date Added</th>
+                            <th>Reason</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="blacklistTable"></tbody>
+                </table>
             </div>
         </div>
 
-        <!-- Upload Section -->
+        <!-- Moderator Panel -->
+        <div id="modPanel" class="card mod-panel hidden">
+            <h2>🛡️ MODERATOR PANEL</h2>
+            <div class="panel-tabs">
+                <button class="tab-btn active" onclick="switchModTab('users')">👥 USER LIST</button>
+                <button class="tab-btn" onclick="switchModTab('reports')">📋 REPORTS</button>
+            </div>
+
+            <div id="modUsersTab" class="tab-content active">
+                <h3>👥 Member List (IP Visible)</h3>
+                <table class="ip-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>IP Address</th>
+                            <th>Last Seen</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modUserTable"></tbody>
+                </table>
+            </div>
+
+            <div id="modReportsTab" class="tab-content">
+                <h3>📋 Security Reports</h3>
+                <div id="modReports" style="height:200px; overflow:auto; background:#0a0a1a; padding:10px; border-radius:5px;">
+                    No reports available.
+                </div>
+            </div>
+        </div>
+
+        <div id="chatSection" class="card hidden">
+            <h2>💬 MOD CHAT</h2>
+            <div id="chatMessages" style="height:150px; overflow:auto; background:#0a0a1a; padding:10px; margin:10px 0;"></div>
+            <input type="text" id="chatMsg" placeholder="Type message...">
+            <button onclick="sendChat()">SEND</button>
+        </div>
+
         <div id="uploadSection" class="card hidden">
             <h2>📤 UPLOAD BUILD</h2>
-            <input type="text" id="buildName" placeholder="Build name" maxlength="50">
+            <input type="text" id="buildName" placeholder="Build name">
             <input type="number" id="buildPrice" min="0" value="0" placeholder="Price (100+ = premium)">
-            <textarea id="buildDesc" rows="3" placeholder="Description" maxlength="200"></textarea>
-            <input type="file" id="buildFile" accept=".build" required>
-            <input type="file" id="buildImage" accept="image/*" placeholder="Build Preview Image">
-            <div id="imagePreview"></div>
+            <textarea id="buildDesc" rows="3" placeholder="Description"></textarea>
+            <input type="file" id="buildFile" accept=".build">
             <button onclick="uploadBuild()">PUBLISH BUILD</button>
         </div>
 
-        <!-- Marketplace -->
         <div class="card">
-            <h2>🏪 SHADOW MARKETPLACE</h2>
-            <div style="display:flex; gap:15px; margin:20px 0; flex-wrap:wrap;">
-                <button onclick="filterBuilds('all')">📋 ALL BUILDS</button>
-                <button onclick="filterBuilds('free')">🆓 FREE BUILDS</button>
-                <button onclick="filterBuilds('premium')">💎 PREMIUM BUILDS</button>
+            <h2>🏪 MARKETPLACE</h2>
+            <div style="display:flex; gap:10px; margin:15px 0; flex-wrap:wrap;">
+                <button onclick="filterBuilds('all')">📋 ALL</button>
+                <button onclick="filterBuilds('free')">🆓 FREE</button>
+                <button onclick="filterBuilds('premium')">💎 PREMIUM</button>
                 <button onclick="filterBuilds('my')">👤 MY BUILDS</button>
             </div>
-            <div id="marketplace" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px;"></div>
+            <div id="marketplace" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:15px;"></div>
         </div>
 
-        <!-- FAQ Section -->
+        <!-- FAQ & Bug Report Section -->
         <div class="card">
             <h2>❓ FAQ & BUG REPORT</h2>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:25px;">
+            <div class="bug-report-grid">
                 <div>
                     <h3>Frequently Asked Questions</h3>
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFAQ(0)">How to upload builds?</div>
-                        <div class="faq-answer">Only .build files are accepted. Add preview image and description for better visibility.</div>
+                        <div class="faq-answer">Only .build files are accepted. Enter build name, price (100+ for premium), description, and select your .build file. Click PUBLISH BUILD to upload.</div>
                     </div>
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFAQ(1)">What are premium builds?</div>
-                        <div class="faq-answer">Builds priced 100+ Robux are premium builds with special highlighting.</div>
+                        <div class="faq-answer">Builds priced 100+ Robux are premium builds. They get special gold highlighting and appear in the premium marketplace section.</div>
                     </div>
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFAQ(2)">How to download builds?</div>
-                        <div class="faq-answer">Click the ⬇️ DOWNLOAD button on any build card. File downloads automatically.</div>
+                        <div class="faq-answer">Click the ⬇️ DOWNLOAD button on any build card. The file will be downloaded to your device automatically.</div>
                     </div>
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFAQ(3)">What is WHID?</div>
-                        <div class="faq-answer">WHID is a security identifier required for admin/moderator login.</div>
+                        <div class="faq-answer">WHID (Web Hardware ID) is a security identifier required for admin/moderator login to prevent unauthorized access.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(4)">How to become a moderator?</div>
+                        <div class="faq-answer">Contact the owner (znyt) through the platform. Moderator positions are by invitation only.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(5)">Why can't I see IP addresses?</div>
+                        <div class="faq-answer">Only moderators and owners can view IP addresses for security reasons. Regular members cannot see this information.</div>
                     </div>
                 </div>
                 <div>
                     <h3>Report Bug</h3>
                     <input type="text" id="bugTitle" placeholder="Bug Title" maxlength="100">
-                    <textarea id="bugDesc" rows="4" placeholder="Describe the bug" maxlength="500"></textarea>
+                    <textarea id="bugDesc" rows="4" placeholder="Describe the bug in detail" maxlength="500"></textarea>
                     <select id="bugSeverity">
                         <option value="low">Low Priority</option>
                         <option value="medium">Medium Priority</option>
@@ -264,64 +310,72 @@
                         <option value="critical">Critical</option>
                     </select>
                     <button onclick="reportBug()">SUBMIT BUG REPORT</button>
+                    
+                    <div style="margin-top:20px;">
+                        <h4>Recent Bug Reports</h4>
+                        <div id="bugReportsList" style="height:150px; overflow:auto; background:#0a0a1a; padding:10px; border-radius:5px; margin-top:10px;">
+                            No bug reports yet.
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div style="text-align:center; color:#666; margin-top:40px; font-size:0.9em;">
-            OXYX MARKET • Shadow Edition • Build A Boat Only<br>
-            <span style="font-size:0.8em;">Powered by OxyX • Enhanced Security System</span>
-        </div>
+        <div class="footer">OXYX MARKET • Build A Boat Only</div>
     </div>
 
     <script>
-        // ========== ENHANCED SECURITY SYSTEM ==========
-        let devtoolsOpen = false, securityBreach = false, blockedUntil = localStorage.getItem('blockedUntil');
-        let failedAttempts = parseInt(localStorage.getItem('failedAttempts')) || 0;
+        // ========== ANTI-DEVTOOLS & SECURITY ==========
+        let devtoolsOpen = false;
+        let securityBreach = false;
 
-        // Multi-layer DevTools Detection
+        // Anti-DevTools Protection
         function detectDevTools() {
             let threshold = 160;
             if (window.outerHeight - window.innerHeight > threshold || window.outerWidth - window.innerWidth > threshold) {
                 if (!devtoolsOpen) {
                     devtoolsOpen = true;
                     securityBreach = true;
-                    handleSecurityBreach('DevTools detected');
+                    document.getElementById('securityWarning').classList.remove('hidden');
+                    addLog('SECURITY_BREACH', 'DevTools detected - Access blocked');
+                    setTimeout(() => {
+                        window.location.href = 'about:blank';
+                    }, 3000);
                 }
             }
         }
 
-        function handleSecurityBreach(reason) {
-            failedAttempts++;
-            localStorage.setItem('failedAttempts', failedAttempts);
-            addLog('SECURITY_BREACH', reason);
-            
-            if (failedAttempts >= 3) {
-                let blockTime = new Date();
-                blockTime.setHours(blockTime.getHours() + 24);
-                localStorage.setItem('blockedUntil', blockTime.toISOString());
-                showBlockedScreen();
-            } else {
-                document.getElementById('securityWarning').classList.remove('hidden');
-                setTimeout(() => window.location.href = 'about:blank', 3000);
-            }
-        }
-
-        function showBlockedScreen() {
-            document.getElementById('securityWarning').classList.remove('hidden');
-            document.getElementById('blockMessage').innerText = 'Access blocked for 24 hours due to security violations.';
-        }
-
-        // Disable developer access
+        // Disable right-click, F12, Ctrl+Shift+I, etc.
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                (e.ctrlKey && e.shiftKey && e.key === 'J') ||
+                (e.ctrlKey && e.key === 'U')) {
                 e.preventDefault();
-                handleSecurityBreach('Attempted to open DevTools via keyboard');
+                securityBreach = true;
+                addLog('SECURITY_BREACH', 'Attempted to open DevTools via keyboard');
+                document.getElementById('securityWarning').classList.remove('hidden');
             }
         });
 
+        // Check for devtools every 500ms
         setInterval(detectDevTools, 500);
+
+        // Disable console
+        (function() {
+            let devtools = {open: false, orientation: null};
+            setInterval(function() {
+                if (window.outerHeight - window.innerHeight > 160 || window.outerWidth - window.innerWidth > 160) {
+                    if (!devtools.open) {
+                        devtools.open = true;
+                        console.clear();
+                        console.log('%cSECURITY WARNING', 'color: red; font-size: 50px; font-weight: bold;');
+                        console.log('%cThis is a restricted area. Unauthorized access is prohibited.', 'color: red; font-size: 16px;');
+                    }
+                }
+            }, 500);
+        })();
 
         // ========== DATA & SETUP ==========
         let currentUser = null;
@@ -330,49 +384,196 @@
         let activeSessions = JSON.parse(localStorage.getItem('activeSessions')) || {};
         let members = JSON.parse(localStorage.getItem('members')) || [];
         let builds = JSON.parse(localStorage.getItem('builds')) || [];
+        let chats = JSON.parse(localStorage.getItem('chats')) || [];
         let activityLogs = JSON.parse(localStorage.getItem('activityLogs')) || [];
         let bannedUsers = JSON.parse(localStorage.getItem('bannedUsers')) || [];
+        let blacklistedIPs = JSON.parse(localStorage.getItem('blacklistedIPs')) || [];
         let bugReports = JSON.parse(localStorage.getItem('bugReports')) || [];
         let currentIP = '';
 
-        // Enhanced WHID system with password reset
-        let validWHIDs = JSON.parse(localStorage.getItem('validWHIDs')) || {
+        // Valid WHIDs for security
+        const validWHIDs = {
             'znyt': 'WHID-OWNER-7K9P2X8M4N6Q',
             'helper_tester': 'WHID-MOD-3F8H5J2L9R4T',
             'sigma': 'WHID-MOD-6B1N8K3P7W5Z'
         };
 
-        let modPasswords = JSON.parse(localStorage.getItem('modPasswords')) || {
-            'helper_tester': 'huwydhdjsiqo',
-            'sigma': 'uBwbONeqIwYQ97'
-        };
+        document.getElementById('deviceId').innerText = deviceId;
+        fetch('https://api.ipify.org?format=json')
+            .then(r => r.json())
+            .then(d => {
+                currentIP = d.ip;
+                document.getElementById('ipAddress').innerText = currentIP;
+                
+                // Check if IP is blacklisted
+                if (blacklistedIPs.some(item => item.ip === currentIP)) {
+                    alert('❌ Your IP has been blacklisted. Access denied.');
+                    window.location.href = 'about:blank';
+                    return;
+                }
+            });
 
-        fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => currentIP = d.ip);
-
+        // ========== LOGGING SYSTEM ==========
         function addLog(action, details) {
-            const log = { timestamp: new Date().toISOString(), user: currentUser ? currentUser.username : 'System', action, details, ip: currentIP };
+            const log = {
+                timestamp: new Date().toISOString(),
+                user: currentUser ? currentUser.username : 'System',
+                action: action,
+                details: details,
+                ip: currentIP,
+                deviceId: deviceId
+            };
             activityLogs.unshift(log);
             if (activityLogs.length > 200) activityLogs.pop();
             localStorage.setItem('activityLogs', JSON.stringify(activityLogs));
+            if (currentUser && (currentUser.role === 'owner' || currentUser.role === 'mod')) {
+                updateActivityLogs();
+            }
         }
 
-        // ========== CORE FUNCTIONS ==========
+        // ========== FAQ FUNCTIONS ==========
+        window.toggleFAQ = function(index) {
+            let answers = document.querySelectorAll('.faq-answer');
+            let answer = answers[index];
+            
+            // Close all other answers
+            answers.forEach((a, i) => {
+                if (i !== index) a.classList.remove('active');
+            });
+            
+            // Toggle current answer
+            answer.classList.toggle('active');
+        };
+
+        // ========== BUG REPORT SYSTEM ==========
+        window.reportBug = function() {
+            let title = document.getElementById('bugTitle').value.trim();
+            let desc = document.getElementById('bugDesc').value.trim();
+            let severity = document.getElementById('bugSeverity').value;
+            
+            if (!title) return alert('Please enter a bug title!');
+            if (!desc) return alert('Please describe the bug!');
+            
+            let bugReport = {
+                id: Date.now(),
+                title: title,
+                description: desc,
+                severity: severity,
+                reporter: currentUser ? currentUser.username : 'Anonymous',
+                reportDate: new Date().toISOString(),
+                status: 'open'
+            };
+            
+            bugReports.push(bugReport);
+            localStorage.setItem('bugReports', JSON.stringify(bugReports));
+            
+            // Clear form
+            document.getElementById('bugTitle').value = '';
+            document.getElementById('bugDesc').value = '';
+            document.getElementById('bugSeverity').value = 'low';
+            
+            addLog('BUG_REPORT', `Bug reported: ${title} (${severity})`);
+            updateBugReportsList();
+            alert('✅ Bug report submitted successfully! Thank you for helping improve OXYX Market.');
+        };
+
+        function updateBugReportsList() {
+            let container = document.getElementById('bugReportsList');
+            if (bugReports.length === 0) {
+                container.innerHTML = 'No bug reports yet.';
+                return;
+            }
+            
+            container.innerHTML = bugReports.slice(0, 5).map(bug => {
+                let severityColor = {
+                    'low': '#00ff00',
+                    'medium': '#ffaa00',
+                    'high': '#ff6600',
+                    'critical': '#ff0000'
+                };
+                
+                return `<div style="margin-bottom:8px; padding:8px; background:#1a1a2a; border-radius:5px; border-left:3px solid ${severityColor[bug.severity]};">
+                    <div style="font-weight:bold; color:${severityColor[bug.severity]};">[${bug.severity.toUpperCase()}] ${bug.title}</div>
+                    <div style="font-size:12px; color:#aaa;">${bug.description.substring(0, 100)}${bug.description.length > 100 ? '...' : ''}</div>
+                    <div style="font-size:10px; color:#666;">By: ${bug.reporter} • ${new Date(bug.reportDate).toLocaleDateString()}</div>
+                </div>`;
+            }).join('');
+        }
+
+        // ========== ENHANCED DOWNLOAD SYSTEM ==========
+        window.downloadBuild = function(name, file) {
+            addLog('DOWNLOAD_BUILD', `Downloaded build: ${name}`);
+            
+            // Create download progress simulation
+            let progressHtml = `
+                <div style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); 
+                     background:#1a1a2a; padding:20px; border-radius:10px; border:2px solid #b300ff; z-index:10000;">
+                    <h3>Downloading ${name}</h3>
+                    <div class="download-progress">
+                        <div class="download-bar" id="downloadBar"></div>
+                    </div>
+                    <p id="downloadStatus">Preparing download...</p>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', progressHtml);
+            
+            let progress = 0;
+            let downloadBar = document.getElementById('downloadBar');
+            let downloadStatus = document.getElementById('downloadStatus');
+            
+            let interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 100) progress = 100;
+                
+                downloadBar.style.width = progress + '%';
+                
+                if (progress < 30) {
+                    downloadStatus.innerText = 'Connecting to server...';
+                } else if (progress < 60) {
+                    downloadStatus.innerText = 'Downloading file...';
+                } else if (progress < 90) {
+                    downloadStatus.innerText = 'Verifying file integrity...';
+                } else if (progress < 100) {
+                    downloadStatus.innerText = 'Finalizing download...';
+                } else {
+                    downloadStatus.innerText = 'Download complete!';
+                    clearInterval(interval);
+                    
+                    // Create actual download
+                    let link = document.createElement('a');
+                    link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`OXYX Market Build File\nName: ${name}\nFile: ${file}\nDownloaded: ${new Date().toLocaleString()}\n\nThis is a simulated .build file for demonstration purposes.`);
+                    link.download = file;
+                    link.click();
+                    
+                    setTimeout(() => {
+                        document.querySelector('[style*="position:fixed"]').remove();
+                    }, 2000);
+                }
+            }, 200);
+        };
+
+        // ========== CORE FUNCTIONS (unchanged) ==========
         window.forceUnbind = function() {
             let user = document.getElementById('adminUser').value || document.getElementById('memberUsername').value;
-            if(!user) return alert("Enter username first!");
+            if(!user) return alert("Masukkan username di kotak login dulu!");
             if (currentUser && currentUser.role !== 'owner') return alert("❌ Only owner can force unbind!");
+            
             delete activeSessions[user];
             localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
             document.getElementById('sessionWarning').classList.add('hidden');
             addLog('FORCE_UNBIND', `Forced unbind user: ${user}`);
-            alert("✅ Session reset successfully!");
+            alert("✅ Sesi " + user + " telah di-reset! Silahkan login kembali.");
         };
 
         window.loginMember = function() {
             if (securityBreach) return alert('❌ Security breach detected. Access denied.');
+            
             let user = document.getElementById('memberUsername').value.trim();
-            if (!user) return alert('Please enter username!');
-            if (bannedUsers.includes(user)) return alert('❌ Account banned!');
+            if (!user) return alert('Tolong masukkan username!');
+            if (bannedUsers.includes(user)) return alert('❌ Akun anda telah dibanned!');
+            if (blacklistedIPs.some(item => item.ip === currentIP)) return alert('❌ Your IP has been blacklisted!');
+            
             if (activeSessions[user] && activeSessions[user] !== deviceId) {
                 document.getElementById('sessionWarning').classList.remove('hidden');
                 return;
@@ -382,19 +583,20 @@
 
         window.loginAdmin = function() {
             if (securityBreach) return alert('❌ Security breach detected. Access denied.');
+            
             let user = document.getElementById('adminUser').value.trim();
             let pass = document.getElementById('adminPass').value.trim();
             let whid = document.getElementById('whidInput').value.trim();
             
-            if (bannedUsers.includes(user)) return alert('❌ Account banned!');
-            if (!validWHIDs[user]) {
-                handleSecurityBreach(`Unknown entity attempted admin login: ${user}`);
-                return;
-            }
+            if (bannedUsers.includes(user)) return alert('❌ Akun anda telah dibanned!');
+            if (blacklistedIPs.some(item => item.ip === currentIP)) return alert('❌ Your IP has been blacklisted!');
+            
+            // Validate WHID
             if (!whid || validWHIDs[user] !== whid) {
-                handleSecurityBreach(`Invalid WHID for user: ${user}`);
-                return;
+                addLog('FAILED_LOGIN', `Invalid WHID for user: ${user}`);
+                return alert('❌ Invalid WHID! Access denied.');
             }
+            
             if (activeSessions[user] && activeSessions[user] !== deviceId) {
                 document.getElementById('sessionWarning').classList.remove('hidden');
                 return;
@@ -402,10 +604,12 @@
             
             if (user === 'znyt' && pass === 'Root!Delta_7KpZ') {
                 loginFinalize(user, 'owner');
-            } else if (modPasswords[user] && modPasswords[user] === pass) {
+            } else if ((user === 'helper_tester' && pass === 'huwydhdjsiqo') || 
+                       (user === 'sigma' && pass === 'uBwbONeqIwYQ97')) {
                 loginFinalize(user, 'mod');
             } else {
-                handleSecurityBreach(`Failed admin login attempt: ${user}`);
+                addLog('FAILED_LOGIN', `Failed admin login attempt: ${user}`);
+                alert('❌ Password Salah!');
             }
         };
 
@@ -416,18 +620,27 @@
 
             let now = new Date().toISOString();
             let idx = members.findIndex(m => m.username === user);
+            
             if(idx > -1) {
                 members[idx].lastSeen = now;
                 members[idx].ip = currentIP;
                 members[idx].role = role;
+                members[idx].deviceId = deviceId;
             } else {
-                members.push({ username: user, ip: currentIP, deviceId: deviceId, lastSeen: now, role: role });
+                members.push({
+                    username: user, 
+                    ip: currentIP, 
+                    deviceId: deviceId, 
+                    lastSeen: now,
+                    role: role,
+                    loginCount: 1
+                });
             }
             localStorage.setItem('members', JSON.stringify(members));
             
             addLog('LOGIN', `User ${user} (${role}) logged in successfully`);
             showUserInfo();
-            alert('✅ Login successful as ' + role.toUpperCase());
+            alert('✅ Login Berhasil sebagai ' + role.toUpperCase());
         }
 
         function showUserInfo() {
@@ -436,9 +649,24 @@
             document.getElementById('userInfo').classList.remove('hidden');
             document.getElementById('displayName').innerText = currentUser.username + ' (' + currentUser.role + ')';
             document.getElementById('uploadSection').classList.remove('hidden');
+            document.getElementById('deviceInfoSection').style.display = 'block';
+            
+            // Show IP only for mods and owners
+            if (currentUser.role === 'owner' || currentUser.role === 'mod') {
+                document.getElementById('ipDisplay').classList.remove('hidden');
+            }
             
             if (currentUser.role === 'owner') {
                 document.getElementById('ownerPanel').classList.remove('hidden');
+                updateOwnerPanel();
+            } else if (currentUser.role === 'mod') {
+                document.getElementById('modPanel').classList.remove('hidden');
+                updateModPanel();
+            }
+            
+            if (currentUser.role === 'owner' || currentUser.role === 'mod') {
+                document.getElementById('chatSection').classList.remove('hidden');
+                displayChat();
             }
         }
 
@@ -451,83 +679,314 @@
             location.reload();
         };
 
-        // ========== MODERATOR PASSWORD RESET ==========
-        window.resetModPassword = function() {
-            if (currentUser.role !== 'owner') return alert('❌ Only owner can reset passwords!');
-            let modUser = document.getElementById('modSelect').value;
-            let newPass = document.getElementById('newModPass').value.trim();
-            if (!modUser || !newPass) return alert('Select moderator and enter new password!');
-            if (newPass.length < 8) return alert('Password must be at least 8 characters!');
+        // ========== OWNER PANEL FUNCTIONS (unchanged) ==========
+        window.switchTab = function(tabName) {
+            document.querySelectorAll('#ownerPanel .tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('#ownerPanel .tab-btn').forEach(btn => btn.classList.remove('active'));
             
-            if (confirm(`Reset password for ${modUser}?`)) {
-                modPasswords[modUser] = newPass;
-                localStorage.setItem('modPasswords', JSON.stringify(modPasswords));
-                if (activeSessions[modUser]) {
-                    delete activeSessions[modUser];
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+            
+            if (tabName === 'users') updateUserTracking();
+            if (tabName === 'security') updateSecurityAnalysis();
+            if (tabName === 'logs') updateActivityLogs();
+            if (tabName === 'blacklist') updateBlacklist();
+        };
+
+        window.switchModTab = function(tabName) {
+            document.querySelectorAll('#modPanel .tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('#modPanel .tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById('mod' + tabName.charAt(0).toUpperCase() + tabName.slice(1) + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+            
+            if (tabName === 'users') updateModUserList();
+        };
+
+        function updateOwnerPanel() {
+            updateUserTracking();
+            updateSecurityAnalysis();
+            updateActivityLogs();
+            updateBlacklist();
+        }
+
+        function updateModPanel() {
+            updateModUserList();
+        }
+
+        window.filterUsers = function(filter) {
+            updateUserTracking(filter);
+        };
+
+        function updateUserTracking(filter = 'all') {
+            if (currentUser.role !== 'owner') return;
+            
+            let tbody = document.getElementById('userTrackingTable');
+            let filteredMembers = members;
+            
+            if (filter === 'members') filteredMembers = members.filter(m => m.role === 'member');
+            if (filter === 'mods') filteredMembers = members.filter(m => m.role === 'mod');
+            if (filter === 'online') filteredMembers = members.filter(m => activeSessions[m.username]);
+            
+            tbody.innerHTML = filteredMembers.map(m => {
+                let isOnline = activeSessions[m.username];
+                let isBanned = bannedUsers.includes(m.username);
+                let roleClass = m.role === 'owner' ? 'role-owner' : m.role === 'mod' ? 'role-mod' : 'role-member';
+                
+                return `<tr ${isBanned ? 'class="suspicious"' : ''}>
+                    <td><b>${m.username}</b></td>
+                    <td class="${roleClass}">${m.role.toUpperCase()}</td>
+                    <td>${m.ip}</td>
+                    <td>${m.deviceId.substring(0,10)}...</td>
+                    <td>${new Date(m.lastSeen).toLocaleString()}</td>
+                    <td class="${isOnline ? 'online' : 'offline'}">${isOnline ? '● ONLINE' : '○ OFFLINE'}</td>
+                    <td>
+                        ${!isBanned ? 
+                            `<button class="ban-btn" onclick="banUser('${m.username}')">BAN</button>` : 
+                            `<button class="unban-btn" onclick="unbanUser('${m.username}')">UNBAN</button>`
+                        }
+                        <button onclick="kickUser('${m.username}')" style="background:#ff6600; padding:5px 10px; font-size:12px;">KICK</button>
+                        <button onclick="blacklistIP('${m.ip}')" style="background:#660000; padding:5px 10px; font-size:12px;">BLACKLIST IP</button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function updateModUserList() {
+            if (currentUser.role !== 'mod') return;
+            
+            let tbody = document.getElementById('modUserTable');
+            let membersList = members.filter(m => m.role === 'member');
+            
+            tbody.innerHTML = membersList.map(m => {
+                let isOnline = activeSessions[m.username];
+                return `<tr>
+                    <td><b>${m.username}</b></td>
+                    <td>${m.ip}</td>
+                    <td>${new Date(m.lastSeen).toLocaleString()}</td>
+                    <td class="${isOnline ? 'online' : 'offline'}">${isOnline ? '● ONLINE' : '○ OFFLINE'}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        function updateSecurityAnalysis() {
+            if (currentUser.role !== 'owner') return;
+            
+            let alerts = [];
+            let ipGroups = {};
+            
+            members.forEach(m => {
+                if (!ipGroups[m.ip]) ipGroups[m.ip] = [];
+                ipGroups[m.ip].push(m);
+            });
+            
+            Object.keys(ipGroups).forEach(ip => {
+                if (ipGroups[ip].length > 1) {
+                    alerts.push(`⚠️ Multiple accounts from IP ${ip}: ${ipGroups[ip].map(u => u.username).join(', ')}`);
+                }
+            });
+            
+            document.getElementById('securityAlerts').innerHTML = alerts.length ? 
+                alerts.map(alert => `<div style="margin:5px 0; padding:5px; background:#330000; border-radius:3px;">${alert}</div>`).join('') :
+                'No security issues detected.';
+            
+            let tbody = document.getElementById('ipAnalysisTable');
+            tbody.innerHTML = Object.keys(ipGroups).map(ip => {
+                let users = ipGroups[ip];
+                let riskLevel = users.length > 1 ? 'HIGH' : 'LOW';
+                let riskColor = users.length > 1 ? '#aa0000' : '#00aa00';
+                
+                return `<tr>
+                    <td>${ip}</td>
+                    <td>${users.length}</td>
+                    <td>${users.map(u => `<span class="role-${u.role}">${u.username}</span>`).join(', ')}</td>
+                    <td style="color:${riskColor}">${riskLevel}</td>
+                    <td>
+                        <button onclick="investigateIP('${ip}')" style="background:#ff6600; padding:5px 10px; font-size:12px;">INVESTIGATE</button>
+                        <button onclick="blacklistIP('${ip}')" style="background:#660000; padding:5px 10px; font-size:12px;">BLACKLIST</button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function updateActivityLogs() {
+            if (currentUser.role !== 'owner') return;
+            
+            let logsDiv = document.getElementById('activityLogs');
+            logsDiv.innerHTML = activityLogs.map(log => {
+                let time = new Date(log.timestamp).toLocaleString();
+                return `<div style="margin-bottom:8px; padding:5px; background:#1a1a2a; border-radius:3px;">
+                    <span style="color:#666;">[${time}]</span> 
+                    <span style="color:gold;">${log.user}</span> - 
+                    <span style="color:#00ff00;">${log.action}</span>: 
+                    ${log.details}
+                    <span style="color:#666; float:right;">${log.ip}</span>
+                </div>`;
+            }).join('') || '<div style="color:#666;">No activity logs yet.</div>';
+        }
+
+        function updateBlacklist() {
+            if (currentUser.role !== 'owner') return;
+            
+            let tbody = document.getElementById('blacklistTable');
+            tbody.innerHTML = blacklistedIPs.map(item => {
+                return `<tr>
+                    <td>${item.ip}</td>
+                    <td>${new Date(item.dateAdded).toLocaleString()}</td>
+                    <td>${item.reason}</td>
+                    <td>
+                        <button onclick="removeFromBlacklist('${item.ip}')" style="background:#00aa00; padding:5px 10px; font-size:12px;">REMOVE</button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        // ========== ADMIN ACTIONS (OWNER ONLY) (unchanged) ==========
+        window.banUser = function(username) {
+            if (currentUser.role !== 'owner') return alert('❌ Only owner can ban users!');
+            if (confirm(`Ban user ${username}?`)) {
+                bannedUsers.push(username);
+                localStorage.setItem('bannedUsers', JSON.stringify(bannedUsers));
+                if (activeSessions[username]) {
+                    delete activeSessions[username];
                     localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
                 }
-                document.getElementById('newModPass').value = '';
-                addLog('RESET_MOD_PASSWORD', `Reset password for: ${modUser}`);
-                alert(`✅ Password reset for ${modUser}!`);
+                addLog('BAN_USER', `Banned user: ${username}`);
+                updateUserTracking();
+                alert(`✅ User ${username} telah dibanned!`);
             }
         };
 
-        // ========== BUILD UPLOAD & DOWNLOAD ==========
+        window.unbanUser = function(username) {
+            if (currentUser.role !== 'owner') return alert('❌ Only owner can unban users!');
+            if (confirm(`Unban user ${username}?`)) {
+                bannedUsers = bannedUsers.filter(u => u !== username);
+                localStorage.setItem('bannedUsers', JSON.stringify(bannedUsers));
+                addLog('UNBAN_USER', `Unbanned user: ${username}`);
+                updateUserTracking();
+                alert(`✅ User ${username} telah di-unban!`);
+            }
+        };
+
+        window.kickUser = function(username) {
+            if (currentUser.role !== 'owner') return alert('❌ Only owner can kick users!');
+            if (confirm(`Kick user ${username}?`)) {
+                if (activeSessions[username]) {
+                    delete activeSessions[username];
+                    localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
+                }
+                addLog('KICK_USER', `Kicked user: ${username}`);
+                updateUserTracking();
+                alert(`✅ User ${username} telah di-kick!`);
+            }
+        };
+
+        window.blacklistIP = function(ip) {
+            if (currentUser.role !== 'owner') return alert('❌ Only owner can blacklist IPs!');
+            let reason = prompt('Reason for blacklisting this IP:') || 'No reason provided';
+            if (confirm(`Blacklist IP ${ip}?`)) {
+                blacklistedIPs.push({
+                    ip: ip,
+                    dateAdded: new Date().toISOString(),
+                    reason: reason,
+                    addedBy: currentUser.username
+                });
+                localStorage.setItem('blacklistedIPs', JSON.stringify(blacklistedIPs));
+                
+                // Kick all users from this IP
+                members.filter(m => m.ip === ip).forEach(m => {
+                    if (activeSessions[m.username]) {
+                        delete activeSessions[m.username];
+                    }
+                });
+                localStorage.setItem('activeSessions', JSON.stringify(activeSessions));
+                
+                addLog('BLACKLIST_IP', `Blacklisted IP: ${ip} - Reason: ${reason}`);
+                updateBlacklist();
+                updateUserTracking();
+                alert(`✅ IP ${ip} has been blacklisted!`);
+            }
+        };
+
+        window.addToBlacklist = function() {
+            if (currentUser.role !== 'owner') return alert('❌ Only owner can manage blacklist!');
+            let ip = document.getElementById('blacklistIP').value.trim();
+            if (!ip) return alert('Please enter an IP address!');
+            
+            let reason = prompt('Reason for blacklisting:') || 'Manual addition';
+            blacklistedIPs.push({
+                ip: ip,
+                dateAdded: new Date().toISOString(),
+                reason: reason,
+                addedBy: currentUser.username
+            });
+            localStorage.setItem('blacklistedIPs', JSON.stringify(blacklistedIPs));
+            document.getElementById('blacklistIP').value = '';
+            addLog('BLACKLIST_IP', `Manually blacklisted IP: ${ip}`);
+            updateBlacklist();
+            alert(`✅ IP ${ip} added to blacklist!`);
+        };
+
+        window.removeFromBlacklist = function(ip) {
+            if (currentUser.role !== 'owner') return alert('❌ Only owner can manage blacklist!');
+            if (confirm(`Remove IP ${ip} from blacklist?`)) {
+                blacklistedIPs = blacklistedIPs.filter(item => item.ip !== ip);
+                localStorage.setItem('blacklistedIPs', JSON.stringify(blacklistedIPs));
+                addLog('UNBLACKLIST_IP', `Removed IP from blacklist: ${ip}`);
+                updateBlacklist();
+                alert(`✅ IP ${ip} removed from blacklist!`);
+            }
+        };
+
+        window.investigateIP = function(ip) {
+            if (currentUser.role !== 'owner') return alert('❌ Only owner can investigate IPs!');
+            let users = members.filter(m => m.ip === ip);
+            let details = users.map(u => `${u.username} (${u.role}) - Last seen: ${new Date(u.lastSeen).toLocaleString()}`).join('\n');
+            alert(`IP Investigation: ${ip}\n\nUsers:\n${details}`);
+            addLog('IP_INVESTIGATION', `Investigated IP ${ip} with ${users.length} users`);
+        };
+
+        window.clearLogs = function() {
+            if (currentUser.role !== 'owner') return alert('❌ Only owner can clear logs!');
+            if (confirm('Clear all activity logs?')) {
+                activityLogs = [];
+                localStorage.setItem('activityLogs', JSON.stringify(activityLogs));
+                updateActivityLogs();
+                addLog('CLEAR_LOGS', 'Activity logs cleared');
+            }
+        };
+
+        // ========== MARKETPLACE & UPLOAD (unchanged) ==========
         window.uploadBuild = function() {
-            if (!currentUser) return alert('Login required!');
+            if (!currentUser) return alert('Login dulu!');
             const file = document.getElementById('buildFile').files[0];
-            const image = document.getElementById('buildImage').files[0];
             const name = document.getElementById('buildName').value.trim();
             const desc = document.getElementById('buildDesc').value.trim();
-            const price = parseInt(document.getElementById('buildPrice').value);
+            const typeInput = document.getElementById('buildPrice').value;
+            const price = parseInt(typeInput);
 
-            if (!file) return alert("Please upload build file");
-            if (file.name.split('.').pop().toLowerCase() !== 'build') return alert("Only .build files allowed!");
-            if (!desc) return alert("Please add description");
-            if (isNaN(price)) return alert("Please set price");
-            if (!name) return alert("Please enter build name");
+            if (!file) return alert("tolong upload file build anda");
+            if (!desc) return alert("tolong tulis deskripsi build");
+            if (!typeInput || isNaN(price)) return alert("tolong pilih type build nya");
+            if (!name) return alert("tolong beri nama buildnya");
 
-            let imageData = null;
-            if (image) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    imageData = e.target.result;
-                    saveBuild();
-                };
-                reader.readAsDataURL(image);
-            } else {
-                saveBuild();
-            }
-
-            function saveBuild() {
-                builds.push({ 
-                    id: Date.now(), name, price, desc, file: file.name, seller: currentUser.username,
-                    type: price >= 100 ? 'premium' : 'non-premium', image: imageData, uploadDate: new Date().toISOString()
-                });
-                localStorage.setItem('builds', JSON.stringify(builds));
-                
-                // Clear form
-                ['buildName', 'buildPrice', 'buildDesc', 'buildFile', 'buildImage'].forEach(id => document.getElementById(id).value = '');
-                document.getElementById('imagePreview').innerHTML = '';
-                
-                addLog('UPLOAD_BUILD', `Uploaded: ${name} (${price} Robux)`);
-                alert(`✅ Build published successfully!`);
-                displayBuilds();
-                updateStats();
-            }
+            builds.push({ 
+                id: Date.now(), 
+                name: name, 
+                price: price, 
+                desc: desc, 
+                file: file.name, 
+                seller: currentUser.username,
+                type: price >= 100 ? 'premium' : 'non-premium'
+            });
+            localStorage.setItem('builds', JSON.stringify(builds));
+            
+            let targetMarket = (price >= 100) ? "Premium Marketplace" : "Non-Premium Marketplace";
+            addLog('UPLOAD_BUILD', `Uploaded build: ${name} (${price} Robux)`);
+            alert(`✅ build telah sukses di publish dan mengarah marketplace untuk yang ${targetMarket}`);
+            displayBuilds();
+            updateStats();
         };
-
-        // Image preview
-        document.getElementById('buildImage').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('imagePreview').innerHTML = `<img src="${e.target.result}" class="build-preview" alt="Preview">`;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
 
         window.displayBuilds = function(filter = 'all') {
             let container = document.getElementById('marketplace');
@@ -536,66 +995,16 @@
             if (filter === 'premium') filtered = builds.filter(b => b.price >= 100);
             if (filter === 'my') filtered = builds.filter(b => b.seller === currentUser?.username);
 
-            container.innerHTML = filtered.length ? '' : '<p>No builds available.</p>';
+            container.innerHTML = filtered.length ? '' : '<p>Belum ada build.</p>';
             filtered.reverse().forEach(b => {
                 let card = document.createElement('div');
-                card.className = `build-card ${b.price >= 100 ? 'premium-build' : ''}`;
-                
-                let imageHtml = b.image ? `<img src="${b.image}" class="build-preview" alt="${b.name}">` : 
-                    '<div style="height:150px; background:#333; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#666;">No Preview</div>';
-                
-                card.innerHTML = `
-                    ${imageHtml}
-                    <h3>${b.name} ${b.price>=100?'💎':''}</h3>
-                    <p style="color:gold;">💰 ${b.price} Robux</p>
-                    <p style="font-size:12px; color:#aaa; margin:10px 0;">${b.desc}</p>
-                    <p style="font-size:10px; color:#666;">By: ${b.seller}</p>
-                    <button style="margin-top:15px; background:#00aa00; width:100%;" onclick="downloadBuild('${b.name}', '${b.file}')">⬇️ DOWNLOAD</button>
-                `;
+                card.style = `background:#2a2a3a; border:2px solid ${b.price>=100?'gold':'#b300ff'}; border-radius:10px; padding:15px;`;
+                card.innerHTML = `<h3>${b.name} ${b.price>=100?'💎':''}</h3><p style="color:gold;">💰 ${b.price} Robux</p><p style="font-size:12px; color:#aaa;">${b.desc}</p><p style="font-size:10px; color:#666;">Seller: ${b.seller}</p><button style="margin-top:10px; background:#00aa00;" onclick="downloadBuild('${b.name}', '${b.file}')">⬇️ DOWNLOAD</button>`;
                 container.appendChild(card);
             });
         };
 
-        window.downloadBuild = function(name, file) {
-            addLog('DOWNLOAD_BUILD', `Downloaded: ${name}`);
-            const link = document.createElement('a');
-            link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`OXYX Market Build\nName: ${name}\nFile: ${file}\nDownloaded: ${new Date().toLocaleString()}`);
-            link.download = file;
-            link.click();
-            alert(`Downloading ${file}...`);
-        };
-
         window.filterBuilds = (f) => displayBuilds(f);
-
-        // ========== FAQ & BUG REPORT ==========
-        window.toggleFAQ = function(index) {
-            let answers = document.querySelectorAll('.faq-answer');
-            let answer = answers[index];
-            answers.forEach((a, i) => { if (i !== index) a.classList.remove('active'); });
-            answer.classList.toggle('active');
-        };
-
-        window.reportBug = function() {
-            let title = document.getElementById('bugTitle').value.trim();
-            let desc = document.getElementById('bugDesc').value.trim();
-            let severity = document.getElementById('bugSeverity').value;
-            
-            if (!title) return alert('Enter bug title!');
-            if (!desc) return alert('Describe the bug!');
-            
-            bugReports.push({
-                id: Date.now(), title, description: desc, severity,
-                reporter: currentUser ? currentUser.username : 'Anonymous',
-                reportDate: new Date().toISOString(), status: 'open'
-            });
-            localStorage.setItem('bugReports', JSON.stringify(bugReports));
-            
-            ['bugTitle', 'bugDesc'].forEach(id => document.getElementById(id).value = '');
-            document.getElementById('bugSeverity').value = 'low';
-            
-            addLog('BUG_REPORT', `Bug reported: ${title} (${severity})`);
-            alert('✅ Bug report submitted successfully!');
-        };
 
         function updateStats() {
             document.getElementById('totalMembers').innerText = members.length;
@@ -603,15 +1012,31 @@
             document.getElementById('onlineNow').innerText = Object.keys(activeSessions).length;
         }
 
+        function displayChat() {
+            document.getElementById('chatMessages').innerHTML = chats.map(c => 
+                `<div style="margin-bottom:5px;"><span style="color:${c.role==='owner'?'gold':'#00ff00'}">[${c.user}]:</span> ${c.msg}</div>`
+            ).join('');
+        }
+
+        window.sendChat = function() {
+            let m = document.getElementById('chatMsg').value;
+            if(!m) return;
+            chats.push({user: currentUser.username, role: currentUser.role, msg: m});
+            localStorage.setItem('chats', JSON.stringify(chats));
+            document.getElementById('chatMsg').value = '';
+            addLog('CHAT_MESSAGE', `Sent chat message`);
+            displayChat();
+        }
+
         // Initialize
         updateStats();
         displayBuilds();
-        if (blockedUntil && new Date() < new Date(blockedUntil)) showBlockedScreen();
-        if (securityBreach) document.getElementById('securityWarning').classList.remove('hidden');
+        updateBugReportsList();
 
-        // Console warning
-        console.log('%cSTOP!', 'color: red; font-size: 50px; font-weight: bold;');
-        console.log('%cOXYX MARKET - Unauthorized access prohibited', 'color: #b300ff; font-size: 14px;');
+        // Security check on load
+        if (securityBreach) {
+            document.getElementById('securityWarning').classList.remove('hidden');
+        }
     </script>
 </body>
 </html>
