@@ -1,263 +1,167 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>OXYX MARKET | STAFF ONLY CHAT</title>
+    <title>OXYX MARKET | CLOUD SECURITY</title>
     <style>
-        /* UI ASLI OXYX */
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Arial,sans-serif; user-select: none; }
-        body { background:#0a0a0a; color:white; padding:20px; overflow-x: hidden; }
-        .container { max-width:1400px; margin:0 auto; }
-        
-        h1 { font-size:4em; text-align:center; color:#b300ff; text-shadow:3px 3px 0 #ff00ff,-3px -3px 0 #00ffff; margin-bottom:30px; }
-        .card { background:#1a1a2a; border:2px solid #b300ff; border-radius:15px; padding:20px; margin-bottom:20px; position: relative; }
-        
-        /* STATS */
-        .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:15px; margin:20px 0; }
-        .stat-card { background:#2a0a3a; border:2px solid gold; border-radius:10px; padding:15px; text-align:center; }
-        .stat-value { font-size:2.5em; color:gold; font-weight: bold; }
-
-        /* INPUT & BUTTON */
-        input { width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:2px solid #b300ff; border-radius:5px; color:white; outline: none; }
-        button { width:100%; padding:15px; background:#b300ff; border:none; border-radius:5px; color:white; font-weight:bold; cursor:pointer; transition: 0.3s; }
-        button:hover { background:#d400ff; transform: scale(1.01); }
-
-        /* CHAT SECTION (STAFF ONLY STYLE) */
-        #chatDisplay { height:250px; overflow-y:auto; background:#050505; padding:15px; border-radius:5px; border:1px solid #444; margin-bottom:10px; font-family: monospace; }
-        .msg-owner { color: gold; font-weight: bold; }
-        .msg-mod { color: #00ff00; }
-        .msg-line { margin-bottom: 8px; border-bottom: 1px solid #222; padding-bottom: 4px; }
-
-        /* BAN OVERLAY */
-        #banOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background: black; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-
+        body { background:#0a0a0a; color:white; padding:20px; }
+        .container { max-width:1200px; margin:0 auto; }
+        h1 { font-size:4em; text-align:center; color:#b300ff; text-shadow:0 0 20px #b300ff; margin-bottom:30px; }
+        .card { background:#1a1a2a; border:2px solid #b300ff; border-radius:15px; padding:20px; margin-bottom:20px; }
+        input, select, textarea { width:100%; padding:12px; margin:8px 0; background:#2a2a3a; border:1px solid #333; border-radius:5px; color:white; outline: none; }
+        button { width:100%; padding:15px; background:#b300ff; border:none; border-radius:5px; color:white; font-weight:bold; cursor:pointer; }
         .hidden { display:none !important; }
-        .footer { text-align:center; color:#444; margin-top:30px; font-size: 12px; }
+        #banOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background: black; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .status-tag { font-size: 10px; color: #666; text-align: right; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
     <div id="banOverlay">
-        <h1 style="color: red; font-size: 3em;">PURGED FROM SHADOWS</h1>
-        <p id="banMsg" style="color: white; margin-top: 20px;">Your access has been revoked by the Owner.</p>
+        <h1 style="color: red; font-size: 3em;">IP & DEVICE BANNED</h1>
+        <p style="color: white; margin-top: 20px;">Your hardware identity has been blacklisted from OXYX servers.</p>
     </div>
 
     <div class="container">
         <h1>⚡ OXYX MARKET ⚡</h1>
-        
-        <div class="stats">
-            <div class="stat-card"><div class="stat-value" id="statMembers">0</div><div>Followers</div></div>
-            <div class="stat-card"><div class="stat-value" id="statBuilds">248</div><div>Total Builds</div></div>
-            <div class="stat-card" style="border-color: red;"><div class="stat-value" id="statBanned" style="color: red;">0</div><div>Purged IPs</div></div>
-        </div>
-        
-        <div id="loginCard" class="card">
-            <h2>🔐 IDENTIFICATION</h2>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div>
-                    <h3>👤 MEMBER</h3>
-                    <input type="text" id="memUser" placeholder="Enter Name">
-                    <button onclick="loginMem()">JOIN VOID</button>
-                </div>
-                <div>
-                    <h3>👑 STAFF</h3>
-                    <input type="text" id="staffUser" placeholder="Codename">
-                    <input type="password" id="staffPass" placeholder="Password">
-                    <div id="ghVerifyBox" class="hidden">
-                        <input type="text" id="ghCode" placeholder="GITHUB OTP CODE" style="border-color: gold;">
-                    </div>
-                    <button onclick="handleStaff()" style="background: gold; color: black;">STAFF AUTH</button>
-                    <p id="failText" style="color: red; font-size: 11px; margin-top: 5px;"></p>
-                </div>
-            </div>
+        <p class="status-tag">HARDWARE ID: <span id="myID">Scanning...</span></p>
+
+        <div id="uploadCard" class="card">
+            <h2>📤 PUBLISH BUILD</h2>
+            <input type="file" id="buildFile">
+            <input type="text" id="buildName" placeholder="Build Name">
+            <textarea id="buildDesc" placeholder="Description"></textarea>
+            <select id="buildType">
+                <option value="">-- Type --</option>
+                <option value="free">Non-Premium</option>
+                <option value="premium">Premium</option>
+            </select>
+            <button onclick="publishBuild()">PUBLISH</button>
         </div>
 
-        <div id="dashCard" class="card hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h3>Active Identity: <span id="userNameDisplay" style="color: #b300ff;"></span></h3>
-                <button onclick="location.reload()" style="width: 100px; background: #aa0000;">LOGOUT</button>
-            </div>
-        </div>
-
-        <div id="chatCard" class="card hidden">
-            <h2 style="color: gold;">🛡️ STAFF COMMUNICATOR (ENCRYPTED)</h2>
-            <div id="chatDisplay">Connecting to secure bin...</div>
-            <div style="display: flex; gap: 10px;">
-                <input type="text" id="chatInput" placeholder="Send secure message..." style="margin:0;">
-                <button onclick="sendChat()" style="width: 100px;">SEND</button>
-            </div>
-        </div>
-
-        <div id="ownerCard" class="card hidden">
+        <div id="ownerPanel" class="card hidden">
             <h2 style="color: gold;">👑 THE EMINENCE CONTROL</h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <div>
-                    <h3>BAN BY FINGERPRINT</h3>
-                    <input type="text" id="banTarget" placeholder="Enter FP ID">
-                    <button onclick="addBan()" style="background: red;">PURGE USER</button>
+                    <h3>BAN DEVICE/IP</h3>
+                    <input type="text" id="banTarget" placeholder="Paste Hardware ID atau IP">
+                    <button onclick="actionBan('ADD')" style="background: red;">PURGE (BAN)</button>
                 </div>
                 <div>
-                    <h3>BLACKLISTED</h3>
-                    <select id="banListSelect" style="width: 100%; padding: 12px; background: #000; color: white; margin-bottom: 8px;"></select>
-                    <button onclick="delBan()" style="background: green;">REDEEM USER</button>
+                    <h3>ACTIVE BLACKLIST</h3>
+                    <select id="banListDisplay" style="height: 45px;"></select>
+                    <button onclick="actionBan('DEL')" style="background: green;">REDEEM (UNBAN)</button>
                 </div>
             </div>
         </div>
 
-        <div class="footer">OXYX MARKET • PROTECTED BY SHADOW GARDEN PROTOCOL</div>
+        <div id="loginCard" class="card">
+            <h2>🔐 STAFF ACCESS</h2>
+            <input type="text" id="staffUser" placeholder="Username">
+            <input type="password" id="staffPass" placeholder="Master Key">
+            <button onclick="handleStaff()" style="background: gold; color: black;">AUTHENTICATE</button>
+        </div>
     </div>
 
     <script>
-        // ========== CONFIG ==========
+        // ========== CLOUD CONFIG ==========
         const JSONBIN = {
             ID: '69a24d2a43b1c97be9a53651',
             KEY: '$2a$10$hQHmQJhNStn.YXwhwNsoXuovmgMcA1cXfyL3lIrlznz76I357CwoS'
         };
-        const GH_URL = "https://raw.githubusercontent.com/catblox1346/StensUIReMake/refs/heads/main/Script/owner_code.txt";
 
-        let currentUser = null;
-        let isWaitingGH = false;
-        let loginFails = parseInt(localStorage.getItem('oxy_fails')) || 0;
-        let deviceId = localStorage.getItem('oxy_fp') || 'OX-'+Math.random().toString(36).slice(2,12).toUpperCase();
-        localStorage.setItem('oxy_fp', deviceId);
+        const OWNER_ID = "oxyX Britania9920";
+        // Simulasi Fingerprint Device
+        const currentDeviceId = navigator.userAgent.length + "-" + screen.width + "-" + OWNER_ID; 
+        document.getElementById('myID').innerText = currentDeviceId;
 
-        // ========== ANTI DEV TOOLS ==========
-        setInterval(() => { debugger; }, 100);
-        document.onkeydown = (e) => {
-            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73) || (e.ctrlKey && e.keyCode == 85)) return false;
-        };
+        let cloudData = { blacklist: [], staffSlots: [] };
 
-        // ========== BAN CHECK ==========
-        function checkBan() {
-            let ban24 = localStorage.getItem('oxy_ban_24');
-            if (ban24 && Date.now() < parseInt(ban24)) {
-                document.getElementById('banOverlay').style.display = 'flex';
-                document.getElementById('banMsg').innerText = "BRUTE FORCE ATTEMPT. 24H LOCKOUT.";
-                return true;
-            }
-            let bl = JSON.parse(localStorage.getItem('oxy_blacklist')) || [];
-            if (bl.includes(deviceId)) {
-                document.getElementById('banOverlay').style.display = 'flex';
-                return true;
-            }
-            return false;
+        // ========== SYNC WITH CLOUD ==========
+        async function syncCloud(newData = null) {
+            const method = newData ? 'PUT' : 'GET';
+            const body = newData ? JSON.stringify(newData) : null;
+            
+            try {
+                let res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN.ID}`, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': JSONBIN.KEY
+                    },
+                    body: body
+                });
+                let json = await res.json();
+                cloudData = json.record || json.data;
+                checkSecurity();
+                renderBanList();
+            } catch (e) { console.error("Cloud Sync Failed"); }
         }
 
-        // ========== AUTH LOGIC ==========
+        // ========== SECURITY ENGINE ==========
+        function checkSecurity() {
+            if (cloudData.blacklist.includes(currentDeviceId)) {
+                document.getElementById('banOverlay').style.display = 'flex';
+                throw new Error("Banned");
+            }
+        }
+
+        // ========== OWNER ACTIONS ==========
+        async function actionBan(type) {
+            const target = document.getElementById('banTarget').value.trim();
+            const select = document.getElementById('banListDisplay').value;
+
+            if (type === 'ADD' && target) {
+                if (!cloudData.blacklist.includes(target)) cloudData.blacklist.push(target);
+            } else if (type === 'DEL' && select) {
+                cloudData.blacklist = cloudData.blacklist.filter(id => id !== select);
+            }
+            
+            await syncCloud(cloudData);
+            alert("Database Updated");
+        }
+
+        function renderBanList() {
+            const list = document.getElementById('banListDisplay');
+            list.innerHTML = cloudData.blacklist.map(id => `<option value="${id}">${id}</option>`).join('');
+        }
+
+        // ========== BUILD VALIDATION ==========
+        function publishBuild() {
+            const file = document.getElementById('buildFile').files[0];
+            const name = document.getElementById('buildName').value.trim();
+            const desc = document.getElementById('buildDesc').value.trim();
+            const type = document.getElementById('buildType').value;
+
+            if (!file) return alert("⚠️ Tolong upload file build anda!");
+            if (!name) return alert("⚠️ Tolong beri nama buildnya!");
+            if (!desc) return alert("⚠️ Tolong tulis deskripsi build!");
+            if (!type) return alert("⚠️ Tolong pilih type build nya!");
+
+            alert(`✅ Build "${name}" sukses di-publish ke ${type} Marketplace!`);
+        }
+
+        // ========== STAFF LOGIN ==========
         async function handleStaff() {
-            if (checkBan()) return;
-            let u = document.getElementById('staffUser').value.trim();
-            let p = document.getElementById('staffPass').value.trim();
+            const u = document.getElementById('staffUser').value.trim();
+            const p = document.getElementById('staffPass').value.trim();
 
             if (u === 'znyt' && p === 'Root!Delta_7KpZ') {
-                if (!isWaitingGH) {
-                    document.getElementById('ghVerifyBox').classList.remove('hidden');
-                    isWaitingGH = true;
-                    alert("Owner ID Recognized. Enter GitHub OTP.");
-                    return;
-                }
-                try {
-                    let res = await fetch(GH_URL);
-                    let code = (await res.text()).trim();
-                    if (document.getElementById('ghCode').value.trim() === code) loginSuccess('owner');
-                    else alert("OTP WRONG!");
-                } catch(e) { alert("GitHub Offline"); }
-            } else if ((u === 'helper_tester' && p === 'huwydhdjsiqo') || (u === 'sigma' && p === 'uBwbONeqIwYQ97')) {
-                loginSuccess('mod');
-            } else {
-                loginFails++;
-                localStorage.setItem('oxy_fails', loginFails);
-                document.getElementById('failText').innerText = `Attempts: ${loginFails}/3`;
-                if (loginFails >= 3) {
-                    localStorage.setItem('oxy_ban_24', Date.now() + 86400000);
-                    checkBan();
+                if (currentDeviceId.includes(OWNER_ID)) {
+                    document.getElementById('ownerPanel').classList.remove('hidden');
+                    document.getElementById('loginCard').classList.add('hidden');
+                    alert("Welcome, Great Ruler.");
+                } else {
+                    alert("Unauthorized Device!");
                 }
             }
         }
 
-        function loginMem() {
-            let u = document.getElementById('memUser').value.trim();
-            if (u) { currentUser = {username: u, role: 'member'}; loginSuccess('member'); }
-        }
-
-        function loginSuccess(role) {
-            loginFails = 0; localStorage.setItem('oxy_fails', 0);
-            document.getElementById('loginCard').classList.add('hidden');
-            document.getElementById('dashCard').classList.remove('hidden');
-            document.getElementById('userNameDisplay').innerText = currentUser.username.toUpperCase() + " [" + role.toUpperCase() + "]";
-            
-            // LOGIKA CHAT HANYA UNTUK STAFF
-            if (role === 'owner' || role === 'mod') {
-                document.getElementById('chatCard').classList.remove('hidden');
-                fetchChat();
-                setInterval(fetchChat, 6000);
-            }
-
-            if (role === 'owner') {
-                document.getElementById('ownerCard').classList.remove('hidden');
-                refreshBanSelect();
-            }
-            updateStats();
-        }
-
-        // ========== CHAT (JSONBIN) ==========
-        async function fetchChat() {
-            try {
-                let res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN.ID}/latest`, {
-                    headers: { 'X-Master-Key': JSONBIN.KEY }
-                });
-                let data = await res.json();
-                let html = (data.record.messages || []).map(m => `
-                    <div class="msg-line">
-                        <span class="${m.role==='owner'?'msg-owner':'msg-mod'}">[${m.user.toUpperCase()}]:</span> ${m.text}
-                    </div>
-                `).join('');
-                document.getElementById('chatDisplay').innerHTML = html;
-                document.getElementById('chatDisplay').scrollTop = 99999;
-            } catch(e) {}
-        }
-
-        async function sendChat() {
-            let txt = document.getElementById('chatInput').value.trim();
-            if (!txt || !currentUser) return;
-            try {
-                let res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN.ID}/latest`, { headers: { 'X-Master-Key': JSONBIN.KEY } });
-                let data = await res.json();
-                let msgs = data.record.messages || [];
-                msgs.push({ user: currentUser.username, role: currentUser.role, text: txt });
-                await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN.ID}`, {
-                    method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN.KEY },
-                    body: JSON.stringify({ messages: msgs })
-                });
-                document.getElementById('chatInput').value = '';
-                fetchChat();
-            } catch(e) { alert("Chat Error"); }
-        }
-
-        // ========== OWNER ACTION ==========
-        function addBan() {
-            let t = document.getElementById('banTarget').value.trim();
-            if(!t) return;
-            let bl = JSON.parse(localStorage.getItem('oxy_blacklist')) || [];
-            bl.push(t);
-            localStorage.setItem('oxy_blacklist', JSON.stringify(bl));
-            refreshBanSelect();
-            updateStats();
-            alert("User Blacklisted.");
-        }
-
-        function refreshBanSelect() {
-            let bl = JSON.parse(localStorage.getItem('oxy_blacklist')) || [];
-            document.getElementById('banListSelect').innerHTML = bl.map(b => `<option value="${b}">${b}</option>`).join('');
-        }
-
-        function updateStats() {
-            let bl = JSON.parse(localStorage.getItem('oxy_blacklist')) || [];
-            document.getElementById('statBanned').innerText = bl.length;
-            document.getElementById('statMembers').innerText = "1,529";
-        }
-
-        checkBan();
-        updateStats();
+        // Initial Sync
+        syncCloud();
+        
+        // Anti-Inspect
+        setInterval(() => { debugger; }, 100);
     </script>
 </body>
 </html>
